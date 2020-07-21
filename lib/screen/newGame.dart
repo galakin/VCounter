@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:vcounter/resources/drawer.dart';
@@ -13,11 +14,21 @@ class _NewGameState extends State{
   int _startPlayer;
   List _playerName=[];
   List _lifeTotal;
+  List _isChanged;
+  List _changedval;
+  List _timerList;
 
   @override initState(){
     _startPlayer = 2;
     _lifeTotal = new List(_startPlayer);
-    for (int i = 0; i < _lifeTotal.length; i++) _lifeTotal[i] = 20;
+    _isChanged = new List<bool>(_startPlayer);
+    _changedval = new List<int>(_startPlayer);
+    _timerList = new List<Timer>(_startPlayer);
+    for (int i = 0; i < _lifeTotal.length; i++) {
+      _lifeTotal[i] = 20;
+      _isChanged[i] = false;
+      _changedval[i] = 0;
+    }
   }
 
   @override Widget build(BuildContext context){
@@ -51,19 +62,47 @@ class _NewGameState extends State{
 
   Widget _upperLife(){
     return Expanded(
-      child: Container(
-        color: manaColor[0],
-        child: _lifeStack(0),
-      ),//end Container
+      child: Stack(
+        children: [
+          Align(
+            alignment: Alignment.center,
+            child: Container(
+              color: manaColor[0],
+              child: _lifeStack(0),
+            ),//end Container
+          ),
+          Align(
+            alignment: Alignment.topCenter,
+            child: Padding(
+              padding: EdgeInsets.only(top: 70.0),
+              child: _showLifeChangeCounter(0),
+            )//end Padding
+          ),//end Align
+        ]
+      ),
     );//end Expanded
   }
 
   Widget _lowerLife(){
     return Expanded(
-      child: Container(
-        color: manaColor[1],
-        child: _lifeStack(1)
-      ),
+      child: Stack(
+        children:[
+          Align(
+            alignment: Alignment.center,
+            child: Container(
+              color: manaColor[1],
+              child: _lifeStack(1)
+            ),
+          ),//end Align
+          Align(
+            alignment: Alignment.topCenter,
+            child: Padding(
+              padding: EdgeInsets.only(top: 70.0),
+              child: _showLifeChangeCounter(1),
+            )//end Padding
+          ),//end Align
+        ]
+      ),//end Stack
     );//end Expanded
   }
 
@@ -110,7 +149,17 @@ class _NewGameState extends State{
             child: Center(child: Icon(Icons.chevron_left, color: Colors.white, size: 52.0))
           ),//end Container
         ),
-        onTap: () => setState(() => _lifeTotal[_lifeArrayIndex]--),
+        onTap: () => setState(() {
+          _lifeTotal[_lifeArrayIndex]--;
+          _isChanged[_lifeArrayIndex] = true;
+          _changedval[_lifeArrayIndex]--;
+        }),
+
+        onLongPress: () => setState(() {
+          _lifeTotal[_lifeArrayIndex] -= 5;
+          _isChanged[_lifeArrayIndex] = true;
+          _changedval[_lifeArrayIndex] -= 5;
+        }),
       ),//end Gesture Detector
     );//end Expanded
   }
@@ -126,7 +175,16 @@ class _NewGameState extends State{
             child: Center(child: Icon(Icons.chevron_right, color: Colors.white, size: 52.0))
           ),//end Container
         ),
-        onTap: () => setState(() => _lifeTotal[_lifeArrayIndex]++),
+        onTap: () => setState(() {
+          _lifeTotal[_lifeArrayIndex]++;
+          _isChanged[_lifeArrayIndex] = true;
+          _changedval[_lifeArrayIndex] += 1;
+        }),
+        onLongPress: () => setState(() {
+          _lifeTotal[_lifeArrayIndex] += 5;
+          _isChanged[_lifeArrayIndex] = true;
+          _changedval[_lifeArrayIndex] += 5;
+        }),
       ),//end Gesture Detector
     );//end Expanded
   }
@@ -134,5 +192,29 @@ class _NewGameState extends State{
   _lifeCounterColor(int _lifeArrayIndex){
     if (_lifeTotal[_lifeArrayIndex] > 0) return Colors.white;
     else return Colors.red;
+  }
+
+  Widget _showLifeChangeCounter(int _changeArrayIndex){
+    if (_isChanged[_changeArrayIndex]){
+      if (_timerList[_changeArrayIndex] == null){
+        //start and create a timer
+      }
+      else{
+        //restart a timer
+      }
+
+      String _tmpCounterString = "";
+      if (_changedval[_changeArrayIndex] > 0) _tmpCounterString = "+${_changedval[_changeArrayIndex]}";
+      else _tmpCounterString = "${_changedval[_changeArrayIndex]}";
+      return Container(
+        child: Text(_tmpCounterString, style: TextStyle(color: Colors.white, fontSize: 30.0)),
+      );
+      setState(() => _isChanged[_changeArrayIndex] = false);
+    }
+    else return Container();
+  }
+
+  void _timerCallback(int _listIndex){
+    print('Hello There!');
   }
 }
