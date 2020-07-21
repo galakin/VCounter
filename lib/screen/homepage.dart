@@ -32,11 +32,7 @@ class Homepage extends StatelessWidget{
             print(route);
             Navigator.of(context).pushReplacementNamed(route);
           }
-          /*BUG: alter is not working*/
-          else  AlertDialog(
-            title: Text('Attenzione'),
-            content: Text('Feature in via di sviluppo!'),
-          );//end AlertDialog
+          else  _showAlertDialog(context);
         },
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.0),
@@ -45,4 +41,19 @@ class Homepage extends StatelessWidget{
       ),//end RaisedButton
     );//end Center
   }
+
+  _showAlertDialog(BuildContext context){
+    AlertDialog _dialog = AlertDialog(
+      title: Text('Attenzione'),
+      content: Text('Feature in via di sviluppo!'),
+    );//end AlertDialog
+    return showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context){
+        return _dialog;
+      }
+    );
+  }
+
 }
