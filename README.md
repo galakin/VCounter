@@ -10,6 +10,8 @@ Now the only impemented features are:
 
 The working progress features are:
 - a poison counter 
+- middle screen menu
+- local db with latest game
 
 ## Getting Started
 
