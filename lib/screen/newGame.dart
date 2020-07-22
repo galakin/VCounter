@@ -12,12 +12,14 @@ class NewGame extends StatefulWidget{
 }
 
 class _NewGameState extends State{
+  int _startLife = 20;
   int _startPlayer;
   List _playerName=[];
   List _lifeTotal;
   List _isChanged;
   List _changedval;
   List _timerList;
+  bool _openMenu = false;
 
   @override initState(){
     _startPlayer = 2;
@@ -26,14 +28,13 @@ class _NewGameState extends State{
     _changedval = new List<int>(_startPlayer);
     _timerList = new List<Timer>(_startPlayer);
     for (int i = 0; i < _lifeTotal.length; i++) {
-      _lifeTotal[i] = 20;
+      _lifeTotal[i] = _startLife;
       _isChanged[i] = false;
       _changedval[i] = 0;
     }
   }
 
   @override Widget build(BuildContext context){
-    print(_lifeTotal);
     return Scaffold(
       drawer: VDrawer(route: 'newgame'),
       body: Stack(
@@ -48,13 +49,7 @@ class _NewGameState extends State{
           ),//end Column
           Align(
             alignment: Alignment.center,
-            child: GestureDetector(
-              child: Container(
-                color: Colors.black,
-                height: 30,
-              ),//end Container
-              onTap: () => print('Opening central menu'),
-            ),//end Gesture Detector
+            child: _middleMenuBar(),
           ),//end Align
         ]
       ) ,//end Stack
@@ -122,7 +117,64 @@ class _NewGameState extends State{
   }
 
   Widget _middleMenuBar(){
-    return Container();
+    if (_openMenu){
+      return Stack(
+        children: [
+          Container(
+            child: GestureDetector(
+              child: Container(
+                color: Colors.transparent,
+              ),//end Container
+              onTap: () => setState(() => _openMenu = false),
+            ),//end Gesture Detector
+          ),
+          Align(
+            alignment: Alignment.center,
+             child: Container(
+               color: Colors.black,
+               height: 60,
+               child: Row(
+                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                 children: [
+                   _menuIconPadding(
+                     child: GestureDetector(
+                       child: Icon(Icons.replay, color: Colors.white, size: 32.0),
+                       onTap: () {
+                         setState(() {
+                           for (int i = 0; i < 2; i++) _lifeTotal[i] = _startLife;
+                           _openMenu = false;
+                         });
+                       }
+                     ), //end Gesture Detector
+                   ),//end _menuIconPadding
+                   _menuIconPadding( //choose starting life
+                     child: GestureDetector(
+                       child: Icon(Icons.favorite_border, color: Colors.white, size: 32.0),
+                       onTap: () => print('selct starting life'),
+                     ),//end GestureDetector
+                   ),//end _menuIconPadding
+                   Container(), //chose first
+                   Container(), //selec no of player
+                   //Insert Logo here
+                 ]
+               ),//end Row
+             ),//end Cointainer
+          ),//end Align
+        ]
+      );//end Stack
+    } else return GestureDetector(
+      child: Container(
+        color: Colors.black,
+        height: 30,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            //Insert Logo here
+          ]
+        ),//end Row
+      ),//end Container
+      onTap: () => setState(() => _openMenu = true),
+    );//end Gesture Detector
   }
 
   Widget _lifeStack(int lifeArrayIndex) {
@@ -212,7 +264,7 @@ class _NewGameState extends State{
   Widget _showLifeChangeCounter(int _changeArrayIndex){
     if (_isChanged[_changeArrayIndex]){
       if (_timerList[_changeArrayIndex] == null){
-        _timerList[_changeArrayIndex] = RestartableTimer(Duration(seconds: 2), _timerCallback(_changeArrayIndex));
+        _timerList[_changeArrayIndex] = RestartableTimer(Duration(seconds: 1), _timerCallback(_changeArrayIndex));
       }
       else _timerList[_changeArrayIndex].reset();
 
@@ -238,5 +290,12 @@ class _NewGameState extends State{
         _changedval[_listIndex] = 0;
       });
     };
+  }
+
+  Padding _menuIconPadding({Widget child}){
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 4.0),
+      child: child,
+    );//end Padding
   }
 }
