@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:async/async.dart';  //Used for restartable timer
 
 import 'package:vcounter/resources/drawer.dart';
 import 'package:vcounter/assets/colors.dart';
@@ -70,12 +71,19 @@ class _NewGameState extends State{
               color: manaColor[0],
               child: _lifeStack(0),
             ),//end Container
-          ),
+          ),//end Align
           Align(
             alignment: Alignment.topCenter,
             child: Padding(
               padding: EdgeInsets.only(top: 70.0),
               child: _showLifeChangeCounter(0),
+            )//end Padding
+          ),//end Align
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 70.0),
+              child: Icon(Icons.favorite, color: Colors.white, size: 30.0)
             )//end Padding
           ),//end Align
         ]
@@ -99,6 +107,13 @@ class _NewGameState extends State{
             child: Padding(
               padding: EdgeInsets.only(top: 70.0),
               child: _showLifeChangeCounter(1),
+            )//end Padding
+          ),//end Align
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 70.0),
+              child: Icon(Icons.favorite, color: Colors.white, size: 30.0)
             )//end Padding
           ),//end Align
         ]
@@ -197,11 +212,9 @@ class _NewGameState extends State{
   Widget _showLifeChangeCounter(int _changeArrayIndex){
     if (_isChanged[_changeArrayIndex]){
       if (_timerList[_changeArrayIndex] == null){
-        //start and create a timer
+        _timerList[_changeArrayIndex] = RestartableTimer(Duration(seconds: 2), _timerCallback(_changeArrayIndex));
       }
-      else{
-        //restart a timer
-      }
+      else _timerList[_changeArrayIndex].reset();
 
       String _tmpCounterString = "";
       if (_changedval[_changeArrayIndex] > 0) _tmpCounterString = "+${_changedval[_changeArrayIndex]}";
@@ -214,7 +227,16 @@ class _NewGameState extends State{
     else return Container();
   }
 
-  void _timerCallback(int _listIndex){
-    print('Hello There!');
+  /** Reset the temp life counter and delete it from the GUI
+   *
+   */
+  _timerCallback(int _listIndex){
+    return () {
+      setState(() {
+        _timerList[_listIndex] = null;
+        _isChanged[_listIndex] = false;
+        _changedval[_listIndex] = 0;
+      });
+    };
   }
 }
