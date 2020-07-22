@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:async/async.dart';  //Used for restartable timer
+import 'package:flutter_icons/flutter_icons.dart';
 
 import 'package:vcounter/resources/drawer.dart';
 import 'package:vcounter/assets/colors.dart';
@@ -19,7 +20,7 @@ class _NewGameState extends State{
   List _isChanged;
   List _changedval;
   List _timerList;
-  bool _openMenu = false;
+  bool _openMenu = false, _showPopup = false;
 
   @override initState(){
     _startPlayer = 2;
@@ -136,7 +137,7 @@ class _NewGameState extends State{
                child: Row(
                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                  children: [
-                   _menuIconPadding(
+                   _menuIconPadding( //restart lifepoint
                      child: GestureDetector(
                        child: Icon(Icons.replay, color: Colors.white, size: 32.0),
                        onTap: () {
@@ -149,12 +150,40 @@ class _NewGameState extends State{
                    ),//end _menuIconPadding
                    _menuIconPadding( //choose starting life
                      child: GestureDetector(
-                       child: Icon(Icons.favorite_border, color: Colors.white, size: 32.0),
-                       onTap: () => print('selct starting life'),
+                       child: Stack(
+                         children: [
+                           Align(
+                             alignment: Alignment.center,
+                             child: Icon(Icons.favorite_border, color: Colors.white, size: 32.0),
+                           ),//end Align
+                           Align(
+                             alignment: Alignment.center,
+                             child: _showLifeSelector(),
+                           ),//end Align
+                         ]
+                       ),
+                       onTap: () {
+                         print('selct starting life');
+                         setState(() => _showPopup = true);
+                       },
                      ),//end GestureDetector
                    ),//end _menuIconPadding
-                   Container(), //chose first
-                   Container(), //selec no of player
+                   _menuIconPadding( //generate playing order
+                     child: GestureDetector(
+                       child: Icon(Entypo.list, color:Colors.white, size: 32.0),
+                       onTap: (){
+                         print('generate playing order');
+                         setState((){_openMenu= false;});
+
+                       }
+                     ),
+                   ),
+                   _menuIconPadding(
+                     child: GestureDetector(
+                       child: Icon(Icons.people, color: Colors.white, size: 32.0),
+                       onTap: () => print('selec no of player'),
+                     ),//end Gesture Detector
+                   ), //selec no of player
                    //Insert Logo here
                  ]
                ),//end Row
@@ -297,5 +326,29 @@ class _NewGameState extends State{
       padding: EdgeInsets.symmetric(horizontal: 4.0),
       child: child,
     );//end Padding
+  }
+
+  /** If wee need to select the starting life total a popup menu button is showed
+   *  otherwide nothing is shown
+   */
+  Widget _showLifeSelector(){
+    if (_showPopup) return PopupMenuButton(
+      child: Container(),
+      itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
+        const PopupMenuItem<int>(
+          value: 20,
+          child: Text('20'),
+        ),
+        const PopupMenuItem<int>(
+          value: 30,
+          child: Text('30'),
+        ),
+        const PopupMenuItem<int>(
+          value: 40,
+          child: Text('40'),
+        ),
+      ],
+    );
+    else return Container();
   }
 }
