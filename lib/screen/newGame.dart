@@ -15,11 +15,11 @@ class NewGame extends StatefulWidget{
 class _NewGameState extends State{
   int _startLife = 20;
   int _startPlayer;
-  List _playerName=[];
-  List _lifeTotal;
-  List _isChanged;
-  List _changedval;
-  List _timerList;
+  List _playerName=[];  //List with the player's name
+  List _lifeTotal; //List with the player's life total
+  List _isChanged;  //List with boolean value if player's life is changed recently
+  List _changedval; //List with the recent change in player's life
+  List _timerList;  //List withe remove changed player's life timer
   bool _openMenu = false, _showPopup = false;
 
   @override initState(){
@@ -52,6 +52,10 @@ class _NewGameState extends State{
             alignment: Alignment.center,
             child: _middleMenuBar(),
           ),//end Align
+          Align(
+            alignment: Alignment.center,
+            child: _showLifeSelector()
+          )
         ]
       ) ,//end Stack
     );//end Scaffold
@@ -126,7 +130,10 @@ class _NewGameState extends State{
               child: Container(
                 color: Colors.transparent,
               ),//end Container
-              onTap: () => setState(() => _openMenu = false),
+              onTap: () => setState(()  {
+                _openMenu = false;
+                _showPopup = false;
+              }),
             ),//end Gesture Detector
           ),
           Align(
@@ -156,15 +163,11 @@ class _NewGameState extends State{
                              alignment: Alignment.center,
                              child: Icon(Icons.favorite_border, color: Colors.white, size: 32.0),
                            ),//end Align
-                           Align(
-                             alignment: Alignment.center,
-                             child: _showLifeSelector(),
-                           ),//end Align
                          ]
                        ),
                        onTap: () {
-                         print('selct starting life');
                          setState(() => _showPopup = true);
+                         print('selct starting life: $_showPopup');
                        },
                      ),//end GestureDetector
                    ),//end _menuIconPadding
@@ -328,27 +331,34 @@ class _NewGameState extends State{
     );//end Padding
   }
 
-  /** If wee need to select the starting life total a popup menu button is showed
+  /** If we need to select the starting life total a popup menu button is showed
    *  otherwide nothing is shown
    */
   Widget _showLifeSelector(){
-    if (_showPopup) return PopupMenuButton(
-      child: Container(),
-      itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
-        const PopupMenuItem<int>(
-          value: 20,
-          child: Text('20'),
-        ),
-        const PopupMenuItem<int>(
-          value: 30,
-          child: Text('30'),
-        ),
-        const PopupMenuItem<int>(
-          value: 40,
-          child: Text('40'),
-        ),
-      ],
+    if (_showPopup) return Container(
+      height: 170,
+      width: 80,
+      color: Colors.black,
+      child: Column(
+        children: [
+          _startLifeTile(20),
+          _startLifeTile(30),
+          _startLifeTile(40),
+        ]
+      )
     );
     else return Container();
+  }
+
+  Widget _startLifeTile(int _life){
+    return ListTile(
+      title: Text('$_life', style: TextStyle(color: Colors.white)),
+      onTap: () => setState(() {
+        //_showPopup = false;
+        //_openMenu = false;
+        _startLife = _life;
+        for (int i = 0; i< _lifeTotal.length; i++) _lifeTotal[i] = _life;
+      })
+    );//end ListTile
   }
 }
