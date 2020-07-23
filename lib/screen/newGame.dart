@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:async/async.dart';  //Used for restartable timer
 import 'package:flutter_icons/flutter_icons.dart';
@@ -20,7 +22,8 @@ class _NewGameState extends State{
   List _isChanged;  //List with boolean value if player's life is changed recently
   List _changedval; //List with the recent change in player's life
   List _timerList;  //List withe remove changed player's life timer
-  bool _openMenu = false, _showPopup = false;
+  List _playerOrder; //List withe the player's turn order, the order i peseudo-randomy generatedw
+  bool _openMenu = false, _showPopup = false, _showOrder=false;
 
   @override initState(){
     _startPlayer = 2;
@@ -28,6 +31,8 @@ class _NewGameState extends State{
     _isChanged = new List<bool>(_startPlayer);
     _changedval = new List<int>(_startPlayer);
     _timerList = new List<Timer>(_startPlayer);
+    _playerOrder = new List<int>(_startPlayer);
+
     for (int i = 0; i < _lifeTotal.length; i++) {
       _lifeTotal[i] = _startLife;
       _isChanged[i] = false;
@@ -62,7 +67,17 @@ class _NewGameState extends State{
   }
 
   Widget _upperLife(){
-    return Expanded(
+    if (_showOrder) return Expanded(
+      child: Container(
+        color: manaColor[0],
+        child: GestureDetector(
+          child: Center( child: Text("${_playerOrder[0]}°", style: TextStyle(fontSize: 100.0, color: Colors.white))),
+          onTap: () => setState(() => _showOrder = false),
+        ),
+      ),//end Container
+    );//end Expanded
+
+    else return Expanded(
       child: Stack(
         children: [
           Align(
@@ -92,7 +107,16 @@ class _NewGameState extends State{
   }
 
   Widget _lowerLife(){
-    return Expanded(
+    if (_showOrder) return Expanded(
+      child: Container(
+        color: manaColor[1],
+        child: GestureDetector(
+          child: Center( child: Text("${_playerOrder[1]}°", style: TextStyle(fontSize: 100.0, color: Colors.white))),
+          onTap: () => setState(() => _showOrder = false),
+        ),
+      ),//end Container
+    );//end Expanded
+    else return Expanded(
       child: Stack(
         children:[
           Align(
@@ -119,6 +143,19 @@ class _NewGameState extends State{
         ]
       ),//end Stack
     );//end Expanded
+  }
+
+  /** If _showOrder is set to true a big white number pops out telling the player order,
+   *  otherwise nothing is shown
+   *
+   */
+  Widget _showGameOrder(int _playerIndex){
+    if (_showOrder) {
+      return Container(
+        child: null,
+      );//end Conatainer
+    }
+    else return Container();
   }
 
   Widget _middleMenuBar(){
@@ -175,15 +212,23 @@ class _NewGameState extends State{
                      child: GestureDetector(
                        child: Icon(Entypo.list, color:Colors.white, size: 32.0),
                        onTap: (){
-                         print('generate playing order');
-                         setState((){_openMenu= false;});
-
+                         setState((){
+                           _openMenu= false;
+                           int _startIndex = Random().nextInt(_startPlayer);
+                           bool _init=true;
+                           for (int i=((_startIndex)%_startPlayer), j=1; (i%_startPlayer) != _startIndex || _init; i++, j++ ) {
+                             if (_init) _init=false;
+                             _playerOrder[i%_startPlayer] = j;
+                           }
+                           print(_playerOrder);
+                           _showOrder=true;
+                         });
                        }
                      ),
                    ),
                    _menuIconPadding(
                      child: GestureDetector(
-                       child: Icon(Icons.people, color: Colors.white, size: 32.0),
+                       child: Icon(Icons.people, color: Color.fromRGBO(255,255,255,0.25), size: 32.0),
                        onTap: () => print('selec no of player'),
                      ),//end Gesture Detector
                    ), //selec no of player
@@ -205,7 +250,10 @@ class _NewGameState extends State{
           ]
         ),//end Row
       ),//end Container
-      onTap: () => setState(() => _openMenu = true),
+      onTap: () => setState(() {
+        _openMenu = true;
+        _showOrder = false;
+      }),
     );//end Gesture Detector
   }
 
