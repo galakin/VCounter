@@ -12,7 +12,7 @@ class Homepage extends StatelessWidget{
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           _homepageButton(null, 'Nuova Partita', context, route: 'newgame'),
-          _homepageButton(null, 'Storico Partite', context),
+          _homepageButton(null, 'Storico Partite', context, route: 'gamehistory'),
           _homepageButton(null, 'Nuovo Torneo', context),
           _homepageButton(null, 'Storico Tornei', context),
         ]

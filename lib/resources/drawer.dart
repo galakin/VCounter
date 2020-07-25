@@ -2,15 +2,17 @@ import 'package:flutter/material.dart';
 
 class VDrawer extends StatelessWidget{
   String route;
+  var parent;
 
-  VDrawer({String route});
+  VDrawer({this.route, this.parent});
 
   @override Widget build(BuildContext context){
+    print(route);
     return Drawer(
       child: ListView(
         children: [
           _drawerTile('Nuova Partita', context, localroute: 'newgame'),
-          _drawerTile('Storico Partite', context),
+          _drawerTile('Storico Partite', context, localroute: 'gamehistory'),
           _drawerTile('Nuova Torneo', context),
           _drawerTile('Storico Torneo', context),
           _drawerTile('Nuovo Vendemmiatore', context),
@@ -32,6 +34,7 @@ class VDrawer extends StatelessWidget{
       child: ListTile(
         title: Text(title),
         onTap: (){
+          if(route == 'newgame')parent.cancelTimer();
           if (localroute != null) Navigator.of(context).pushReplacementNamed(localroute);
         }
       ), //end ListTile

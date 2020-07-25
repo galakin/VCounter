@@ -7,6 +7,7 @@ import 'package:flutter_icons/flutter_icons.dart';
 
 import 'package:vcounter/resources/drawer.dart';
 import 'package:vcounter/assets/colors.dart';
+import 'package:vcounter/services/wrapper.dart';
 
 class NewGame extends StatefulWidget{
 
@@ -23,6 +24,9 @@ class _NewGameState extends State{
   List _changedval; //List with the recent change in player's life
   List _timerList;  //List withe remove changed player's life timer
   List _playerOrder; //List withe the player's turn order, the order i peseudo-randomy generatedw
+  Timer _savegameTimer;
+  Wrapper _wrapper;
+  int _gameID;
   bool _openMenu = false, _showPopup = false, _showOrder=false;
 
   @override initState(){
@@ -32,6 +36,9 @@ class _NewGameState extends State{
     _changedval = new List<int>(_startPlayer);
     _timerList = new List<Timer>(_startPlayer);
     _playerOrder = new List<int>(_startPlayer);
+    _savegameTimer = new Timer.periodic(Duration(seconds: 20), _savegameCallback);
+    _wrapper = new Wrapper();
+    _gameID = Random().nextInt(1000000);
 
     for (int i = 0; i < _lifeTotal.length; i++) {
       _lifeTotal[i] = _startLife;
@@ -42,7 +49,7 @@ class _NewGameState extends State{
 
   @override Widget build(BuildContext context){
     return Scaffold(
-      drawer: VDrawer(route: 'newgame'),
+      drawer: VDrawer(route: 'newgame', parent: this),
       body: Stack(
         children: [
           Column(
@@ -188,6 +195,7 @@ class _NewGameState extends State{
                          setState(() {
                            for (int i = 0; i < 2; i++) _lifeTotal[i] = _startLife;
                            _openMenu = false;
+                           _gameID = Random().nextInt(1000000);
                          });
                        }
                      ), //end Gesture Detector
@@ -408,5 +416,17 @@ class _NewGameState extends State{
         for (int i = 0; i< _lifeTotal.length; i++) _lifeTotal[i] = _life;
       })
     );//end ListTile
+  }
+
+  _savegameCallback(Timer t){
+    _wrapper.saveGame(_gameID, "", "", _lifeTotal[0], _lifeTotal[1]);
+    print('timer fired');
+  }
+
+  cancelTimer(){
+    if (_savegameTimer != null) {
+      _savegameTimer.cancel();
+      print('Timer cancelled!');
+    }
   }
 }

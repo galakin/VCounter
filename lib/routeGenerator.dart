@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:vcounter/screen/newGame.dart';
 import 'package:vcounter/screen/homepage.dart';
+import 'package:vcounter/screen/gameHistory.dart';
 
 class RouteGenerator {
 
@@ -15,6 +16,10 @@ class RouteGenerator {
 
       case 'newgame':
         return MaterialPageRoute(builder: (_) => NewGame());
+      break;
+
+      case 'gamehistory':
+        return MaterialPageRoute(builder: (_) => GameHistory());
       break;
 
       default:
