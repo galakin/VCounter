@@ -4,10 +4,13 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:async/async.dart';  //Used for restartable timer
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:swipedetector/swipedetector.dart';
 
 import 'package:vcounter/resources/drawer.dart';
 import 'package:vcounter/assets/colors.dart';
 import 'package:vcounter/services/wrapper.dart';
+
+enum Counter{LIFE, POISON}
 
 class NewGame extends StatefulWidget{
 
@@ -19,6 +22,7 @@ class _NewGameState extends State{
   int _startLife = 20;
   int _startPlayer;
   List _playerName=[];  //List with the player's name
+  List _showCounter;
   List _lifeTotal; //List with the player's life total
   List _isChanged;  //List with boolean value if player's life is changed recently
   List _changedval; //List with the recent change in player's life
@@ -39,8 +43,10 @@ class _NewGameState extends State{
     _savegameTimer = new Timer.periodic(Duration(seconds: 20), _savegameCallback);
     _wrapper = new Wrapper();
     _gameID = Random().nextInt(1000000);
+    _showCounter = new List(_startPlayer);
 
     for (int i = 0; i < _lifeTotal.length; i++) {
+      _showCounter[i] = Counter.LIFE;
       _lifeTotal[i] = _startLife;
       _isChanged[i] = false;
       _changedval[i] = 0;

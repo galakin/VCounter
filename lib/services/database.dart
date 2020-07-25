@@ -15,7 +15,8 @@ class LocalDatabase {
     );
   }
 
-  Future<void> saveGame(int id, String player1, String player2, int life1, int life2){
+  Future<void> saveGame(int id, String player1, String player2, int life1, int life2) async{
+    if(this.db ==null) await open();
     Map<String, dynamic> _gameMap = {'id': id, 'player1': player1, 'player2': player2, 'life1': life1, 'life2': life2};
     db.insert('Games', _gameMap, conflictAlgorithm: ConflictAlgorithm.replace);
   }
