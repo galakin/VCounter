@@ -5,22 +5,28 @@ import 'package:flutter/material.dart';
 import 'package:async/async.dart';  //Used for restartable timer
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:swipedetector/swipedetector.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
 
 import 'package:vcounter/resources/drawer.dart';
 import 'package:vcounter/assets/colors.dart';
 import 'package:vcounter/services/wrapper.dart';
 
-enum Counter{LIFE, POISON}
+enum Counter{LIFE, POISON} //add Commaner, Anarchy, Energy, Experience
 
 class NewGame extends StatefulWidget{
+  Store _store;
+
+  NewGame(this._store);
 
   @override
-  State createState()=> _NewGameState();
+  State createState()=> _NewGameState(_store);
 }
 
 class _NewGameState extends State{
+  Store _store;
   int _startLife = 20;
-  int _startPlayer;
+  int _startPlayer; // no of starting player
   List _playerName=[];  //List with the player's name
   List _showCounter;
   List _lifeTotal; //List with the player's life total
@@ -28,10 +34,15 @@ class _NewGameState extends State{
   List _changedval; //List with the recent change in player's life
   List _timerList;  //List withe remove changed player's life timer
   List _playerOrder; //List withe the player's turn order, the order i peseudo-randomy generatedw
-  Timer _savegameTimer;
+  List _poisonCounter; //List of player's poison counter
+  List _counterState; //List of player's visualized counter type
+  List _counterList = [Counter.LIFE, Counter.POISON];
+  Timer _savegameTimer; // timer used to save locally the game
   Wrapper _wrapper;
-  int _gameID;
+  int _gameID; //game ID used to identify games on history page
   bool _openMenu = false, _showPopup = false, _showOrder=false;
+
+  _NewGameState(this._store);
 
   @override initState(){
     _startPlayer = 2;
@@ -44,26 +55,30 @@ class _NewGameState extends State{
     _wrapper = new Wrapper();
     _gameID = Random().nextInt(1000000);
     _showCounter = new List(_startPlayer);
+    _poisonCounter = new List(_startPlayer);
+    _counterState = new List<int>(_startPlayer);
 
     for (int i = 0; i < _lifeTotal.length; i++) {
       _showCounter[i] = Counter.LIFE;
       _lifeTotal[i] = _startLife;
       _isChanged[i] = false;
       _changedval[i] = 0;
+      _poisonCounter[i] = 0;
+      _counterState[i] = 0;
     }
   }
 
   @override Widget build(BuildContext context){
     return Scaffold(
-      drawer: VDrawer(route: 'newgame', parent: this),
+      drawer: VDrawer(_store, route: 'newgame', parent: this),
       body: Stack(
         children: [
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              _upperLife(),
+              _innerFrame(manaColor[0], 0),
               _middleMenuBar(),
-              _lowerLife(),
+              _innerFrame(manaColor[1], 1),
             ]
           ),//end Column
           Align(
@@ -79,88 +94,77 @@ class _NewGameState extends State{
     );//end Scaffold
   }
 
-  Widget _upperLife(){
-    if (_showOrder) return Expanded(
+  Widget _innerFrame(Color _backgroundColor, int _index){
+    if (_showOrder) return Expanded(                                            //shows the starting game order
       child: Container(
-        color: manaColor[0],
-        child: GestureDetector(
-          child: Center( child: Text("${_playerOrder[0]}°", style: TextStyle(fontSize: 100.0, color: Colors.white))),
+        color: _backgroundColor,
+        child:GestureDetector(
+          child: Center( child: Text("${_playerOrder[_index]}°", style: TextStyle(fontSize: 100.0, color: Colors.white))),
           onTap: () => setState(() => _showOrder = false),
-        ),
+        ),//end Gesture Detector
       ),//end Container
     );//end Expanded
 
-    else return Expanded(
-      child: Stack(
-        children: [
-          Align(
-            alignment: Alignment.center,
-            child: Container(
-              color: manaColor[0],
-              child: _lifeStack(0),
-            ),//end Container
-          ),//end Align
-          Align(
-            alignment: Alignment.topCenter,
-            child: Padding(
-              padding: EdgeInsets.only(top: 70.0),
-              child: _showLifeChangeCounter(0),
-            )//end Padding
-          ),//end Align
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: EdgeInsets.only(bottom: 70.0),
-              child: Icon(Icons.favorite, color: Colors.white, size: 30.0)
-            )//end Padding
-          ),//end Align
-        ]
-      ),
+    else return Expanded(                                                       //show counter stack
+      child: SwipeDetector(
+        child: _showCounterFrame(_counterState[_index], _index),
+        onSwipeUp: () {
+          print('swipe up!');
+          setState(() => _counterState[_index]++);
+        },
+        onSwipeDown: () {
+          print ('swipe down!');
+          if (_counterState[_index] > 0 ) setState(() => _counterState[_index]--);
+        },
+      ),//end SwipeDetector
     );//end Expanded
   }
 
-  Widget _lowerLife(){
-    if (_showOrder) return Expanded(
-      child: Container(
-        color: manaColor[1],
-        child: GestureDetector(
-          child: Center( child: Text("${_playerOrder[1]}°", style: TextStyle(fontSize: 100.0, color: Colors.white))),
-          onTap: () => setState(() => _showOrder = false),
-        ),
-      ),//end Container
-    );//end Expanded
-    else return Expanded(
-      child: Stack(
-        children:[
-          Align(
-            alignment: Alignment.center,
-            child: Container(
-              color: manaColor[1],
-              child: _lifeStack(1)
+  Widget _showCounterFrame(int _counterIndex, int _index){
+    Counter _counter = _counterList[(_counterIndex%_counterList.length)];
+    switch (_counter){
+      case Counter.LIFE:
+        return Stack(
+          children: [
+            Align(
+              alignment: Alignment.center,
+              child: Container(
+                color: manaColor[_index],
+                child: _lifeStack(_index),
+              ),//end Container
+            ),//end Align
+            Align(
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: EdgeInsets.only(top: 70.0),
+                child: _showLifeChangeCounter(_index),
+              )//end Padding
+            ),//end Align
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: EdgeInsets.only(bottom: 70.0),
+                child: Icon(Icons.favorite, color: Colors.white, size: 30.0)
+              )//end Padding
+            ),//end Align
+          ]
+        );//end stack
+      break;
+      case Counter.POISON:
+        return Stack(
+          children: [
+            Align(
+              alignment: Alignment.center,
+              child: Center(child: Text('Poison')),
             ),
-          ),//end Align
-          Align(
-            alignment: Alignment.topCenter,
-            child: Padding(
-              padding: EdgeInsets.only(top: 70.0),
-              child: _showLifeChangeCounter(1),
-            )//end Padding
-          ),//end Align
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: EdgeInsets.only(bottom: 70.0),
-              child: Icon(Icons.favorite, color: Colors.white, size: 30.0)
-            )//end Padding
-          ),//end Align
-        ]
-      ),//end Stack
-    );//end Expanded
+          ]
+        );
+      break;
+    }
   }
 
   /** If _showOrder is set to true a big white number pops out telling the player order,
    *  otherwise nothing is shown
-   *
    */
   Widget _showGameOrder(int _playerIndex){
     if (_showOrder) {

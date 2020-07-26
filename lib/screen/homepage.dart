@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
+
 import 'package:vcounter/assets/colors.dart';
 import 'package:vcounter/resources/drawer.dart';
 
 class Homepage extends StatelessWidget{
+  Store _store;
 
+
+  Homepage(this._store);
   @override Widget build(BuildContext context){
     return Scaffold(
-      drawer: VDrawer(),
+      drawer: VDrawer(_store),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -30,7 +36,10 @@ class Homepage extends StatelessWidget{
         onPressed: (){
           if (route != null) {
             print(route);
-            Navigator.of(context).pushReplacementNamed(route);
+            Navigator.of(context).pushReplacementNamed(
+              route,
+              arguments: {'store': _store}
+            );//end Navigator
           }
           else  _showAlertDialog(context);
         },

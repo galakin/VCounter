@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
 
 class VDrawer extends StatelessWidget{
   String route;
   var parent;
+  Store _store;
 
-  VDrawer({this.route, this.parent});
+  VDrawer(this._store, {this.route, this.parent});
 
   @override Widget build(BuildContext context){
     print(route);
@@ -35,7 +38,10 @@ class VDrawer extends StatelessWidget{
         title: Text(title),
         onTap: (){
           if(route == 'newgame')parent.cancelTimer();
-          if (localroute != null) Navigator.of(context).pushReplacementNamed(localroute);
+          if (localroute != null) Navigator.of(context).pushReplacementNamed(
+            localroute,
+            arguments: {'store': _store}
+          );//end Navigator
         }
       ), //end ListTile
     );//end Padding

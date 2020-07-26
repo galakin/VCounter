@@ -11,28 +11,40 @@ class RouteGenerator {
 
     switch (settings.name){
       case 'homepage':
-        return MaterialPageRoute(builder: (_) => Homepage());
+        if (args is Map){
+          if (args['store'] != null) return MaterialPageRoute(builder: (_) => Homepage(args['store']));
+          else return defaultRoute(args);
+        } else return defaultRoute(args);
       break;
 
       case 'newgame':
-        return MaterialPageRoute(builder: (_) => NewGame());
+        if (args is Map){
+          if (args['store'] != null) return MaterialPageRoute(builder: (_) => NewGame(args['store']));
+          else return defaultRoute(args);
+        } else return defaultRoute(args);
       break;
 
       case 'gamehistory':
-        return MaterialPageRoute(builder: (_) => GameHistory());
+        if (args is Map){
+          if (args['store'] != null) return MaterialPageRoute(builder: (_) => GameHistory(args['store']));
+          else return defaultRoute(args);
+        } else return defaultRoute(args);
       break;
 
       default:
-        return MaterialPageRoute(builder: (_) => defaultRoute());
+        return MaterialPageRoute(builder: (_) => defaultRoute(args));
       break;
     }
   }
 
-  static defaultRoute(){
-    return  Scaffold(
-      body: Center(
-        child: Text('route not found'),
-      ),//end Center
-    );//end Scaffold
+  static defaultRoute(var args){
+    print(args);
+    return MaterialPageRoute(builder: (_) =>
+      Scaffold(
+        body: Center(
+          child: Text('route not found'),
+        ),//end Center
+      )//end Scaffold
+    );//end MaterialPageRoute
   }
 }

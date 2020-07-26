@@ -1,19 +1,25 @@
 /*TODO: implement swipe to remove*/
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
 
 import 'package:vcounter/resources/drawer.dart';
 import 'package:vcounter/services/wrapper.dart';
 import 'package:vcounter/assets/colors.dart';
 
 class GameHistory extends StatefulWidget{
+  Store _store;
+  GameHistory(this._store);
 
-  @override State createState() => _GameHistoryState();
+  @override State createState() => _GameHistoryState(_store);
 }
 
 class _GameHistoryState extends State{
-
+  Store _store;
   Future _gameHistoryFuture;
   Wrapper _wrapper;
+
+  _GameHistoryState(this._store);
 
   @override initState() {
     super.initState();
@@ -23,7 +29,7 @@ class _GameHistoryState extends State{
 
   @override build(BuildContext context){
     return Scaffold(
-      drawer: VDrawer(route: 'gamehistory'),
+      drawer: VDrawer(_store, route: 'gamehistory'),
       body: FutureBuilder(
         future: _gameHistoryFuture,
         builder: (BuildContext context, AsyncSnapshot snapshot){
