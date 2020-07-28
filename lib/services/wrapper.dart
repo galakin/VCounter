@@ -22,6 +22,6 @@ class Wrapper{
   }
 
   Future<void>removeOldGame(int _gameID) async{
-    return null;
+    database.removeOldGame(_gameID);
   }
 }

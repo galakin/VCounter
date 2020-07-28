@@ -12,7 +12,7 @@ import 'package:vcounter/resources/drawer.dart';
 import 'package:vcounter/assets/colors.dart';
 import 'package:vcounter/services/wrapper.dart';
 
-enum Counter{LIFE, POISON} //add Commaner, Anarchy, Energy, Experience
+enum Counter{LIFE, POISON, COMMANDER} //add Commaner, Anarchy, Energy, Experience
 
 class NewGame extends StatefulWidget{
   Store _store;
@@ -26,48 +26,57 @@ class NewGame extends StatefulWidget{
 class _NewGameState extends State{
   Store _store;
   int _startLife = 20;
-  int _startPlayer; // no of starting player
-  List _playerName=[];  //List with the player's name
+  int startPlayer; // no of starting player
+  List playerName=[];  //List with the player's name
   List _showCounter;
-  List _lifeTotal; //List with the player's life total
+  List lifeTotal; //List with the player's life total
   List _isChanged;  //List with boolean value if player's life is changed recently
   List _changedval; //List with the recent change in player's life
   List _timerList;  //List withe remove changed player's life timer
   List _playerOrder; //List withe the player's turn order, the order i peseudo-randomy generatedw
-  List _poisonCounter; //List of player's poison counter
+  List poisonCounter; //List of player's poison counter
   List _counterState; //List of player's visualized counter type
-  List _counterList = [Counter.LIFE, Counter.POISON];
+  List _counterList = [Counter.LIFE, Counter.POISON, Counter.COMMANDER];
+  List commanderDamage; //List of Commander damage
   List _startColor; // List the randomly choose starting background color
   Timer _savegameTimer; // timer used to save locally the game
   Wrapper _wrapper;
   int _gameID; //game ID used to identify games on history page
   bool _openMenu = false, _showPopup = false, _showOrder=false;
 
-  _NewGameState(this._store);
+  _NewGameState(
+    this._store,{
+    int this.startPlayer,
+    List this.playerName,
+    List this.lifeTotal,
+    List this.poisonCounter,
+  });
 
   @override initState(){
-    _startPlayer = 2;
-    _startColor = new List<int>(_startPlayer);
-    _lifeTotal = new List(_startPlayer);
-    _isChanged = new List<bool>(_startPlayer);
-    _changedval = new List<int>(_startPlayer);
-    _timerList = new List<Timer>(_startPlayer);
-    _playerOrder = new List<int>(_startPlayer);
+    startPlayer = 2;
+    commanderDamage = new List(startPlayer);
+    _startColor = new List<int>(startPlayer);
+    lifeTotal = new List(startPlayer);
+    _isChanged = new List<bool>(startPlayer);
+    _changedval = new List<int>(startPlayer);
+    _timerList = new List<Timer>(startPlayer);
+    _playerOrder = new List<int>(startPlayer);
     _savegameTimer = new Timer.periodic(Duration(seconds: 20), _savegameCallback);
     _wrapper = new Wrapper();
     _gameID = Random().nextInt(1000000);
-    _showCounter = new List(_startPlayer);
-    _poisonCounter = new List(_startPlayer);
-    _counterState = new List<int>(_startPlayer);
+    _showCounter = new List(startPlayer);
+    poisonCounter = new List(startPlayer);
+    _counterState = new List<int>(startPlayer);
 
-    for (int i = 0; i < _lifeTotal.length; i++) {
+    for (int i = 0; i < lifeTotal.length; i++) {
       _startColor[i] = new Random().nextInt(5);
       _showCounter[i] = Counter.LIFE;
-      _lifeTotal[i] = _startLife;
+      lifeTotal[i] = _startLife;
       _isChanged[i] = false;
       _changedval[i] = 0;
-      _poisonCounter[i] = 0;
+      poisonCounter[i] = 0;
       _counterState[i] = 0;
+      commanderDamage[i] = 0;
     }
   }
 
@@ -160,7 +169,7 @@ class _NewGameState extends State{
               alignment: Alignment.center,
               child: Container(
                 color: manaColor[_index],
-                child: _counterStack(_index, _removeCounter, _addCounter, Counter.POISON, color: _poisonCounterColor),
+                child: _counterStack(_index, _removeCounter, _addCounter, Counter.POISON, color: poisonCounterColor),
               ),//end Container
             ),//end Align
             Align(
@@ -179,6 +188,32 @@ class _NewGameState extends State{
             ),//end Align
           ]
         );//end Stack
+        case Counter.COMMANDER:
+          return Stack(
+            children: [
+              Align(
+                alignment: Alignment.center,
+                child: Container(
+                  color: manaColor[_index],
+                  child: _counterStack(_index, _removeCounter, _addCounter, Counter.COMMANDER, color: _commanderCounterColor),
+                ),//end Container
+              ),//end Align
+              Align(
+                alignment: Alignment.topCenter,
+                child: Padding(
+                  padding: EdgeInsets.only(top: 70.0),
+                  child: _showChangeCounter(_index),
+                )//end Padding
+              ),//end Align
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: EdgeInsets.only(bottom: 70.0),
+                  child: Icon(Foundation.shield, color: Colors.white, size: 30.0)
+                )//end Padding
+              ),//end Align
+            ]
+          );//end Stack
       break;
     }
   }
@@ -223,7 +258,7 @@ class _NewGameState extends State{
                        child: Icon(Icons.replay, color: Colors.white, size: 32.0),
                        onTap: () {
                          setState(() {
-                           for (int i = 0; i < 2; i++) _lifeTotal[i] = _startLife;
+                           for (int i = 0; i < 2; i++) lifeTotal[i] = _startLife;
                            _openMenu = false;
                            _gameID = Random().nextInt(1000000);
                          });
@@ -252,11 +287,11 @@ class _NewGameState extends State{
                        onTap: (){
                          setState((){
                            _openMenu= false;
-                           int _startIndex = Random().nextInt(_startPlayer);
+                           int _startIndex = Random().nextInt(startPlayer);
                            bool _init=true;
-                           for (int i=((_startIndex)%_startPlayer), j=1; (i%_startPlayer) != _startIndex || _init; i++, j++ ) {
+                           for (int i=((_startIndex)%startPlayer), j=1; (i%startPlayer) != _startIndex || _init; i++, j++ ) {
                              if (_init) _init=false;
-                             _playerOrder[i%_startPlayer] = j;
+                             _playerOrder[i%startPlayer] = j;
                            }
                            print(_playerOrder);
                            _showOrder=true;
@@ -304,8 +339,9 @@ class _NewGameState extends State{
     if (color != null) _counterStyle = TextStyle(color: color(arrayIndex), fontSize: 100.0);
     else _counterStyle = TextStyle(color: Colors.white, fontSize: 100.0);
     String _text;
-    if ( _counter == Counter.LIFE) _text = '${_lifeTotal[arrayIndex]}';
-    else if (_counter == Counter.POISON) _text = "${_poisonCounter[arrayIndex]}";
+    if ( _counter == Counter.LIFE) _text = '${lifeTotal[arrayIndex]}';
+    else if (_counter == Counter.POISON) _text = "${poisonCounter[arrayIndex]}";
+    else if (_counter == Counter.COMMANDER) _text = "${commanderDamage[arrayIndex]}";
 
     return Center(
       child: Stack(
@@ -346,15 +382,17 @@ class _NewGameState extends State{
           ),//end Container
         ),
         onTap: () => setState(() {
-          if (_counter == Counter.LIFE) _lifeTotal[_arrayIndex]--;
-          else if (_counter == Counter.POISON) _poisonCounter[_arrayIndex]--;
+          if (_counter == Counter.LIFE) lifeTotal[_arrayIndex]--;
+          else if (_counter == Counter.POISON) poisonCounter[_arrayIndex]--;
+          else if (_counter == Counter.COMMANDER) commanderDamage[_arrayIndex]--;
           _isChanged[_arrayIndex] = true;
           _changedval[_arrayIndex]--;
         }),
 
         onLongPress: () => setState(() {
-          if (_counter == Counter.LIFE) _lifeTotal[_arrayIndex]-=5;
-          else if (_counter == Counter.POISON) _poisonCounter[_arrayIndex]-=5;
+          if (_counter == Counter.LIFE) lifeTotal[_arrayIndex]-=5;
+          else if (_counter == Counter.POISON) poisonCounter[_arrayIndex]-=5;
+          else if (_counter == Counter.COMMANDER) commanderDamage[_arrayIndex]-=5;
           _isChanged[_arrayIndex] = true;
           _changedval[_arrayIndex] -= 5;
         }),
@@ -374,14 +412,16 @@ class _NewGameState extends State{
           ),//end Container
         ),
         onTap: () => setState(() {
-          if (_counter == Counter.LIFE) _lifeTotal[_arrayIndex]++;
-          else if (_counter == Counter.POISON) _poisonCounter[_arrayIndex]++;
+          if (_counter == Counter.LIFE) lifeTotal[_arrayIndex]++;
+          else if (_counter == Counter.POISON) poisonCounter[_arrayIndex]++;
+          else if (_counter == Counter.COMMANDER) commanderDamage[_arrayIndex]++;
           _isChanged[_arrayIndex] = true;
           _changedval[_arrayIndex] += 1;
         }),
         onLongPress: () => setState(() {
-          if (_counter == Counter.LIFE) _lifeTotal[_arrayIndex] += 5;
-          else if (_counter == Counter.POISON) _poisonCounter[_arrayIndex] += 5;
+          if (_counter == Counter.LIFE) lifeTotal[_arrayIndex] += 5;
+          else if (_counter == Counter.POISON) poisonCounter[_arrayIndex] += 5;
+          else if (_counter == Counter.COMMANDER) commanderDamage[_arrayIndex] += 5;
           _isChanged[_arrayIndex] = true;
           _changedval[_arrayIndex] += 5;
         }),
@@ -390,13 +430,18 @@ class _NewGameState extends State{
   }
 
   _lifeCounterColor(int _lifeArrayIndex){
-    if (_lifeTotal[_lifeArrayIndex] > 0) return Colors.white;
+    if (lifeTotal[_lifeArrayIndex] > 0) return Colors.white;
     else return Colors.red;
   }
 
-  _poisonCounterColor(int _lifeArrayIndex){
-    if (_poisonCounter[_lifeArrayIndex] < 10) return Colors.white;
+  poisonCounterColor(int _lifeArrayIndex){
+    if (poisonCounter[_lifeArrayIndex] < 10) return Colors.white;
     else return Colors.green;
+  }
+
+  _commanderCounterColor(int _arrayIndex){
+    if (commanderDamage[_arrayIndex] < 21) return Colors.white;
+    else return Colors.red;
   }
 
   Widget _showChangeCounter(int _changeArrayIndex){
@@ -463,13 +508,13 @@ class _NewGameState extends State{
         //_showPopup = false;
         //_openMenu = false;
         _startLife = _life;
-        for (int i = 0; i< _lifeTotal.length; i++) _lifeTotal[i] = _life;
+        for (int i = 0; i< lifeTotal.length; i++) lifeTotal[i] = _life;
       })
     );//end ListTile
   }
 
   _savegameCallback(Timer t){
-    _wrapper.saveGame(_gameID, "", "", _lifeTotal[0], _lifeTotal[1]);
+    _wrapper.saveGame(_gameID, "", "", lifeTotal[0], lifeTotal[1]);
     print('timer fired');
   }
 

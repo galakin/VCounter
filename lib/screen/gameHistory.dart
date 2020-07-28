@@ -8,7 +8,7 @@ import 'package:redux/redux.dart';
 import 'package:vcounter/resources/drawer.dart';
 import 'package:vcounter/services/wrapper.dart';
 import 'package:vcounter/assets/colors.dart';
-import 'package:vcounter/services/wrapper.dart'; 
+import 'package:vcounter/services/wrapper.dart';
 
 class GameHistory extends StatefulWidget{
   Store _store;
@@ -44,30 +44,41 @@ class _GameHistoryState extends State{
               itemBuilder: (BuildContext context, int i){
                 return Dismissible(
                   key: Key('$i'),
-                  background: Container(color: Colors.red),
+                  background: Container(color: Colors.white),
                   onDismissed: (direction) {
                     print('remove element: ${i}th');
+                    _wrapper.removeOldGame(_result[i]['id']);
                   },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Expanded(
-                        child: _lifePadding(
-                          Center(child: _lifePadding(Text('${_result[i]['player1']}\t${_result[i]['life1']}', style: _lifeStyle()))),
-                          space: 4.0,
-                          color: manaColor[0],
-                        ),
-                      ),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 6.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Expanded(
+                            child: _lifePadding(
+                              Center(child: Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                                  child: (Text('${_result[i]['player1']}\t${_result[i]['life1']}', style: _lifeStyle()))),
+                              ),
+                              space: 0,
+                              color: manaColor[0],
+                              left: true,
+                            ),
+                          ),
 
-                      Expanded(
-                        child: _lifePadding(
-                          Center(child: _lifePadding(Text('${_result[i]['player2']}\t${_result[i]['life2']}', style: _lifeStyle()))),
-                          space: 4.0,
-                          color: manaColor[1],
-                        ),
-                      ),
-                    ]
-                  ),//end Row
+                          Expanded(
+                            child: _lifePadding(
+                              Center(child: Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                                  child: Text('${_result[i]['player2']}\t${_result[i]['life2']}', style: _lifeStyle())),
+                              ),
+                              space: 0,
+                              color: manaColor[1],
+                            ),
+                          ),
+                        ]
+                      ),//end Row
+                  ),//end Padding
                 );
               }
             );
@@ -77,14 +88,20 @@ class _GameHistoryState extends State{
     );
   }
 
-  Widget _lifePadding(Widget child, {double space, Color color}){
+  Widget _lifePadding(Widget child, {double space, Color color, bool left}){
+    BorderRadius border;
     if (space == null) space = 16.0;
     if (color == null) color = Colors.transparent;
+    if (left != null && left) border = BorderRadius.only(topLeft: Radius.circular(100), bottomLeft: Radius.circular(100));
+    else border = BorderRadius.only(topRight: Radius.circular(100), bottomRight: Radius.circular(100));
     return Padding(
       padding: EdgeInsets.symmetric(vertical: space),
       child: Container(
-        color: color,
         child: child,
+        decoration: new BoxDecoration(
+          color: color,
+          borderRadius: border
+        ),//end Box Decoration
       ),//end Container
     );//end Padding
   }

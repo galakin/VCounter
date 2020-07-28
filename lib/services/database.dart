@@ -28,4 +28,9 @@ class LocalDatabase {
     print('\n$_result\n');
     return _result;
   }
+
+  Future<void> removeOldGame(int _gameID) async{
+    if (this.db == null) await open();
+    await db.rawDelete('DELETE FROM Games WHERE Games.id = "$_gameID"');
+  }
 }
