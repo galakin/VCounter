@@ -7,11 +7,12 @@ Feel free to clone this project and write some criticism about how unpleasent my
 
 Now the only impemented features are:
 - a simple life counter for 1v1 games with a temporary counter for the next change on life
+- a poison counter 
 
 The working progress features are:
-- a poison counter 
-- middle screen menu
+- personaloized middle screen menu
 - local db with latest game
+- commander damage counter
 
 ## Getting Started
 
