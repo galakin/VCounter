@@ -19,7 +19,7 @@ class VDrawer extends StatelessWidget{
           _drawerTile('Nuova Torneo', context),
           _drawerTile('Storico Torneo', context),
           _drawerTile('Nuovo Vendemmiatore', context),
-          _drawerTile('Sala d\'Onore', context),
+          _drawerTile('Sala d\'Onore', context, localroute: 'halloffame'),
           _drawerTile('Home', context, localroute: 'homepage')
         ]
       ),//end ListView

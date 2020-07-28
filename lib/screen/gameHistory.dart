@@ -1,4 +1,6 @@
-/*TODO: implement swipe to remove*/
+/* TODO: implement swipe to remove
+ * TODO: create local and cloud subcategory
+ */
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
@@ -6,6 +8,7 @@ import 'package:redux/redux.dart';
 import 'package:vcounter/resources/drawer.dart';
 import 'package:vcounter/services/wrapper.dart';
 import 'package:vcounter/assets/colors.dart';
+import 'package:vcounter/services/wrapper.dart'; 
 
 class GameHistory extends StatefulWidget{
   Store _store;
@@ -39,29 +42,33 @@ class _GameHistoryState extends State{
             return ListView.builder(
               itemCount: _result.length,
               itemBuilder: (BuildContext context, int i){
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Expanded(
-                      child: _lifePadding(
-                        Center(child: _lifePadding(Text('${_result[i]['player1']}\t${_result[i]['life1']}', style: _lifeStyle()))),
-                        space: 4.0,
-                        color: manaColor[0],
+                return Dismissible(
+                  key: Key('$i'),
+                  background: Container(color: Colors.red),
+                  onDismissed: (direction) {
+                    print('remove element: ${i}th');
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Expanded(
+                        child: _lifePadding(
+                          Center(child: _lifePadding(Text('${_result[i]['player1']}\t${_result[i]['life1']}', style: _lifeStyle()))),
+                          space: 4.0,
+                          color: manaColor[0],
+                        ),
                       ),
-                    ),
 
-                    Expanded(
-                      child: _lifePadding(
-                        Center(child: _lifePadding(Text('${_result[i]['player2']}\t${_result[i]['life2']}', style: _lifeStyle()))),
-                        space: 4.0,
-                        color: manaColor[1],
+                      Expanded(
+                        child: _lifePadding(
+                          Center(child: _lifePadding(Text('${_result[i]['player2']}\t${_result[i]['life2']}', style: _lifeStyle()))),
+                          space: 4.0,
+                          color: manaColor[1],
+                        ),
                       ),
-                    ),
-                  ]
+                    ]
+                  ),//end Row
                 );
-                // return Container(
-                //   child: Text('Hello'),
-                // );
               }
             );
           }

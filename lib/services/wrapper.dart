@@ -20,4 +20,8 @@ class Wrapper{
     List _result = await database.retriveOldGame();
     return _result;
   }
+
+  Future<void>removeOldGame(int _gameID) async{
+    return null;
+  }
 }

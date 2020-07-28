@@ -37,6 +37,7 @@ class _NewGameState extends State{
   List _poisonCounter; //List of player's poison counter
   List _counterState; //List of player's visualized counter type
   List _counterList = [Counter.LIFE, Counter.POISON];
+  List _startColor; // List the randomly choose starting background color
   Timer _savegameTimer; // timer used to save locally the game
   Wrapper _wrapper;
   int _gameID; //game ID used to identify games on history page
@@ -46,6 +47,7 @@ class _NewGameState extends State{
 
   @override initState(){
     _startPlayer = 2;
+    _startColor = new List<int>(_startPlayer);
     _lifeTotal = new List(_startPlayer);
     _isChanged = new List<bool>(_startPlayer);
     _changedval = new List<int>(_startPlayer);
@@ -59,6 +61,7 @@ class _NewGameState extends State{
     _counterState = new List<int>(_startPlayer);
 
     for (int i = 0; i < _lifeTotal.length; i++) {
+      _startColor[i] = new Random().nextInt(5);
       _showCounter[i] = Counter.LIFE;
       _lifeTotal[i] = _startLife;
       _isChanged[i] = false;
@@ -130,14 +133,14 @@ class _NewGameState extends State{
               alignment: Alignment.center,
               child: Container(
                 color: manaColor[_index],
-                child: _lifeStack(_index),
+                child: _counterStack(_index, _removeCounter, _addCounter, Counter.LIFE, color: _lifeCounterColor),
               ),//end Container
             ),//end Align
             Align(
               alignment: Alignment.topCenter,
               child: Padding(
                 padding: EdgeInsets.only(top: 70.0),
-                child: _showLifeChangeCounter(_index),
+                child: _showChangeCounter(_index),
               )//end Padding
             ),//end Align
             Align(
@@ -155,10 +158,27 @@ class _NewGameState extends State{
           children: [
             Align(
               alignment: Alignment.center,
-              child: Center(child: Text('Poison')),
-            ),
+              child: Container(
+                color: manaColor[_index],
+                child: _counterStack(_index, _removeCounter, _addCounter, Counter.POISON, color: _poisonCounterColor),
+              ),//end Container
+            ),//end Align
+            Align(
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: EdgeInsets.only(top: 70.0),
+                child: _showChangeCounter(_index),
+              )//end Padding
+            ),//end Align
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: EdgeInsets.only(bottom: 70.0),
+                child: Icon(Entypo.drop, color: Colors.white, size: 30.0)
+              )//end Padding
+            ),//end Align
           ]
-        );
+        );//end Stack
       break;
     }
   }
@@ -275,7 +295,18 @@ class _NewGameState extends State{
     );//end Gesture Detector
   }
 
-  Widget _lifeStack(int lifeArrayIndex) {
+  /** TODO rename it to counter stack
+   *  return a counter modifier stack, complete with conter no and change button
+   *
+   */
+  Widget _counterStack(int arrayIndex, var removeAction, var  addAction, Counter _counter, {var color}) {
+    TextStyle _counterStyle;
+    if (color != null) _counterStyle = TextStyle(color: color(arrayIndex), fontSize: 100.0);
+    else _counterStyle = TextStyle(color: Colors.white, fontSize: 100.0);
+    String _text;
+    if ( _counter == Counter.LIFE) _text = '${_lifeTotal[arrayIndex]}';
+    else if (_counter == Counter.POISON) _text = "${_poisonCounter[arrayIndex]}";
+
     return Center(
       child: Stack(
         children: [
@@ -284,7 +315,7 @@ class _NewGameState extends State{
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(child: Text('${_lifeTotal[lifeArrayIndex]}', style: TextStyle(color: _lifeCounterColor(lifeArrayIndex), fontSize: 100.0))
+                Container(child: Text(_text, style: _counterStyle)
                 ),//end Container
               ]
             ),//end useless row
@@ -293,8 +324,8 @@ class _NewGameState extends State{
             alignment: Alignment.center,
             child: Row(
               children: [
-                _decreaseLife(lifeArrayIndex),
-                _addLife(lifeArrayIndex),
+                removeAction(arrayIndex, _counter),
+                addAction(arrayIndex, _counter),
               ]
             ),//end Row
           ),//end Align
@@ -303,7 +334,7 @@ class _NewGameState extends State{
     );//end Stack
   }
 
-  Widget _decreaseLife(int _lifeArrayIndex){
+  Widget _removeCounter(int _arrayIndex, Counter _counter){
     return Expanded(
       child: GestureDetector(
         child: Center(
@@ -315,21 +346,23 @@ class _NewGameState extends State{
           ),//end Container
         ),
         onTap: () => setState(() {
-          _lifeTotal[_lifeArrayIndex]--;
-          _isChanged[_lifeArrayIndex] = true;
-          _changedval[_lifeArrayIndex]--;
+          if (_counter == Counter.LIFE) _lifeTotal[_arrayIndex]--;
+          else if (_counter == Counter.POISON) _poisonCounter[_arrayIndex]--;
+          _isChanged[_arrayIndex] = true;
+          _changedval[_arrayIndex]--;
         }),
 
         onLongPress: () => setState(() {
-          _lifeTotal[_lifeArrayIndex] -= 5;
-          _isChanged[_lifeArrayIndex] = true;
-          _changedval[_lifeArrayIndex] -= 5;
+          if (_counter == Counter.LIFE) _lifeTotal[_arrayIndex]-=5;
+          else if (_counter == Counter.POISON) _poisonCounter[_arrayIndex]-=5;
+          _isChanged[_arrayIndex] = true;
+          _changedval[_arrayIndex] -= 5;
         }),
       ),//end Gesture Detector
     );//end Expanded
   }
 
-  Widget _addLife(int _lifeArrayIndex){
+  Widget _addCounter(int _arrayIndex, Counter _counter){
     return Expanded(
       child: GestureDetector(
         child: Center(
@@ -341,14 +374,16 @@ class _NewGameState extends State{
           ),//end Container
         ),
         onTap: () => setState(() {
-          _lifeTotal[_lifeArrayIndex]++;
-          _isChanged[_lifeArrayIndex] = true;
-          _changedval[_lifeArrayIndex] += 1;
+          if (_counter == Counter.LIFE) _lifeTotal[_arrayIndex]++;
+          else if (_counter == Counter.POISON) _poisonCounter[_arrayIndex]++;
+          _isChanged[_arrayIndex] = true;
+          _changedval[_arrayIndex] += 1;
         }),
         onLongPress: () => setState(() {
-          _lifeTotal[_lifeArrayIndex] += 5;
-          _isChanged[_lifeArrayIndex] = true;
-          _changedval[_lifeArrayIndex] += 5;
+          if (_counter == Counter.LIFE) _lifeTotal[_arrayIndex] += 5;
+          else if (_counter == Counter.POISON) _poisonCounter[_arrayIndex] += 5;
+          _isChanged[_arrayIndex] = true;
+          _changedval[_arrayIndex] += 5;
         }),
       ),//end Gesture Detector
     );//end Expanded
@@ -359,7 +394,12 @@ class _NewGameState extends State{
     else return Colors.red;
   }
 
-  Widget _showLifeChangeCounter(int _changeArrayIndex){
+  _poisonCounterColor(int _lifeArrayIndex){
+    if (_poisonCounter[_lifeArrayIndex] < 10) return Colors.white;
+    else return Colors.green;
+  }
+
+  Widget _showChangeCounter(int _changeArrayIndex){
     if (_isChanged[_changeArrayIndex]){
       if (_timerList[_changeArrayIndex] == null){
         _timerList[_changeArrayIndex] = RestartableTimer(Duration(seconds: 1), _timerCallback(_changeArrayIndex));

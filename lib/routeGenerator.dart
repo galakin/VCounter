@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:vcounter/screen/newGame.dart';
 import 'package:vcounter/screen/homepage.dart';
 import 'package:vcounter/screen/gameHistory.dart';
+import 'package:vcounter/screen/hallOfFame.dart';
 
 class RouteGenerator {
 
@@ -27,6 +28,13 @@ class RouteGenerator {
       case 'gamehistory':
         if (args is Map){
           if (args['store'] != null) return MaterialPageRoute(builder: (_) => GameHistory(args['store']));
+          else return defaultRoute(args);
+        } else return defaultRoute(args);
+      break;
+
+      case 'halloffame':
+        if (args is Map){
+          if (args['store'] != null) return MaterialPageRoute(builder: (_) => HallOfFame(args['store']));
           else return defaultRoute(args);
         } else return defaultRoute(args);
       break;
