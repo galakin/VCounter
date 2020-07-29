@@ -514,7 +514,7 @@ class _NewGameState extends State{
   }
 
   _savegameCallback(Timer t){
-    _wrapper.saveGame(_gameID, "", "", lifeTotal[0], lifeTotal[1]);
+    _wrapper.saveGame(_gameID, "", "", lifeTotal[0], lifeTotal[1], poisonCounter[0], poisonCounter[1], commanderDamage[0], commanderDamage[1]);
     print('timer fired');
   }
 

@@ -68,14 +68,16 @@ class _GameHistoryState extends State{
 
                           Expanded(
                             child: _lifePadding(
-                              Center(child: Padding(
+                              Center(
+                                child: Padding(
                                   padding: EdgeInsets.symmetric(vertical: 8.0),
-                                  child: Text('${_result[i]['player2']}\t${_result[i]['life2']}', style: _lifeStyle())),
-                              ),
+                                  child: Text('${_result[i]['player2']}\t${_result[i]['life2']}', style: _lifeStyle())
+                                ),//end Padding
+                              ),//end Center
                               space: 0,
                               color: manaColor[1],
-                            ),
-                          ),
+                            ),//end life Padding
+                          ),//end Expanded
                         ]
                       ),//end Row
                   ),//end Padding
