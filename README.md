@@ -6,13 +6,15 @@ The GUI is mainly writte in italian (my native language), but i hope to translat
 Feel free to clone this project and write some criticism about how unpleasent my code is.
 
 Now the only impemented features are:
-- a simple life counter for 1v1 games with a temporary counter for the next change on life
-- a poison counter 
+- simple life counter for 1v1 games with a temporary counter for the next change on life
+- poison counter 
+- commander damage counter
+- local db with latest played games
 
 The working progress features are:
 - personaloized middle screen menu
-- local db with latest game
-- commander damage counter
+- chronological ordered old games
+- experience and energy counter
 
 ## Getting Started
 
