@@ -20,7 +20,15 @@ class RouteGenerator {
 
       case 'newgame':
         if (args is Map){
-          if (args['store'] != null) return MaterialPageRoute(builder: (_) => NewGame(args['store']));
+          if (args['store'] != null) return MaterialPageRoute(builder: (_) => NewGame(
+            args['store'],
+            args['gameID'],
+            args['startPlayer'],
+            args['playerName'],
+            args['lifeTotal'],
+            args['poisonCounter'],
+            args['commanderDamage']
+          ));
           else return defaultRoute(args);
         } else return defaultRoute(args);
       break;

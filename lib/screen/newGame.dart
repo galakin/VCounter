@@ -1,3 +1,4 @@
+/**NB rotation angle: `1.55`*/
 import 'dart:async';
 import 'dart:math';
 
@@ -16,20 +17,26 @@ enum Counter{LIFE, POISON, COMMANDER} //add Commaner, Anarchy, Energy, Experienc
 
 class NewGame extends StatefulWidget{
   Store _store;
+  int startPlayer; // no of starting player
+  int gameID; //game ID used to identify games on history page
+  List playerName=[];  //List with the player's name
+  List lifeTotal; //List with the player's life total
+  List poisonCounter; //List of player's poison counter
+  List commanderDamage; //List of Commander damage
 
-  NewGame(this._store);
+  NewGame(this._store, this.gameID, this.startPlayer, this.playerName, this.lifeTotal, this.poisonCounter, this.commanderDamage);
 
   @override
-  State createState()=> _NewGameState(_store);
+  State createState()=> _NewGameState(_store, startPlayer, gameID, commanderDamage, playerName, lifeTotal, poisonCounter);
 }
 
 class _NewGameState extends State{
   Store _store;
   int _startLife = 20;
-  int startPlayer; // no of starting player
-  List playerName=[];  //List with the player's name
-  List _showCounter;
-  List lifeTotal; //List with the player's life total
+  int startPlayer;      // no of starting player
+  List playerName=[];   //List with the player's name
+  List _showCounter;    //List of visualized counter
+  List lifeTotal;       //List with the player's life total
   List _isChanged;  //List with boolean value if player's life is changed recently
   List _changedval; //List with the recent change in player's life
   List _timerList;  //List withe remove changed player's life timer
@@ -41,42 +48,44 @@ class _NewGameState extends State{
   List _startColor; // List the randomly choose starting background color
   Timer _savegameTimer; // timer used to save locally the game
   Wrapper _wrapper;
-  int _gameID; //game ID used to identify games on history page
+  int gameID; //game ID used to identify games on history page
   bool _openMenu = false, _showPopup = false, _showOrder=false;
 
   _NewGameState(
-    this._store,{
-    int this.startPlayer,
-    List this.playerName,
-    List this.lifeTotal,
-    List this.poisonCounter,
-  });
+    this._store,
+    this.startPlayer,
+    this.gameID,
+    this.commanderDamage,
+    this.playerName,
+    this.lifeTotal,
+    this.poisonCounter,
+  );
 
   @override initState(){
-    startPlayer = 2;
-    commanderDamage = new List(startPlayer);
+    if (startPlayer == null) startPlayer = 2;
+    if (gameID == null) gameID = Random().nextInt(1000000);
+    if (commanderDamage == null) commanderDamage = new List(startPlayer);
+    if (lifeTotal == null) lifeTotal = new List(startPlayer);
+    if (poisonCounter == null) poisonCounter = new List(startPlayer);
     _startColor = new List<int>(startPlayer);
-    lifeTotal = new List(startPlayer);
     _isChanged = new List<bool>(startPlayer);
     _changedval = new List<int>(startPlayer);
     _timerList = new List<Timer>(startPlayer);
     _playerOrder = new List<int>(startPlayer);
     _savegameTimer = new Timer.periodic(Duration(seconds: 20), _savegameCallback);
     _wrapper = new Wrapper();
-    _gameID = Random().nextInt(1000000);
     _showCounter = new List(startPlayer);
-    poisonCounter = new List(startPlayer);
     _counterState = new List<int>(startPlayer);
 
     for (int i = 0; i < lifeTotal.length; i++) {
+      if (lifeTotal[i] == null) lifeTotal[i] = _startLife;
+      if (poisonCounter[i] == null) poisonCounter[i] = 0;
+      if (commanderDamage[i] == null)commanderDamage[i] = 0;
       _startColor[i] = new Random().nextInt(5);
       _showCounter[i] = Counter.LIFE;
-      lifeTotal[i] = _startLife;
       _isChanged[i] = false;
       _changedval[i] = 0;
-      poisonCounter[i] = 0;
       _counterState[i] = 0;
-      commanderDamage[i] = 0;
     }
   }
 
@@ -120,12 +129,8 @@ class _NewGameState extends State{
     else return Expanded(                                                       //show counter stack
       child: SwipeDetector(
         child: _showCounterFrame(_counterState[_index], _index),
-        onSwipeUp: () {
-          print('swipe up!');
-          setState(() => _counterState[_index]++);
-        },
+        onSwipeUp: () => setState(() => _counterState[_index]++),
         onSwipeDown: () {
-          print ('swipe down!');
           if (_counterState[_index] > 0 ) setState(() => _counterState[_index]--);
         },
       ),//end SwipeDetector
@@ -260,7 +265,7 @@ class _NewGameState extends State{
                          setState(() {
                            for (int i = 0; i < 2; i++) lifeTotal[i] = _startLife;
                            _openMenu = false;
-                           _gameID = Random().nextInt(1000000);
+                           gameID = Random().nextInt(1000000);
                          });
                        }
                      ), //end Gesture Detector
@@ -334,7 +339,7 @@ class _NewGameState extends State{
    *  return a counter modifier stack, complete with conter no and change button
    *
    */
-  Widget _counterStack(int arrayIndex, var removeAction, var  addAction, Counter _counter, {var color}) {
+  Widget _counterStack(int arrayIndex, var removeAction, var  addAction, Counter _counter, {var color, double angle=0}) {
     TextStyle _counterStyle;
     if (color != null) _counterStyle = TextStyle(color: color(arrayIndex), fontSize: 100.0);
     else _counterStyle = TextStyle(color: Colors.white, fontSize: 100.0);
@@ -351,8 +356,10 @@ class _NewGameState extends State{
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(child: Text(_text, style: _counterStyle)
-                ),//end Container
+                Transform.rotate(
+                  angle: angle,
+                  child: Container(child: Text(_text, style: _counterStyle)),//end Container
+                )
               ]
             ),//end useless row
           ),//end Align
@@ -513,11 +520,16 @@ class _NewGameState extends State{
     );//end ListTile
   }
 
+  /** callback used to locally save the game score n counter to the device.
+   *  the old game is visible in the old game page's
+   */
   _savegameCallback(Timer t){
-    _wrapper.saveGame(_gameID, "", "", lifeTotal[0], lifeTotal[1], poisonCounter[0], poisonCounter[1], commanderDamage[0], commanderDamage[1]);
+    _wrapper.saveGame(gameID, startPlayer, "", "", lifeTotal[0], lifeTotal[1], poisonCounter[0], poisonCounter[1], commanderDamage[0], commanderDamage[1]);
     print('timer fired');
   }
 
+  /** callback used to cancel the saving timer once a new page is opened
+   */
   cancelTimer(){
     if (_savegameTimer != null) {
       _savegameTimer.cancel();
