@@ -115,6 +115,16 @@ class _NewGameState extends State{
     );//end Scaffold
   }
 
+  Widget _doubleFrame(Color _backgroundColor, int _indexA, int _indexB){
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        _innerFrame(_backgroundColor, _indexA),
+        _innerFrame(_backgroundColor, _indexB),
+      ]
+    );
+  }
+
   Widget _innerFrame(Color _backgroundColor, int _index){
     if (_showOrder) return Expanded(                                            //shows the starting game order
       child: Container(
@@ -524,7 +534,8 @@ class _NewGameState extends State{
    *  the old game is visible in the old game page's
    */
   _savegameCallback(Timer t){
-    _wrapper.saveGame(gameID, startPlayer, "", "", lifeTotal[0], lifeTotal[1], poisonCounter[0], poisonCounter[1], commanderDamage[0], commanderDamage[1]);
+    int _sec = DateTime.now().millisecondsSinceEpoch;
+    _wrapper.saveGame(gameID, _sec, startPlayer, "", "", lifeTotal[0], lifeTotal[1], poisonCounter[0], poisonCounter[1], commanderDamage[0], commanderDamage[1]);
     print('timer fired');
   }
 

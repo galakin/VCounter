@@ -21,6 +21,7 @@ class _GameHistoryState extends State{
   Store _store;
   Future _gameHistoryFuture;
   Wrapper _wrapper;
+  int _listLength = 0;
 
   _GameHistoryState(this._store);
 
@@ -36,10 +37,20 @@ class _GameHistoryState extends State{
       body: FutureBuilder(
         future: _gameHistoryFuture,
         builder: (BuildContext context, AsyncSnapshot snapshot){
-          if (!snapshot.hasData) return Container(child: Text('Loading...'));
+          if (!snapshot.hasData) return Center(child: Container(child: Text('Loading...')));
           else {
             List _result = snapshot.data;
-            if (_result.length > 0){
+            _listLength = _result.length;
+            _result.sort((a,b) {
+              int dateA, dateB;
+              dateA = a['date'] != null ? a['date'] : 0;
+              dateB = b['date'] != null ?b['date'] : 0;
+              if (dateA > dateB) return 1;
+              else return 0;
+            });
+            int _elemNo = _result.length;
+
+            if (_elemNo > 0){
               return ListView.builder(
                 itemCount: _result.length,
                 itemBuilder: (BuildContext context, int i){
@@ -47,8 +58,8 @@ class _GameHistoryState extends State{
                     key: Key('$i'),
                     background: Container(color: Colors.white),
                     onDismissed: (direction) {
-                      print('remove element: ${i}th');
                       _wrapper.removeOldGame(_result[i]['id']);
+                      _elemNo--;
                     },
                     child: GestureDetector(
                       onTap: () {
