@@ -39,8 +39,10 @@ class _GameHistoryState extends State{
         builder: (BuildContext context, AsyncSnapshot snapshot){
           if (!snapshot.hasData) return Center(child: Container(child: Text('Loading...')));
           else {
-            List _result = snapshot.data;
+            List _result = new List.from(snapshot.data);
             _listLength = _result.length;
+            print(_result.length);
+            /*BUG: error here find why!*/
             _result.sort((a,b) {
               int dateA, dateB;
               dateA = a['date'] != null ? a['date'] : 0;

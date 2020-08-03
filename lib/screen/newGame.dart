@@ -49,7 +49,7 @@ class _NewGameState extends State{
   Timer _savegameTimer; // timer used to save locally the game
   Wrapper _wrapper;
   int gameID; //game ID used to identify games on history page
-  bool _openMenu = false, _showPopup = false, _showOrder=false;
+  bool _openMenu = false, _showPopup = false, _showOrder=false, _playerPopup = false;
 
   _NewGameState(
     this._store,
@@ -90,6 +90,20 @@ class _NewGameState extends State{
   }
 
   @override Widget build(BuildContext context){
+    Widget _upperFrame = _innerFrame(manaColor[0], 0);
+    Widget _lowerFrame = _innerFrame(manaColor[1], 1);
+    if (startPlayer == 3){
+      print(startPlayer);
+      print(lifeTotal.length);
+      // _upperFrame = _doubleFrame(manaColor[0], 0, 1);
+      _lowerFrame = _innerFrame(manaColor[2], 2);
+
+    } else if (startPlayer == 4){
+      _upperFrame = _doubleFrame(manaColor[0], 0, 1);
+      _lowerFrame = _doubleFrame(manaColor[1], 2, 3);
+
+    }
+
     return Scaffold(
       drawer: VDrawer(_store, route: 'newgame', parent: this),
       body: Stack(
@@ -97,9 +111,9 @@ class _NewGameState extends State{
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              _innerFrame(manaColor[0], 0),
+              _upperFrame,
               _middleMenuBar(),
-              _innerFrame(manaColor[1], 1),
+              _lowerFrame,
             ]
           ),//end Column
           Align(
@@ -109,36 +123,48 @@ class _NewGameState extends State{
           Align(
             alignment: Alignment.center,
             child: _showLifeSelector()
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: _showPlayerNoPopup(),
           )
         ]
       ) ,//end Stack
     );//end Scaffold
   }
 
+  /** double frame use for more than 2 player
+   *
+   */
   Widget _doubleFrame(Color _backgroundColor, int _indexA, int _indexB){
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        _innerFrame(_backgroundColor, _indexA),
-        _innerFrame(_backgroundColor, _indexB),
-      ]
-    );
+    return Container();
+    // return Row(
+    //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    //   children: [
+    //     _innerFrame(_backgroundColor, _indexA, angle: 1.55),
+    //     _innerFrame(_backgroundColor, _indexB, angle: -1.55),
+    //   ]
+    // );
   }
 
-  Widget _innerFrame(Color _backgroundColor, int _index){
+  Widget _innerFrame(Color _backgroundColor, int _index, {double angle = 0}){
     if (_showOrder) return Expanded(                                            //shows the starting game order
       child: Container(
         color: _backgroundColor,
-        child:GestureDetector(
-          child: Center( child: Text("${_playerOrder[_index]}°", style: TextStyle(fontSize: 100.0, color: Colors.white))),
-          onTap: () => setState(() => _showOrder = false),
-        ),//end Gesture Detector
+        child:
+        Transform.rotate(
+          angle: angle,
+          child: GestureDetector(
+            child: Center( child: Text("${_playerOrder[_index]}°", style: TextStyle(fontSize: 100.0, color: Colors.white))),
+            onTap: () => setState(() => _showOrder = false),
+          ),//end Gesture Detector
+        ), //end Transform
       ),//end Container
     );//end Expanded
 
     else return Expanded(                                                       //show counter stack
       child: SwipeDetector(
-        child: _showCounterFrame(_counterState[_index], _index),
+        child: _showCounterFrame(_counterState[_index], _index, angle),
         onSwipeUp: () => setState(() => _counterState[_index]++),
         onSwipeDown: () {
           if (_counterState[_index] > 0 ) setState(() => _counterState[_index]--);
@@ -147,7 +173,11 @@ class _NewGameState extends State{
     );//end Expanded
   }
 
-  Widget _showCounterFrame(int _counterIndex, int _index){
+  Widget _showCounterFrame(int _counterIndex, int _index, double angle){
+    Alignment _mainCounter = Alignment.center, _tmpCounter = Alignment.topCenter, _icon = Alignment.bottomCenter;
+    if (angle != 0){
+
+    }
     Counter _counter = _counterList[(_counterIndex%_counterList.length)];
     switch (_counter){
       case Counter.LIFE:
@@ -157,7 +187,7 @@ class _NewGameState extends State{
               alignment: Alignment.center,
               child: Container(
                 color: manaColor[_index],
-                child: _counterStack(_index, _removeCounter, _addCounter, Counter.LIFE, color: _lifeCounterColor),
+                child: _counterStack(_index, _removeCounter, _addCounter, Counter.LIFE, angle, color: _lifeCounterColor),
               ),//end Container
             ),//end Align
             Align(
@@ -184,7 +214,7 @@ class _NewGameState extends State{
               alignment: Alignment.center,
               child: Container(
                 color: manaColor[_index],
-                child: _counterStack(_index, _removeCounter, _addCounter, Counter.POISON, color: poisonCounterColor),
+                child: _counterStack(_index, _removeCounter, _addCounter, Counter.POISON, angle, color: poisonCounterColor),
               ),//end Container
             ),//end Align
             Align(
@@ -210,7 +240,7 @@ class _NewGameState extends State{
                 alignment: Alignment.center,
                 child: Container(
                   color: manaColor[_index],
-                  child: _counterStack(_index, _removeCounter, _addCounter, Counter.COMMANDER, color: _commanderCounterColor),
+                  child: _counterStack(_index, _removeCounter, _addCounter, Counter.COMMANDER, angle, color: _commanderCounterColor),
                 ),//end Container
               ),//end Align
               Align(
@@ -257,6 +287,7 @@ class _NewGameState extends State{
               onTap: () => setState(()  {
                 _openMenu = false;
                 _showPopup = false;
+                _playerPopup = false;
               }),
             ),//end Gesture Detector
           ),
@@ -316,8 +347,11 @@ class _NewGameState extends State{
                    ),
                    _menuIconPadding(
                      child: GestureDetector(
-                       child: Icon(Icons.people, color: Color.fromRGBO(255,255,255,0.25), size: 32.0),
-                       onTap: () => print('selec no of player'),
+                       child: Icon(Icons.people, color: Color.fromRGBO(255,255,255,1), size: 32.0),
+                       onTap: () {
+                         setState(() => _playerPopup = true);
+                         print('selec no of player');
+                       }
                      ),//end Gesture Detector
                    ), //selec no of player
                    //Insert Logo here
@@ -349,7 +383,9 @@ class _NewGameState extends State{
    *  return a counter modifier stack, complete with conter no and change button
    *
    */
-  Widget _counterStack(int arrayIndex, var removeAction, var  addAction, Counter _counter, {var color, double angle=0}) {
+  Widget _counterStack(int arrayIndex, var removeAction, var  addAction, Counter _counter, double angle, {var color}) {
+    Widget _removeBody, _addBody;
+    if (angle != 0) print('\nCHANGE HERE!\n');
     TextStyle _counterStyle;
     if (color != null) _counterStyle = TextStyle(color: color(arrayIndex), fontSize: 100.0);
     else _counterStyle = TextStyle(color: Colors.white, fontSize: 100.0);
@@ -369,7 +405,7 @@ class _NewGameState extends State{
                 Transform.rotate(
                   angle: angle,
                   child: Container(child: Text(_text, style: _counterStyle)),//end Container
-                )
+                ),//end Transform
               ]
             ),//end useless row
           ),//end Align
@@ -377,8 +413,8 @@ class _NewGameState extends State{
             alignment: Alignment.center,
             child: Row(
               children: [
-                removeAction(arrayIndex, _counter),
-                addAction(arrayIndex, _counter),
+                removeAction(arrayIndex, _counter, angle),
+                addAction(arrayIndex, _counter, angle),
               ]
             ),//end Row
           ),//end Align
@@ -387,7 +423,7 @@ class _NewGameState extends State{
     );//end Stack
   }
 
-  Widget _removeCounter(int _arrayIndex, Counter _counter){
+  Widget _removeCounter(int _arrayIndex, Counter _counter, double angle){
     return Expanded(
       child: GestureDetector(
         child: Center(
@@ -417,7 +453,7 @@ class _NewGameState extends State{
     );//end Expanded
   }
 
-  Widget _addCounter(int _arrayIndex, Counter _counter){
+  Widget _addCounter(int _arrayIndex, Counter _counter, double angle){
     return Expanded(
       child: GestureDetector(
         child: Center(
@@ -499,6 +535,69 @@ class _NewGameState extends State{
     );//end Padding
   }
 
+  /** If we need to select the no of player a popup menu button is showed
+   *  otherwide an empty container is shown
+   */
+  Widget _showPlayerNoPopup(){
+    if (_playerPopup) return Container(
+      height: 170,
+      width: 80,
+      color: Colors.black,
+      child: Column(
+        children: [
+          _playerNoTile(2),
+          _playerNoTile(3),
+          _playerNoTile(4),
+        ]
+      )
+    );
+    else return Container();
+  }
+
+  Widget _playerNoTile(int _playerNo){
+    return ListTile(
+      title: Text('$_playerNo', style: TextStyle(color: Colors.white)),
+      onTap: () {
+        setState(() {
+          startPlayer = _playerNo;
+          _playerPopup = false;
+        });
+        _fixCounter();
+      }
+    );
+  }
+
+  /** TODO: write body
+   *
+   */
+  void _fixCounter(){
+    print(startPlayer);
+    List _tmpLifeTotal = new List.from(lifeTotal);
+    List _tmpPoisonCounter = new List.from(poisonCounter);
+    List _tmpCommanderDamage = new List.from(commanderDamage);
+
+    int oldplayer = lifeTotal.length;
+    print('old player No: $oldplayer');
+    if (startPlayer > oldplayer){
+      for (int i = (oldplayer); i < startPlayer; i++){
+        _tmpLifeTotal.add(_startLife);
+        _tmpPoisonCounter.add(0);
+        _tmpCommanderDamage.add(0);
+      }
+      setState((){
+        lifeTotal=_tmpLifeTotal; poisonCounter = _tmpPoisonCounter; commanderDamage = _tmpCommanderDamage;
+      });
+    } else {
+      for (int i = oldplayer; i > startPlayer; i--){
+        setState((){
+          lifeTotal.removeAt(i);
+          poisonCounter.removeAt(i);
+          commanderDamage.removeAt(i);
+        });
+      }
+    }
+  }
+
   /** If we need to select the starting life total a popup menu button is showed
    *  otherwide nothing is shown
    */
@@ -522,8 +621,6 @@ class _NewGameState extends State{
     return ListTile(
       title: Text('$_life', style: TextStyle(color: Colors.white)),
       onTap: () => setState(() {
-        //_showPopup = false;
-        //_openMenu = false;
         _startLife = _life;
         for (int i = 0; i< lifeTotal.length; i++) lifeTotal[i] = _life;
       })

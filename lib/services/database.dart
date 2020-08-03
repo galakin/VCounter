@@ -8,14 +8,21 @@ class LocalDatabase {
     String path = databasesPath+'localdb.db';
     this.db = await openDatabase(
       path,
-      version: 3,
+      version: 4,
       onCreate: (Database db, int version) async {
-        await db.execute('CREATE TABLE Games (id INTEGER PRIMARY KEY, date INT,noplayer INT, player1 TEXT, player2 TEXT, life1 INTEGER, life2 INTEGER, poison1 INTEGER, poison2 INTEGER, commander1 INTEGER, commander2 INTEGER)');
+        await db.execute('''CREATE TABLE Games (id INTEGER PRIMARY KEY,
+          date INT,
+          noplayer INT,
+          player1 TEXT, player2 TEXT, player3 TEXT, player4 TEXT,
+          life1 INTEGER, life2 INTEGER, life3 INTEGER, life4 INTEGER,
+          poison1 INTEGER, poison2 INTEGER, poison3 INTEGER, poison4 INTEGER,
+          commander1 INTEGER, commander2 INTEGER, commander3 INTEGER, commander4 INTEGER)''');
         return db;
       },
       onUpgrade: (db, oldVersion, newVersion) async{
         if ( oldVersion <= 1)  await db.execute('UPDATE Games SET noplayer INT, poison1 INTEGER, poison2 INTEGER, commander1 INTEGER, commander2 INTEGER');
-        if (newVersion == 3 && oldVersion ==2) await db.execute('UPDATE Games SET date INT');
+        if (newVersion >= 3 && oldVersion == 2) await db.execute('UPDATE Games SET date INT');
+        if (newVersion >= 4 && oldVersion == 3) await db.execute('UPDATE Games SET player3 TEXT, player4 TEXT, life3 INTEGER, life4 INTEGER, poison3 INTEGER, poison4 INTEGER, commander3 INTEGER, commander4 INTEGER');
         return db;
       }
     );
