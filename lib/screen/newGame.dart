@@ -1,4 +1,6 @@
-/**NB rotation angle: `1.55`*/
+/**NB rotation angle: `1.55`
+ * TODO: change the lists length to max player and use index insted of changing the lists length
+ */
 import 'dart:async';
 import 'dart:math';
 
@@ -32,7 +34,8 @@ class NewGame extends StatefulWidget{
 
 class _NewGameState extends State{
   Store _store;
-  int _startLife = 20;
+  int _maxPlayer = 4;
+  int _startLife = 20;  //no of starting player
   int startPlayer;      // no of starting player
   List playerName=[];   //List with the player's name
   List _showCounter;    //List of visualized counter
@@ -64,20 +67,20 @@ class _NewGameState extends State{
   @override initState(){
     if (startPlayer == null) startPlayer = 2;
     if (gameID == null) gameID = Random().nextInt(1000000);
-    if (commanderDamage == null) commanderDamage = new List(startPlayer);
-    if (lifeTotal == null) lifeTotal = new List(startPlayer);
-    if (poisonCounter == null) poisonCounter = new List(startPlayer);
-    _startColor = new List<int>(startPlayer);
-    _isChanged = new List<bool>(startPlayer);
-    _changedval = new List<int>(startPlayer);
-    _timerList = new List<Timer>(startPlayer);
-    _playerOrder = new List<int>(startPlayer);
+    if (commanderDamage == null) commanderDamage = new List(_maxPlayer);
+    if (lifeTotal == null) lifeTotal = new List(_maxPlayer);
+    if (poisonCounter == null) poisonCounter = new List(_maxPlayer);
+    _startColor = new List<int>(_maxPlayer);
+    _isChanged = new List<bool>(_maxPlayer);
+    _changedval = new List<int>(_maxPlayer);
+    _timerList = new List<Timer>(_maxPlayer);
+    _playerOrder = new List<int>(_maxPlayer);
     _savegameTimer = new Timer.periodic(Duration(seconds: 20), _savegameCallback);
     _wrapper = new Wrapper();
-    _showCounter = new List(startPlayer);
-    _counterState = new List<int>(startPlayer);
+    _showCounter = new List(_maxPlayer);
+    _counterState = new List<int>(_maxPlayer);
 
-    for (int i = 0; i < lifeTotal.length; i++) {
+    for (int i = 0; i < 4; i++) {
       if (lifeTotal[i] == null) lifeTotal[i] = _startLife;
       if (poisonCounter[i] == null) poisonCounter[i] = 0;
       if (commanderDamage[i] == null)commanderDamage[i] = 0;
@@ -93,9 +96,10 @@ class _NewGameState extends State{
     Widget _upperFrame = _innerFrame(manaColor[0], 0);
     Widget _lowerFrame = _innerFrame(manaColor[1], 1);
     if (startPlayer == 3){
+      print('State length: ${_counterState.length}');
       print(startPlayer);
       print(lifeTotal.length);
-      // _upperFrame = _doubleFrame(manaColor[0], 0, 1);
+      _upperFrame = _doubleFrame(manaColor[0], 0, 1);
       _lowerFrame = _innerFrame(manaColor[2], 2);
 
     } else if (startPlayer == 4){
@@ -137,14 +141,15 @@ class _NewGameState extends State{
    *
    */
   Widget _doubleFrame(Color _backgroundColor, int _indexA, int _indexB){
-    return Container();
-    // return Row(
-    //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-    //   children: [
-    //     _innerFrame(_backgroundColor, _indexA, angle: 1.55),
-    //     _innerFrame(_backgroundColor, _indexB, angle: -1.55),
-    //   ]
-    // );
+    return Expanded(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _innerFrame(_backgroundColor, _indexA, angle: 1.55),
+          _innerFrame(_backgroundColor, _indexB, angle: -1.55),
+        ]
+      ),//end Row
+    );//end Expanded
   }
 
   Widget _innerFrame(Color _backgroundColor, int _index, {double angle = 0}){
@@ -165,20 +170,32 @@ class _NewGameState extends State{
     else return Expanded(                                                       //show counter stack
       child: SwipeDetector(
         child: _showCounterFrame(_counterState[_index], _index, angle),
-        onSwipeUp: () => setState(() => _counterState[_index]++),
+        onSwipeUp: () {
+          if (angle == 0) setState(() => _counterState[_index]++);
+        },
         onSwipeDown: () {
-          if (_counterState[_index] > 0 ) setState(() => _counterState[_index]--);
+          if (_counterState[_index] > 0  && angle == 0) setState(() => _counterState[_index]--);
         },
       ),//end SwipeDetector
     );//end Expanded
-  }
+  }Container(child: Text(_text, style: _counterStyle)),//end Container
+
 
   Widget _showCounterFrame(int _counterIndex, int _index, double angle){
-    Alignment _mainCounter = Alignment.center, _tmpCounter = Alignment.topCenter, _icon = Alignment.bottomCenter;
+    double _bottom = 70.0, _left = 0.0, _right = 0.0;
+    Alignment _mainCounter = Alignment.center, _tmpCounter = Alignment.topCenter, _icon = Alignment.bottomCenter ;
+    Widget _innerCounter = Padding(
+      padding: EdgeInsets.only(top: 70.0),
+      child: _showChangeCounter(_index),
+    ); //end Padding
     if (angle != 0){
-
+      _innerCounter = Container();
+      _bottom = 0.0;
+      if (angle > 0) {_icon = Alignment.centerLeft; _left: 8.0;}
+      else {_icon = Alignment.centerRight; _right: 8.0;}
     }
     Counter _counter = _counterList[(_counterIndex%_counterList.length)];
+
     switch (_counter){
       case Counter.LIFE:
         return Stack(
@@ -192,16 +209,16 @@ class _NewGameState extends State{
             ),//end Align
             Align(
               alignment: Alignment.topCenter,
-              child: Padding(
-                padding: EdgeInsets.only(top: 70.0),
-                child: _showChangeCounter(_index),
-              )//end Padding
+              child: _innerCounter,
             ),//end Align
             Align(
-              alignment: Alignment.bottomCenter,
+              alignment: _icon,
               child: Padding(
-                padding: EdgeInsets.only(bottom: 70.0),
-                child: Icon(Icons.favorite, color: Colors.white, size: 30.0)
+                padding: EdgeInsets.only(bottom: _bottom, left: _left, right: _right),
+                child: Transform.rotate(
+                  angle: angle,
+                  child: Icon(Icons.favorite, color: Colors.white, size: 30.0)
+                ),//end Transform
               )//end Padding
             ),//end Align
           ]
@@ -225,40 +242,48 @@ class _NewGameState extends State{
               )//end Padding
             ),//end Align
             Align(
-              alignment: Alignment.bottomCenter,
+              alignment: _icon,
               child: Padding(
-                padding: EdgeInsets.only(bottom: 70.0),
-                child: Icon(Entypo.drop, color: Colors.white, size: 30.0)
+                padding: EdgeInsets.only(bottom: _bottom, left: _left, right: _right),
+                child: Transform.rotate(
+                  angle: angle,
+                  child: Icon(Entypo.drop, color: Colors.white, size: 30.0)
+                ),//end Transform
               )//end Padding
             ),//end Align
           ]
         );//end Stack
-        case Counter.COMMANDER:
-          return Stack(
-            children: [
-              Align(
-                alignment: Alignment.center,
-                child: Container(
-                  color: manaColor[_index],
-                  child: _counterStack(_index, _removeCounter, _addCounter, Counter.COMMANDER, angle, color: _commanderCounterColor),
-                ),//end Container
-              ),//end Align
-              Align(
-                alignment: Alignment.topCenter,
-                child: Padding(
-                  padding: EdgeInsets.only(top: 70.0),
-                  child: _showChangeCounter(_index),
-                )//end Padding
-              ),//end Align
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Padding(
-                  padding: EdgeInsets.only(bottom: 70.0),
+      break;
+      case Counter.COMMANDER:
+        return Stack(
+          children: [
+            Align(
+              alignment: Alignment.center,
+              child: Container(
+                color: manaColor[_index],
+                child: _counterStack(_index, _removeCounter, _addCounter, Counter.COMMANDER, angle, color: _commanderCounterColor),
+              ),//end Container
+            ),//end Align
+            Align(
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: EdgeInsets.only(top: 70.0),
+                child: _showChangeCounter(_index),
+              )//end Padding
+            ),//end Align
+            Align(
+              alignment: _icon,
+              child: Padding(
+                padding: EdgeInsets.only(bottom: _bottom, left: _left, right: _right),
+                child:
+                Transform.rotate(
+                  angle: angle,
                   child: Icon(Foundation.shield, color: Colors.white, size: 30.0)
-                )//end Padding
-              ),//end Align
-            ]
-          );//end Stack
+                ),//end Transform
+              )//end Padding
+            ),//end Align
+          ]
+        );//end Stack
       break;
     }
   }
@@ -384,8 +409,9 @@ class _NewGameState extends State{
    *
    */
   Widget _counterStack(int arrayIndex, var removeAction, var  addAction, Counter _counter, double angle, {var color}) {
-    Widget _removeBody, _addBody;
-    if (angle != 0) print('\nCHANGE HERE!\n');
+    if (angle != 0) {
+      print('\nCHANGE HERE!\n');
+    }
     TextStyle _counterStyle;
     if (color != null) _counterStyle = TextStyle(color: color(arrayIndex), fontSize: 100.0);
     else _counterStyle = TextStyle(color: Colors.white, fontSize: 100.0);
@@ -411,10 +437,11 @@ class _NewGameState extends State{
           ),//end Align
           Align(
             alignment: Alignment.center,
-            child: Row(
+            child: _outerContainer(
+              angle == 0,
               children: [
-                removeAction(arrayIndex, _counter, angle),
-                addAction(arrayIndex, _counter, angle),
+                removeAction(angle == 0,arrayIndex, _counter, angle),
+                addAction(angle == 0, arrayIndex, _counter, angle),
               ]
             ),//end Row
           ),//end Align
@@ -423,7 +450,19 @@ class _NewGameState extends State{
     );//end Stack
   }
 
-  Widget _removeCounter(int _arrayIndex, Counter _counter, double angle){
+  Widget _outerContainer(bool isOrizontal, {List<Widget> children}){
+    if (isOrizontal) return Row(
+      children: children
+    );//end Row
+    else return Column(
+      children: children
+    );//end Column
+  }
+
+
+  Widget _removeCounter(bool isOrizontal, int _arrayIndex, Counter _counter, double angle){
+    IconData _icons = Icons.chevron_left;
+    if (!isOrizontal) _icons = Icons.expand_less;
     return Expanded(
       child: GestureDetector(
         child: Center(
@@ -431,7 +470,7 @@ class _NewGameState extends State{
             width: 200,
             height: 200,
             color: Colors.transparent,
-            child: Center(child: Icon(Icons.chevron_left, color: Colors.white, size: 52.0))
+            child: Center(child: Icon(_icons, color: Colors.white, size: 52.0))
           ),//end Container
         ),
         onTap: () => setState(() {
@@ -453,7 +492,9 @@ class _NewGameState extends State{
     );//end Expanded
   }
 
-  Widget _addCounter(int _arrayIndex, Counter _counter, double angle){
+  Widget _addCounter(bool isOrizontal, int _arrayIndex, Counter _counter, double angle){
+    IconData _icons = Icons.chevron_right;
+    if (!isOrizontal) _icons = Icons.expand_more;
     return Expanded(
       child: GestureDetector(
         child: Center(
@@ -461,7 +502,7 @@ class _NewGameState extends State{
             width: 200,
             height: 200,
             color: Colors.transparent,
-            child: Center(child: Icon(Icons.chevron_right, color: Colors.white, size: 52.0))
+            child: Center(child: Icon(_icons, color: Colors.white, size: 52.0))
           ),//end Container
         ),
         onTap: () => setState(() {
@@ -562,40 +603,8 @@ class _NewGameState extends State{
           startPlayer = _playerNo;
           _playerPopup = false;
         });
-        _fixCounter();
       }
     );
-  }
-
-  /** TODO: write body
-   *
-   */
-  void _fixCounter(){
-    print(startPlayer);
-    List _tmpLifeTotal = new List.from(lifeTotal);
-    List _tmpPoisonCounter = new List.from(poisonCounter);
-    List _tmpCommanderDamage = new List.from(commanderDamage);
-
-    int oldplayer = lifeTotal.length;
-    print('old player No: $oldplayer');
-    if (startPlayer > oldplayer){
-      for (int i = (oldplayer); i < startPlayer; i++){
-        _tmpLifeTotal.add(_startLife);
-        _tmpPoisonCounter.add(0);
-        _tmpCommanderDamage.add(0);
-      }
-      setState((){
-        lifeTotal=_tmpLifeTotal; poisonCounter = _tmpPoisonCounter; commanderDamage = _tmpCommanderDamage;
-      });
-    } else {
-      for (int i = oldplayer; i > startPlayer; i--){
-        setState((){
-          lifeTotal.removeAt(i);
-          poisonCounter.removeAt(i);
-          commanderDamage.removeAt(i);
-        });
-      }
-    }
   }
 
   /** If we need to select the starting life total a popup menu button is showed
