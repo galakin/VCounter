@@ -137,16 +137,19 @@ class _NewGameState extends State{
     );//end Scaffold
   }
 
-  /** double frame use for more than 2 player
-   *
+  /** double frame use for more than 2 player, used when there are 3+ player.
+   *  on double frame the counter are place horizontaly
+   *  _backgroundColor: backgrounds color
+   *  _indexA: first frame index
+   *  _indexB: second frame index
    */
   Widget _doubleFrame(Color _backgroundColor, int _indexA, int _indexB){
     return Expanded(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _innerFrame(_backgroundColor, _indexA, angle: 1.55),
-          _innerFrame(_backgroundColor, _indexB, angle: -1.55),
+          _innerFrame(manaColor[_indexA], _indexA, angle: 1.55),
+          _innerFrame(manaColor[_indexB], _indexB, angle: -1.55),
         ]
       ),//end Row
     );//end Expanded
@@ -176,10 +179,11 @@ class _NewGameState extends State{
         onSwipeDown: () {
           if (_counterState[_index] > 0  && angle == 0) setState(() => _counterState[_index]--);
         },
+        onSwipeLeft: (){ if (angle != 0) setState(() => _counterState[_index]++);},
+        onSwipeRight: (){ if (angle != 0) setState(() => _counterState[_index]--);}
       ),//end SwipeDetector
     );//end Expanded
-  }Container(child: Text(_text, style: _counterStyle)),//end Container
-
+  }
 
   Widget _showCounterFrame(int _counterIndex, int _index, double angle){
     double _bottom = 70.0, _left = 0.0, _right = 0.0;
@@ -631,7 +635,7 @@ class _NewGameState extends State{
       title: Text('$_life', style: TextStyle(color: Colors.white)),
       onTap: () => setState(() {
         _startLife = _life;
-        for (int i = 0; i< lifeTotal.length; i++) lifeTotal[i] = _life;
+        for (int i = 0; i< _maxPlayer; i++) lifeTotal[i] = _life;
       })
     );//end ListTile
   }
@@ -641,7 +645,10 @@ class _NewGameState extends State{
    */
   _savegameCallback(Timer t){
     int _sec = DateTime.now().millisecondsSinceEpoch;
-    _wrapper.saveGame(gameID, _sec, startPlayer, "", "", lifeTotal[0], lifeTotal[1], poisonCounter[0], poisonCounter[1], commanderDamage[0], commanderDamage[1]);
+    _wrapper.saveGame(gameID, _sec, startPlayer, "", "", "", "",
+    lifeTotal[0], lifeTotal[1], lifeTotal[2], lifeTotal[3],
+    poisonCounter[0], poisonCounter[1], poisonCounter[2], poisonCounter[3],
+    commanderDamage[0], commanderDamage[1], commanderDamage[2], commanderDamage[3]);
     print('timer fired');
   }
 

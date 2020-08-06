@@ -11,9 +11,7 @@ class LocalDatabase {
       version: 4,
       onCreate: (Database db, int version) async {
         await db.execute('''CREATE TABLE Games (id INTEGER PRIMARY KEY,
-          date INT,
-          noplayer INT,
-          player1 TEXT, player2 TEXT, player3 TEXT, player4 TEXT,
+          date INT, noplayer INT, player1 TEXT, player2 TEXT, player3 TEXT, player4 TEXT,
           life1 INTEGER, life2 INTEGER, life3 INTEGER, life4 INTEGER,
           poison1 INTEGER, poison2 INTEGER, poison3 INTEGER, poison4 INTEGER,
           commander1 INTEGER, commander2 INTEGER, commander3 INTEGER, commander4 INTEGER)''');
@@ -31,19 +29,19 @@ class LocalDatabase {
   /** Save locally the current game
    *
    */
-  Future<void> saveGame(int id, int date, int noplayer, String player1, String player2, int life1, int life2, int poison1, int poison2, int commander1, int commander2) async{
+  Future<void> saveGame(int id, int date, int noplayer, String player1, String player2, String player3, String player4,
+    int life1, int life2, int life3, int life4,
+    int poison1, int poison2, int poison3, int poison4,
+    int commander1, int commander2, int commander3, int commander4)
+  async{
     if(this.db ==null) await open();
     Map<String, dynamic> _gameMap = {
       'id': id,
       'noplayer': noplayer,
-      'player1': player1,
-      'player2': player2,
-      'life1': life1,
-      'life2': life2,
-      'poison1': poison1,
-      'poison2': poison2,
-      'commander1': commander1,
-      'commander2': commander2,
+      'player1': player1, 'player2': player2, 'player3': player3, 'player4': player4,
+      'life1': life1, 'life2': life2, 'life3': life3, 'life4': life4,
+      'poison1': poison1, 'poison2': poison2, 'poison3': poison3, 'poison4': poison4,
+      'commander1': commander1, 'commander2': commander2, 'commander3': commander3, 'commander4': commander4,
       'date': date,
     };
     db.insert('Games', _gameMap, conflictAlgorithm: ConflictAlgorithm.replace);

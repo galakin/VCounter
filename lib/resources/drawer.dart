@@ -16,7 +16,7 @@ class VDrawer extends StatelessWidget{
         children: [
           _drawerTile('Nuova Partita', context, localroute: 'newgame'),
           _drawerTile('Storico Partite', context, localroute: 'gamehistory'),
-          _drawerTile('Nuova Torneo', context),
+          _drawerTile('Nuova Torneo', context, localroute: 'createtournament'),
           _drawerTile('Storico Torneo', context),
           _drawerTile('Nuovo Vendemmiatore', context),
           _drawerTile('Sala d\'Onore', context, localroute: 'halloffame'),

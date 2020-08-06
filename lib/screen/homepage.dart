@@ -19,7 +19,7 @@ class Homepage extends StatelessWidget{
         children: [
           _homepageButton(null, 'Nuova Partita', context, route: 'newgame'),
           _homepageButton(null, 'Storico Partite', context, route: 'gamehistory'),
-          _homepageButton(null, 'Nuovo Torneo', context),
+          _homepageButton(null, 'Nuovo Torneo', context, route: 'createtournament'),
           _homepageButton(null, 'Storico Tornei', context),
         ]
       ),//end Column

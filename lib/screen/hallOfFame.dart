@@ -12,7 +12,8 @@ class HallOfFame extends StatelessWidget{
   @override Widget build(BuildContext context){
     return Scaffold(
       drawer: VDrawer(_store),
-      body: Center(child: Text('Ancora nessun vincitore!', style: TextStyle(fontSize: 28.0, fontWeight: FontWeight.bold)))
+      body: Center(child: Text('Questa pagina è più vuota\n del tuo bicchiere!', textAlign: TextAlign.center, style: TextStyle(fontSize: 28.0, fontWeight: FontWeight.bold)))
+      /*TODO center correctly the text*/
     );//end Scaffold
   }
 }

@@ -1,6 +1,7 @@
 import 'package:vcounter/services/database.dart';
 
 class AppState{
+  String username;
   int counterValue = 0;
   LocalDatabase database;
 
@@ -9,7 +10,10 @@ class AppState{
   AppState.fromAnother(AppState state){
     counterValue = state.counterValue;
     database = state.database;
+    username = state.username;
   }
+
+  void addUsername(String username){this.username = username;}
 
   int getCounterValue(){ return counterValue; }
 

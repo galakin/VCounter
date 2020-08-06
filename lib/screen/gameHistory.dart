@@ -67,12 +67,11 @@ class _GameHistoryState extends State{
                       onTap: () {
                         print(_result[i]);
                         int noplayer = _result[i]['noplayer'];
-                        List playerName = new List(noplayer);  //List with the player's name
-                        List lifeTotal = new List(noplayer); //List with the player's life total
-                        List poisonCounter = new List(noplayer); //List of player's poison counter
-                        List commanderDamage = new List(noplayer); //List of Commander damage
-                        for (int j = 0; j < noplayer; j++){
-                          print('test${j+1}');
+                        List playerName = new List(4);  //List with the player's name
+                        List lifeTotal = new List(4); //List with the player's life total
+                        List poisonCounter = new List(4); //List of player's poison counter
+                        List commanderDamage = new List(4); //List of Commander damage
+                        for (int j = 0; j < 4; j++){
                           playerName[j] = _result[i]['player${j+1}'];
                           lifeTotal[j] = _result[i]['life${j+1}'];
                           poisonCounter[j] = _result[i]['poison${j+1}'];
@@ -99,32 +98,7 @@ class _GameHistoryState extends State{
                         padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 6.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Expanded(
-                              child: _lifePadding(
-                                Center(child: Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 8.0),
-                                  child: (Text('${_result[i]['player1']}\t${_result[i]['life1']}', style: _lifeStyle()))),
-                                ),
-                                space: 0,
-                                color: manaColor[0],
-                                left: true,
-                              ),
-                            ),
-
-                            Expanded(
-                              child: _lifePadding(
-                                Center(
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 8.0),
-                                    child: Text('${_result[i]['player2']}\t${_result[i]['life2']}', style: _lifeStyle())
-                                  ),//end Padding
-                                ),//end Center
-                                space: 0,
-                                color: manaColor[1],
-                              ),//end life Padding
-                            ),//end Expanded
-                          ]
+                          children: _rowChilder(_result[i]),
                         ),//end Row
                       ),//end Padding
                     ),//end GestureDetector
@@ -140,12 +114,64 @@ class _GameHistoryState extends State{
     );//end Scaffold
   }
 
-  Widget _lifePadding(Widget child, {double space, Color color, bool left}){
+  /** build the row's children by looking at the no of player ad add an element
+   *  for every player
+   *
+   */
+  List<Widget> _rowChilder(Map _result){
+    List children = new List<Widget>();
+    int _noplayer = _result['noplayer'];
+    // print(_elem);
+    for (int i=0; i<_noplayer; i++){
+      int _tmpindex = i+1;
+      String _tmpname = _result['player$_tmpindex'];
+      int _life = _result['life$_tmpindex'];
+      if (i==0){
+        children.add(Expanded(
+          child: _lifePadding(
+            Center(child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 8.0),
+              child: (Text('$_tmpname\t$_life', style: _lifeStyle()))),
+            ),
+            space: 0,
+            color: manaColor[i],
+            left: true,
+          ),
+        ));
+      }else if (i == _noplayer -1){
+        children.add(Expanded(
+          child: _lifePadding(
+            Center(child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 8.0),
+              child: (Text('$_tmpname\t$_life', style: _lifeStyle()))),
+            ),
+            space: 0,
+            color: manaColor[i],
+            right: true,
+          ),
+        ));
+      }else {
+        children.add(Expanded(
+          child: _lifePadding(
+            Center(child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 8.0),
+              child: (Text('$_tmpname\t$_life', style: _lifeStyle()))),
+            ),
+            space: 0,
+            color: manaColor[i],
+          ),
+        ));
+      }
+    }
+    return children;
+  }
+
+  Widget _lifePadding(Widget child, {double space, Color color, bool left, bool right}){
     BorderRadius border;
     if (space == null) space = 16.0;
     if (color == null) color = Colors.transparent;
     if (left != null && left) border = BorderRadius.only(topLeft: Radius.circular(100), bottomLeft: Radius.circular(100));
-    else border = BorderRadius.only(topRight: Radius.circular(100), bottomRight: Radius.circular(100));
+    else if (right != null && right) border = BorderRadius.only(topRight: Radius.circular(100), bottomRight: Radius.circular(100));
     return Padding(
       padding: EdgeInsets.symmetric(vertical: space),
       child: Container(

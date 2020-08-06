@@ -4,6 +4,7 @@ import 'package:vcounter/screen/newGame.dart';
 import 'package:vcounter/screen/homepage.dart';
 import 'package:vcounter/screen/gameHistory.dart';
 import 'package:vcounter/screen/hallOfFame.dart';
+import 'package:vcounter/screen/createTournament.dart';
 
 class RouteGenerator {
 
@@ -43,6 +44,13 @@ class RouteGenerator {
       case 'halloffame':
         if (args is Map){
           if (args['store'] != null) return MaterialPageRoute(builder: (_) => HallOfFame(args['store']));
+          else return defaultRoute(args);
+        } else return defaultRoute(args);
+      break;
+
+      case 'createtournament':
+        if (args is Map){
+          if (args['store'] != null) return MaterialPageRoute(builder: (_) => CreateTournamet(args['store']));
           else return defaultRoute(args);
         } else return defaultRoute(args);
       break;
