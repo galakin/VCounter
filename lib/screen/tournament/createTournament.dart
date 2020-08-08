@@ -1,5 +1,5 @@
 /*IDEA: add grey background to text imput
- *  
+ *
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -8,6 +8,7 @@ import 'package:redux/redux.dart';
 import 'package:vcounter/resources/drawer.dart';
 import 'package:vcounter/services/wrapper.dart';
 import 'package:vcounter/assets/colors.dart';
+import 'package:vcounter/assets/tournamentStyle.dart';
 
 class CreateTournamet extends StatefulWidget{
   Store _store;
@@ -44,11 +45,11 @@ class _CreateTournametState extends State{
                   validator: (value) => value.isEmpty ? 'Inserire un nome ignorante' : null,
                   onSaved: (value) => _tournamentName = value,
                 ),//end TextField
-                _standartPadding(
-                  Text('Partecipanti:', style: _standardStyle()),
+                standartPadding(
+                  Text('Partecipanti:', style: standardStyle()),
                 ),//end Standard Padding
-                _standartPadding(_playersNameInput()),
-                _standartPadding(_roundNumbers()),
+                standartPadding(_playersNameInput()),
+                standartPadding(_roundNumbers()),
               ]
             ),//end ListView
             Align(
@@ -62,7 +63,7 @@ class _CreateTournametState extends State{
                   ),//end Padding
                   onPressed: (){
                     print("create tournament");
-                    _validateAndSubmit();
+                    _validateAndSubmit(context);
                   },
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16.0),
@@ -77,16 +78,6 @@ class _CreateTournametState extends State{
     );//end Scaffold
   }
 
-  /** Standard padding for all the widget in this page, tha standard value of
-   *  padding is set by 16.0 pixel offset from bottom
-   */
-  Widget _standartPadding(Widget child){
-    return Padding(
-      padding: EdgeInsets.only(top: 16.0),
-      child: child,
-    );//end Padding
-  }
-
   /** create and populate the lis of player's input name
    *
    */
@@ -96,7 +87,7 @@ class _CreateTournametState extends State{
       /**TODO add `add new player` button*/
       if (i == _playerNo)
       _children.add(
-        _standartPadding(
+        standartPadding(
           RaisedButton(
             child: Container(
               width: 170,
@@ -136,8 +127,7 @@ class _CreateTournametState extends State{
 
     return Form(
       key: _formKey,
-      child:
-      Column(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: _children,
       ),//end Column
@@ -169,7 +159,7 @@ class _CreateTournametState extends State{
   Widget _roundNumbers(){
     return Row(
       children: [
-        Text("Numero di Turni: ", style: _standardStyle()),
+        Text("Numero di Turni: ", style: standardStyle()),
         Container(
           width: 80,
           /*TODO: add a max length to insert text*/
@@ -184,10 +174,19 @@ class _CreateTournametState extends State{
     ); //end Row
   }
 
-  void _validateAndSubmit() {
+  /** Check if all the fieald are correctly initialized and if so change route
+   *  with the tournament's pairing one, otherwise error on the respective fieald
+   *  are shown
+   *  context: the page's context
+   */
+  void _validateAndSubmit(BuildContext context ) {
     if (_validateAndSave()){
       print("Nome torneo: $_tournamentName");
       print("Giocatori: $player");
+      Navigator.of(context).pushReplacementNamed(
+        "tournamentpairing",
+        arguments: {'store': _store, 'playersNames': player, 'tournamentName': _tournamentName, 'roundNo': _roundNo}
+      );//end Navigator
     }
   }
 
@@ -197,10 +196,6 @@ class _CreateTournametState extends State{
       form.save();
       return true;
     } else return false;
-  }
-
-  TextStyle _standardStyle(){
-    return TextStyle(fontSize: 18.0, fontWeight: FontWeight.w400);
   }
 
 }

@@ -4,7 +4,7 @@ import 'package:vcounter/screen/newGame.dart';
 import 'package:vcounter/screen/homepage.dart';
 import 'package:vcounter/screen/gameHistory.dart';
 import 'package:vcounter/screen/hallOfFame.dart';
-import 'package:vcounter/screen/createTournament.dart';
+import 'package:vcounter/screen/tournament/createTournament.dart';
 import 'package:vcounter/screen/tournament/tournamentPairing.dart';
 
 class RouteGenerator {
@@ -58,7 +58,7 @@ class RouteGenerator {
 
       case 'tournamentpairing':
         if (args is Map){
-          if (args['store'] != null) return MaterialPageRoute(builder: (_) => TournamentPairing(args['store']));
+          if (args['store'] != null) return MaterialPageRoute(builder: (_) => TournamentPairing(args['store'], args['tournamentName'], args['playersNames'], args['roundNo']));
           else return defaultRoute(args);
         } else return defaultRoute(args);
       break;
