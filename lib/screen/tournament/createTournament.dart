@@ -45,11 +45,11 @@ class _CreateTournametState extends State{
                   validator: (value) => value.isEmpty ? 'Inserire un nome ignorante' : null,
                   onSaved: (value) => _tournamentName = value,
                 ),//end TextField
-                standartPadding(
+                standardPadding(
                   Text('Partecipanti:', style: standardStyle()),
                 ),//end Standard Padding
-                standartPadding(_playersNameInput()),
-                standartPadding(_roundNumbers()),
+                standardPadding(_playersNameInput()),
+                standardPadding(_roundNumbers()),
               ]
             ),//end ListView
             Align(
@@ -87,7 +87,7 @@ class _CreateTournametState extends State{
       /**TODO add `add new player` button*/
       if (i == _playerNo)
       _children.add(
-        standartPadding(
+        standardPadding(
           RaisedButton(
             child: Container(
               width: 170,
@@ -105,7 +105,7 @@ class _CreateTournametState extends State{
             ),//end RoundedRectangleBorder
             color: vpurple,
           ),//end RaisedButton
-        ),//end _standartPadding
+        ),//end _standardPadding
       );
       else _children.add( Row(
           children: [

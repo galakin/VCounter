@@ -9,9 +9,9 @@ TextStyle standardStyle(){
 /** Standard padding for all the widget in this page, tha standard value of
  *  padding is set by 16.0 pixel offset from bottom
  */
-Widget standartPadding(Widget child){
+Widget standardPadding(Widget child, {double, value=16.0}){
   return Padding(
-    padding: EdgeInsets.only(top: 16.0),
+    padding: EdgeInsets.only(top: value),
     child: child,
   );//end Padding
 }
