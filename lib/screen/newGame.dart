@@ -116,7 +116,7 @@ class _NewGameState extends State{
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               _upperFrame,
-              _middleMenuBar(),
+              // _middleMenuBar(),
               _lowerFrame,
             ]
           ),//end Column
@@ -391,16 +391,25 @@ class _NewGameState extends State{
         ]
       );//end Stack
     } else return GestureDetector(
-      child: Container(
-        color: Colors.black,
-        height: 30,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            //Insert Logo here
-          ]
-        ),//end Row
-      ),//end Container
+      child: Stack(
+        children: [
+          Align(
+            alignment: Alignment.center,
+            child: Container(
+              color: Colors.black,
+              height: 5,
+            ),//end Container
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: Image.asset(
+              'assets/vlogo.png',
+              width: 60,
+              fit: BoxFit.cover,
+            ),//end Image
+          )
+        ]
+      ),//end Stack
       onTap: () => setState(() {
         _openMenu = true;
         _showOrder = false;
