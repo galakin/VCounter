@@ -16,6 +16,8 @@ The working progress features are:
 - chronological ordered old games
 - experience and energy counter
 
+A logical scheme af the app's route can be found at https://whimsical.com/L1jCkcVQNrxUP5zSeyNvw9, bear in mind that this is just a scheme that i use to visualize the logical app's navigation route, significant change can occur between it and the app's code
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
