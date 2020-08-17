@@ -10,6 +10,7 @@ import 'package:vcounter/assets/tournamentStyle.dart';
 import 'package:vcounter/resources/drawer.dart';
 import 'package:vcounter/assets/colors.dart';
 import 'package:vcounter/resources/tournamentLogic.dart';
+import 'package:vcounter/resources/tournamentDialog.dart';
 
 class TournamentPairing extends StatefulWidget{
   Store _store;
@@ -152,45 +153,6 @@ class _TournamentPairingState extends State{
    *  result
    */
   Widget _resultAlertDialog(BuildContext _context, List _player){
-    int _winner = 0;
-    return AlertDialog(
-      title: Text('Risultato'),
-      content: SingleChildScrollView(
-        child: ListBody(
-          children: <Widget>[
-            Radio(
-              value: _player[0],
-              groupValue: _winner,
-              onChanged: (value) {
-                print(value);
-                setState(() {
-                  _winner = 0;
-                });
-              }
-            ),//end Radio
-            Radio(
-              value: _player[1],
-              groupValue: _winner,
-              onChanged: (value) {
-                print(value);
-                setState(() {
-                  _winner = 1;
-                });
-              }
-            ),//end Radio
-          ],
-        ),//end ListBody
-      ),//end SingleChildScrollView
-      actions: <Widget>[
-        FlatButton(
-          child: Text('Avanti'),
-          onPressed: ()=>print('save it!'),
-        ), //end FlatButton
-        FlatButton(
-          child: Text('Chiudi'),
-          onPressed: ()=>Navigator.of(_context).pop(),
-        ), //end FlatButton
-      ]
-    );
+    return TournamentDialog(_player ,_logic);
   }
 }
