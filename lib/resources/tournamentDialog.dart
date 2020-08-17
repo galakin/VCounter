@@ -25,7 +25,6 @@ class _TournamentDialogState extends State{
 
   @override initState(){
     super.initState();
-    
   }
 
   @override Widget build(BuildContext context){

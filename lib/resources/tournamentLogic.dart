@@ -8,6 +8,7 @@ class TournamentLogic{
   Map <String, int> playersPoints;
   List seating;
   List playerPairing;
+  List gameResult;
 
   TournamentLogic(this.playersNum, this.round, this.playersNames){
     if (playersNames.length != playersNum) throw "Players num and subscribet tournament player mismatch";
@@ -25,6 +26,8 @@ class TournamentLogic{
 
     playersPoints = new Map();
     for (int i = 0; i < playersNames.length; i++)playersPoints[playersNames[i]] = 0;
+
+    gameResult = ['1 - 0', '2 - 0', '2 - 1'];
   }
 
   /** taken from https://stackoverflow.com/questions/13554129/list-shuffle-in-dart
