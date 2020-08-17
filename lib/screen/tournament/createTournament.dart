@@ -1,5 +1,5 @@
-/*IDEA: add grey background to text imput
- *
+/** IDEA: add grey background to text imput
+ *  TODO: change `start turnament` button position to bottom-right
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';

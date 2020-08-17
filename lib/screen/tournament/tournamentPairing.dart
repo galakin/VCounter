@@ -1,5 +1,4 @@
 /** TODO: find a way to keep track of the round number
- *
  */
 import 'dart:math';
 import 'package:flutter/material.dart';
@@ -153,6 +152,8 @@ class _TournamentPairingState extends State{
    *  result
    */
   Widget _resultAlertDialog(BuildContext _context, List _player){
-    return TournamentDialog(_player ,_logic);
+    return TournamentDialog(_player ,_logic, saveResult: (){
+      print('saved');
+    });
   }
 }
