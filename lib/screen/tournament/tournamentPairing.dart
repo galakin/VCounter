@@ -9,6 +9,7 @@ import 'package:redux/redux.dart';
 import 'package:vcounter/assets/tournamentStyle.dart';
 import 'package:vcounter/resources/drawer.dart';
 import 'package:vcounter/assets/colors.dart';
+import 'package:vcounter/resources/tournamentLogic.dart';
 
 class TournamentPairing extends StatefulWidget{
   Store _store;
@@ -22,27 +23,21 @@ class TournamentPairing extends StatefulWidget{
 }
 
 class _TournamentPairingState extends State{
+  TournamentLogic _logic;
   Store _store;
   String _tournamentName, _byeRound;
   List _playersNames, _seating, _winningOrder, _score;
   int _roundNo;
 
-  _TournamentPairingState(this._store, this._tournamentName, this._playersNames, this._roundNo);
+  _TournamentPairingState(store, tournamentName, playersNames, roundNo){
+      this._store = store;
+      this._tournamentName = tournamentName;
+      _logic = new TournamentLogic(playersNames.length, roundNo, playersNames);
+  }
 
   @override initState(){
-    _seating = new List();
-    _playersNames = _shuffle(_playersNames);
-    int _length = _playersNames.length;
-    if (_playersNames.length % 2 == 1) {
-      _byeRound = _playersNames[_playersNames.length -1];
-      _length--;
-    }
-    for (int i = 0; i < _length; i+=2 ){
-      _seating.add([_playersNames[i], _playersNames[i+1]]);
-    }
-
-    _score = new List<int>();
-    for (int i = 0; i < _playersNames.length; i++) _score.add(0);
+    super.initState();
+    // _seating = new List();
 
   }
 
@@ -60,38 +55,17 @@ class _TournamentPairingState extends State{
     );
   }
 
-  /** taken from https://stackoverflow.com/questions/13554129/list-shuffle-in-dart
-   *  pseudo-randomly shuffle the player lisf for the seating couple purpuse,
-   *  if the no of players is odd the last one ((2n) +1)th is the one with the bye
-   */
-  List _shuffle(List items) {
-    var random = new Random();
-
-    // Go through all elements.
-    for (var i = items.length - 1; i > 0; i--) {
-
-      // Pick a pseudorandom number according to the list length
-      var n = random.nextInt(i + 1);
-
-      var temp = items[i];
-      items[i] = items[n];
-      items[n] = temp;
-    }
-
-    return items;
-  }
-
   /** return a column with the pairing order and the possibility of randomly change it
    *  TODO: add the possibility to manually change the order
    */
   Widget _pairingOrder(){
     List _children = new List<Widget>();
     _children.add(Text("Abbinamenti: ", style: standardStyle()));
-    for (int i = 0; i < _seating.length; i++ ){
-      _children.add(standardPadding(_pairingWidget(_seating[i], i), value: 4.0));
+    for (int i = 0; i < _logic.seating.length; i++ ){
+      _children.add(standardPadding(_pairingWidget(_logic.seating[i], i), value: 4.0));
     }
 
-    if (_byeRound != null) _children.add(standardPadding(_byeWidget(_byeRound)));
+    if (_logic.byeRound != null) _children.add(standardPadding(_byeWidget(_logic.byeRound)));
     _children.add(standardPadding(Padding(
       padding: EdgeInsets.symmetric(horizontal: 24.0),
       child: Divider(thickness: 1.5),
@@ -130,7 +104,11 @@ class _TournamentPairingState extends State{
               ),//end Column
             ),//end Expanded
             GestureDetector(
-              onTap: () => print("Insert final Score"),
+              onTap: () => showDialog(
+                context: context,
+                barrierDismissible: true,
+                builder: (BuildContext context) => _resultAlertDialog(context, _player),
+              ),
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 8.0),
                 child: Text("Risultato", style: TextStyle(color: Colors.blue, fontSize: 16.0, decoration: TextDecoration.underline)),
@@ -167,5 +145,52 @@ class _TournamentPairingState extends State{
         ),//end Row
       ),//end Padding
     ); //end Container
+  }
+
+  /** Return an alert dialog where you can insert the game's final result. the
+   *  player's earned point are automatically calculated based on the game's
+   *  result
+   */
+  Widget _resultAlertDialog(BuildContext _context, List _player){
+    int _winner = 0;
+    return AlertDialog(
+      title: Text('Risultato'),
+      content: SingleChildScrollView(
+        child: ListBody(
+          children: <Widget>[
+            Radio(
+              value: _player[0],
+              groupValue: _winner,
+              onChanged: (value) {
+                print(value);
+                setState(() {
+                  _winner = 0;
+                });
+              }
+            ),//end Radio
+            Radio(
+              value: _player[1],
+              groupValue: _winner,
+              onChanged: (value) {
+                print(value);
+                setState(() {
+                  _winner = 1;
+                });
+              }
+            ),//end Radio
+          ],
+        ),//end ListBody
+      ),//end SingleChildScrollView
+      actions: <Widget>[
+        FlatButton(
+          child: Text('Avanti'),
+          onPressed: ()=>print('save it!'),
+        ), //end FlatButton
+        FlatButton(
+          child: Text('Chiudi'),
+          onPressed: ()=>Navigator.of(_context).pop(),
+        ), //end FlatButton
+      ]
+    );
   }
 }

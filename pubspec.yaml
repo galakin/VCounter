@@ -34,6 +34,8 @@ dependencies:
   swipedetector: ^1.2.0 #detect swipe for new game's page
   redux: ^4.0.0 #basic redux library
   flutter_redux: ^0.6.0 #flutter redux library
+  animated_splash_screen: ^1.0.0+1 #animated splash screen because i'm lazy af
+
 
 
 dev_dependencies:
