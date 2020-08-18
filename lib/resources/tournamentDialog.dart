@@ -4,12 +4,13 @@ import 'package:vcounter/resources/tournamentLogic.dart';
 class TournamentDialog extends StatefulWidget{
   TournamentLogic _logic;
   List _players;
-  var onChange;
   Function saveResult;
+  var onChange;
+  int _round;
 
-  TournamentDialog(this._players, this._logic, {this.saveResult});
+  TournamentDialog(this._players, this._logic, this._round, {this.saveResult});
 
-  @override State createState() => _TournamentDialogState(_players, _logic, saveResult);
+  @override State createState() => _TournamentDialogState(_players, _logic, saveResult, _round);
 }
 
 class _TournamentDialogState extends State{
@@ -18,11 +19,13 @@ class _TournamentDialogState extends State{
   String _winner;
   String _gameScore;
   Function _saveResult;
+  int _round;
 
-  _TournamentDialogState(List _players, var _logic, var saveResult){
+  _TournamentDialogState(List _players, var _logic, var saveResult, int _round){
     this._logic = _logic;
     this._players = _players;
     this._saveResult = saveResult;
+    this._round = _round;
     _winner = _players[0];
   }
 
@@ -66,6 +69,7 @@ class _TournamentDialogState extends State{
               onPressed: (){
                 if (_winner == 'draw') print('game draw');
                 else print(_winner+" wins with score "+_gameScore);
+                _logic.addGameResult(_round, _players[0], _players[1], _winner, 0, 0 );
                 _saveResult();
               },
             ), //end FlatButton

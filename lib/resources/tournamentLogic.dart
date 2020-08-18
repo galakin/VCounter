@@ -1,11 +1,21 @@
 import 'dart:math';
 
+class GameResult {
+  String playerA, playerB;
+  String winner;
+  int playerAWingGame, playerBWingGame;
+
+  GameResult(this.playerA, this.playerB, this.winner, this.playerAWingGame, this.playerBWingGame);
+}
+
 class TournamentLogic{
   int playersNum=2;
+  int currentRount = 1;
   int round=3;
   String byeRound;
   List playersNames;
   Map <String, int> playersPoints;
+  Map tournamentResult; //the result of every game played during the turnament
   List seating;
   List playerPairing;
   List gameResult;
@@ -28,6 +38,7 @@ class TournamentLogic{
     for (int i = 0; i < playersNames.length; i++)playersPoints[playersNames[i]] = 0;
 
     gameResult = ['1 - 0', '2 - 0', '2 - 1'];
+    tournamentResult = new Map<int,List<GameResult>>();
   }
 
   /** taken from https://stackoverflow.com/questions/13554129/list-shuffle-in-dart
@@ -47,4 +58,24 @@ class TournamentLogic{
     return items;
   }
 
+  /**
+   *
+   */
+  void addGameResult(int round, String player1, String player2, String winner, int games1, int games2){
+    if (tournamentResult[round] == null) tournamentResult[round] = new List<GameResult>();
+    GameResult tmpres = new GameResult(winner, player2, winner, games1, games2);
+    int tmpIndex = tournamentResult[round].indexWhere((game) => game.winner == winner);
+    if ( tmpIndex == -1) tournamentResult[round].add(tmpres);
+    else {
+      tournamentResult[round].removeAt(tmpIndex);
+      tournamentResult[round].add(tmpres);
+    }
+  }
+
+  /** Update the game's score based on the registered games results
+   *
+   */
+  void _updateScores(){
+
+  }
 }
