@@ -32,7 +32,7 @@ class _TournamentPairingState extends State{
   _TournamentPairingState(store, tournamentName, playersNames, roundNo){
       this._store = store;
       this._tournamentName = tournamentName;
-      _logic = new TournamentLogic(playersNames.length, roundNo, playersNames);
+      _logic = new TournamentLogic(this, playersNames.length, roundNo, playersNames);
   }
 
   @override initState(){
@@ -131,7 +131,8 @@ class _TournamentPairingState extends State{
               ),
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 8.0),
-                child: Text("Risultato", style: TextStyle(color: Colors.blue, fontSize: 16.0, decoration: TextDecoration.underline)),
+                child: _resultButton(_round, _player[0], _player[1]),
+                // Text("Risultato", style: TextStyle(color: Colors.blue, fontSize: 16.0, decoration: TextDecoration.underline)),
               )
             ),//end GestureDetector
           ]
@@ -175,5 +176,28 @@ class _TournamentPairingState extends State{
     return TournamentDialog(_player ,_logic, _round, saveResult: (){
       print('saved');
     });
+  }
+
+  /** Return the correct text based on the relative game in the tournament
+   *  round:  the round no
+   *  playerA: the first player
+   *  playerB: the second player
+   */
+  Widget _resultButton(int round, String playerA, String playerB){
+    int _tmpindex=-1;
+    if (_logic.tournamentResult[round] != null){
+      _tmpindex = _logic.tournamentResult[round].indexWhere((game) => game.winner == playerA || game.winner == playerB);
+      print(_tmpindex);
+    }
+    if (_tmpindex >= 0 ){
+      GameResult _result = _logic.tournamentResult[round][_tmpindex];
+      return Text("${_result.winner} vince per ${_result.playerAWingGame} - ${_result.playerBWingGame}", style: TextStyle(fontSize: 16.0, decoration: TextDecoration.underline));
+    } else return Text("Risultato", style: TextStyle(color: Colors.blue, fontSize: 16.0, decoration: TextDecoration.underline));
+  }
+
+  /** forcefully refresh the state
+   */
+  void refresh() {
+    setState(() {});
   }
 }

@@ -67,10 +67,19 @@ class _TournamentDialogState extends State{
             FlatButton(
               child: Text('Salva'),
               onPressed: (){
+                int _pointA=0, _pointB=0;
                 if (_winner == 'draw') print('game draw');
-                else print(_winner+" wins with score "+_gameScore);
-                _logic.addGameResult(_round, _players[0], _players[1], _winner, 0, 0 );
+                else {
+                  print(_winner+" wins with score "+_gameScore);
+                  if (_gameScore == '1 - 0'){_pointA = 1; _pointB = 0;}
+                  else if (_gameScore == '2 - 1'){_pointA = 2; _pointB = 1;}
+                  else if (_gameScore == '2 - 0'){_pointA = 2; _pointB = 0;}
+                  else throw 'game result not fount :( !';
+                }
+
+                _logic.addGameResult(_round, _players[0], _players[1], _winner, _pointA, _pointB );
                 _saveResult();
+                Navigator.of(context).pop();
               },
             ), //end FlatButton
             FlatButton(

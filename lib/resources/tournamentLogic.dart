@@ -6,6 +6,12 @@ class GameResult {
   int playerAWingGame, playerBWingGame;
 
   GameResult(this.playerA, this.playerB, this.winner, this.playerAWingGame, this.playerBWingGame);
+
+  @override String toString() => winner;
+}
+
+class GameScore{
+  int playerAScore, playerBScore;
 }
 
 class TournamentLogic{
@@ -19,8 +25,9 @@ class TournamentLogic{
   List seating;
   List playerPairing;
   List gameResult;
+  var parent;
 
-  TournamentLogic(this.playersNum, this.round, this.playersNames){
+  TournamentLogic(this.parent, this.playersNum, this.round, this.playersNames){
     if (playersNames.length != playersNum) throw "Players num and subscribet tournament player mismatch";
 
     seating = new List<List>();
@@ -61,21 +68,24 @@ class TournamentLogic{
   /**
    *
    */
-  void addGameResult(int round, String player1, String player2, String winner, int games1, int games2){
+  void addGameResult(int round, String playerA, String playerB, String winner, int games1, int games2){
     if (tournamentResult[round] == null) tournamentResult[round] = new List<GameResult>();
-    GameResult tmpres = new GameResult(winner, player2, winner, games1, games2);
-    int tmpIndex = tournamentResult[round].indexWhere((game) => game.winner == winner);
+    GameResult tmpres = new GameResult(playerA, playerB, winner, games1, games2);
+    int tmpIndex = tournamentResult[round].indexWhere((game) => game.playerA == playerA && game.playerB == playerB);
+    print('\winner is: $winner\n\n');
+    print(tournamentResult);
     if ( tmpIndex == -1) tournamentResult[round].add(tmpres);
     else {
       tournamentResult[round].removeAt(tmpIndex);
       tournamentResult[round].add(tmpres);
     }
+    _updateScores();
+    parent.refresh();
   }
 
   /** Update the game's score based on the registered games results
-   *
+   *  TODO: write body once the score are implemented
    */
   void _updateScores(){
-
   }
 }
