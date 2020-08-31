@@ -68,9 +68,8 @@ class _TournamentDialogState extends State{
               child: Text('Salva'),
               onPressed: (){
                 int _pointA=0, _pointB=0;
-                if (_winner == 'draw') print('game draw');
+                if (_winner == 'draw') {_pointA = 1; _pointB = 1; }
                 else {
-                  print(_winner+" wins with score "+_gameScore);
                   if (_gameScore == '1 - 0'){_pointA = 1; _pointB = 0;}
                   else if (_gameScore == '2 - 1'){_pointA = 2; _pointB = 1;}
                   else if (_gameScore == '2 - 0'){_pointA = 2; _pointB = 0;}

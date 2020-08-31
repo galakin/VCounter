@@ -1,3 +1,5 @@
+/*TODO: add the possibility that the game's end with even score 0 - 0, 2 - 2, ...]
+ */
 import 'dart:math';
 
 class GameResult {
@@ -7,7 +9,7 @@ class GameResult {
 
   GameResult(this.playerA, this.playerB, this.winner, this.playerAWingGame, this.playerBWingGame);
 
-  @override String toString() => winner;
+  @override String toString() => "winner: $winner\nplayer 1: $playerA\tplayer 2: $playerB\n";
 }
 
 class GameScore{
@@ -70,22 +72,43 @@ class TournamentLogic{
    */
   void addGameResult(int round, String playerA, String playerB, String winner, int games1, int games2){
     if (tournamentResult[round] == null) tournamentResult[round] = new List<GameResult>();
-    GameResult tmpres = new GameResult(playerA, playerB, winner, games1, games2);
+    GameResult _oldRes ,_tmpres = new GameResult(playerA, playerB, winner, games1, games2);
     int tmpIndex = tournamentResult[round].indexWhere((game) => game.playerA == playerA && game.playerB == playerB);
-    print('\winner is: $winner\n\n');
-    print(tournamentResult);
-    if ( tmpIndex == -1) tournamentResult[round].add(tmpres);
+    if ( tmpIndex == -1) tournamentResult[round].add(_tmpres);
     else {
-      tournamentResult[round].removeAt(tmpIndex);
-      tournamentResult[round].add(tmpres);
+      _oldRes = tournamentResult[round].removeAt(tmpIndex);
+      tournamentResult[round].add(_tmpres);
     }
-    _updateScores();
+    _updateScores(_oldRes, _tmpres);
     parent.refresh();
+    print(playersPoints);
   }
 
   /** Update the game's score based on the registered games results
    *  TODO: write body once the score are implemented
    */
-  void _updateScores(){
+  void _updateScores(GameResult _oldRes, GameResult _newRes){
+    if (_oldRes != null){
+      if (_oldRes.winner != 'draw') playersPoints[_oldRes.winner] -= 3;
+      else{
+        playersPoints[_newRes.playerA] -= 1;
+        playersPoints[_newRes.playerB] -= 1;
+      }
+    }
+    // print("dioboia ${_newRes.winner}");
+    if (_newRes.winner != "draw") playersPoints[_newRes.winner] += 3;
+    else{
+      playersPoints[_newRes.playerA] += 1;
+      playersPoints[_newRes.playerB] += 1;
+    }
+  }
+
+  /** Check if every round is comleated, if so true is retourned, otherwise false
+   *  is returned
+   *  round: the current round, used to verify if every games are terminated
+   */
+  bool checkRoundComplete(){
+    if (tournamentResult[currentRount] != null && tournamentResult[currentRount].length == (playersNum/2).round()) return true;
+    return false;
   }
 }

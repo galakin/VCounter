@@ -64,7 +64,15 @@ class _TournamentPairingState extends State{
                     borderRadius: BorderRadius.circular(16.0),
                   ),//end RoundedRectangleBorder
                   color: vpurple,
-                  onPressed: () => null,
+                  onPressed: () {
+                    if (_logic.checkRoundComplete()) {
+                      setState((){
+                        _logic.currentRount +=1;
+                      });
+                    }
+                    /*TODO: add error bottom bar snipped*/
+                    else print("completa prima tutti i turni");
+                  },
                 ),//end RaisedButton
               );//end Center
             }
@@ -174,7 +182,6 @@ class _TournamentPairingState extends State{
    */
   Widget _resultAlertDialog(BuildContext _context, List _player, int _round){
     return TournamentDialog(_player ,_logic, _round, saveResult: (){
-      print('saved');
     });
   }
 
@@ -185,13 +192,16 @@ class _TournamentPairingState extends State{
    */
   Widget _resultButton(int round, String playerA, String playerB){
     int _tmpindex=-1;
+    // print(_logic.tournamentResult[round]);
     if (_logic.tournamentResult[round] != null){
-      _tmpindex = _logic.tournamentResult[round].indexWhere((game) => game.winner == playerA || game.winner == playerB);
-      print(_tmpindex);
+      _tmpindex = _logic.tournamentResult[round].indexWhere((game) => game.playerA == playerA || game.playerB == playerB);
+
     }
     if (_tmpindex >= 0 ){
       GameResult _result = _logic.tournamentResult[round][_tmpindex];
-      return Text("${_result.winner} vince per ${_result.playerAWingGame} - ${_result.playerBWingGame}", style: TextStyle(fontSize: 16.0, decoration: TextDecoration.underline));
+      String _winnerString = "${_result.winner} vince per ${_result.playerAWingGame} - ${_result.playerBWingGame}";
+      if (_result.winner == "draw") _winnerString = "Parità per 1 - 1";
+      return Text(_winnerString, style: TextStyle(fontSize: 16.0, decoration: TextDecoration.underline));
     } else return Text("Risultato", style: TextStyle(color: Colors.blue, fontSize: 16.0, decoration: TextDecoration.underline));
   }
 
