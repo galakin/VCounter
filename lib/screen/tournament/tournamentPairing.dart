@@ -4,12 +4,14 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 
 import 'package:vcounter/assets/tournamentStyle.dart';
 import 'package:vcounter/resources/drawer.dart';
 import 'package:vcounter/assets/colors.dart';
 import 'package:vcounter/resources/tournamentLogic.dart';
 import 'package:vcounter/resources/tournamentDialog.dart';
+import 'package:vcounter/resources/standardButton.dart';
 
 class TournamentPairing extends StatefulWidget{
   Store _store;
@@ -44,43 +46,95 @@ class _TournamentPairingState extends State{
   @override Widget build(BuildContext context){
     return Scaffold(
       drawer: VDrawer(_store),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 8.0),
-        child: ListView.builder(
-          itemCount: _logic.currentRount +2,
-          itemBuilder: (BuildContext context, int index){
-            if (index == 0) return Padding(
-              padding: EdgeInsets.only(top: 20.0),
-              child: Text("Abbinamenti: ", style: standardStyle()),
-            );//end Padding
-            else if (index == _logic.currentRount +1){
-              return Center(
-                child: RaisedButton(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    child: Text('Nuovo Turno', style: TextStyle(color: Colors.white)),
-                  ),//end Padding
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16.0),
-                  ),//end RoundedRectangleBorder
-                  color: vpurple,
-                  onPressed: () {
-                    if (_logic.checkRoundComplete()) {
-                      setState((){
-                        _logic.currentRount +=1;
-                      });
-                    }
-                    /*TODO: add error bottom bar snipped*/
-                    else print("completa prima tutti i turni");
-                  },
-                ),//end RaisedButton
-              );//end Center
-            }
-            else return _pairingOrder(index);
-          }
-        ),//end ListView
-      ),//end Padding
-    );
+      body: Stack(
+        children:[
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8.0),
+            child: ListView.builder(
+              itemCount: _logic.currentRount +2,
+              itemBuilder: (BuildContext context, int index){
+                if (index == 0) return Padding(
+                  padding: EdgeInsets.only(top: 20.0),
+                  child: Text("Abbinamenti: ", style: standardStyle()),
+                );//end Padding
+                else if (index == _logic.currentRount +1){
+                  return Column(
+                    children: [
+                      Center(
+                        child: RaisedButton(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            child: Text('Nuovo Turno', style: TextStyle(color: Colors.white)),
+                          ),//end Padding
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16.0),
+                          ),//end RoundedRectangleBorder
+                          color: vpurple,
+                          onPressed: () {
+                            setState(() {
+                              _logic.nextRound();
+                            });
+                            // if (_logic.checkRoundComplete()) {
+                            //   setState((){
+                            //     _logic.currentRount +=1;
+                            //   });
+                            // }
+                            // /*TODO: add error bottom bar snipped*/
+                            // else print("completa prima tutti i turni");
+                          },
+                        ),//end RaisedButton
+                      ),//end Center
+                      SizedBox(height: 120.0),
+                    ]
+                  );//end Column
+                }
+                else return _pairingOrder(index);
+              }
+            ),//end ListView
+          ),//end Padding
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
+              child: StandardButton(
+                child: Container(
+                  width: 135,
+                  child: Row(
+                    // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Icon(Icons.timer, color: Colors.white),
+                      SizedBox(width: 5.0),
+                      Expanded(child: Text('Timer', style: TextStyle(color: Colors.white))),
+                    ]
+                  ),//end Row
+                ),//end Container
+                action: () {}
+              ),//end StandardButton
+            ),//end Padding
+          ),//end Align
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Padding(
+              padding: EdgeInsets.only(right: 8.0, left: 8.0, bottom: 50.0),
+              child: StandardButton(
+                child: Container(
+                  width: 135,
+                  child: Row(
+                    // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Icon(FontAwesome.trophy, color: Colors.white),
+                      SizedBox(width: 5.0),
+                      Expanded( child: Text('Termina Tornero', style: TextStyle(color: Colors.white))),
+                    ]
+                  ),//end Row
+                ),//end Container
+                action: () {}
+              ),//end StandardButton
+            ),//end Padding
+          ),//end Align
+        ]
+      ),//end Stack
+    );//end Scaffold
   }
 
   /** return a column with the pairing order and the possibility of randomly change it

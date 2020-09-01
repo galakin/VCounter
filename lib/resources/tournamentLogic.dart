@@ -1,4 +1,5 @@
 /*TODO: add the possibility that the game's end with even score 0 - 0, 2 - 2, ...]
+ *TODO: add the possibility to recalculate the games point bu modifing the games result
  */
 import 'dart:math';
 
@@ -108,7 +109,43 @@ class TournamentLogic{
    *  round: the current round, used to verify if every games are terminated
    */
   bool checkRoundComplete(){
-    if (tournamentResult[currentRount] != null && tournamentResult[currentRount].length == (playersNum/2).round()) return true;
+    int _tmpPlayerNo = playersNum%2==0 ? playersNum : playersNum -1;
+    if (tournamentResult[currentRount] != null && tournamentResult[currentRount].length == (_tmpPlayerNo/2)) return true;
     return false;
+  }
+
+  /** if all games of current round are ended a new round is initialized with
+   *  pairing calculated from previous round.
+   */
+  void nextRound(){
+    // print(_pointList);
+    if (checkRoundComplete()){
+      List _pointList =  playersPoints.entries.map((e) => {'name': e.key, 'points': e.value}).toList();
+      _pointList.sort((a, b){
+        // print("${a['points']} \t ${b['points']}");
+        if (a['points'] < b['points']) return 1;
+        else return 0;
+      });
+      _adjustSeating(_pointList);
+      this.seating = new List();
+      int _length = playersNames.length;
+      if (playersNames.length % 2 == 1) {
+        byeRound = playersNames[playersNames.length -1];
+        _length--;
+      }
+      for (int i = 0; i < _length; i+=2 ){
+        seating.add([_pointList[i]['name'], _pointList[i+1]['name']]);
+      }
+      this.currentRount++;
+    } else print("end all games");
+  }
+
+  /** Adjust seating order by checking if two players have already play together
+   *  if so, the player with the higher ranking is paired with the nearest (points
+   *  wise) player available that has not already play against him/her
+   */
+  List _adjustSeating(List _sortedList){
+    /*TODO: write body*/
+    return _sortedList;
   }
 }
