@@ -53,7 +53,7 @@ class _CreateTournametState extends State{
               ]
             ),//end ListView
             Align(
-              alignment: Alignment.bottomCenter,
+              alignment: Alignment.bottomRight,
               child: Padding(
                 padding: EdgeInsets.only(bottom: 8.0),
                 child: RaisedButton(

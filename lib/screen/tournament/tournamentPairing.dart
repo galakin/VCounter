@@ -74,13 +74,6 @@ class _TournamentPairingState extends State{
                             setState(() {
                               _logic.nextRound();
                             });
-                            // if (_logic.checkRoundComplete()) {
-                            //   setState((){
-                            //     _logic.currentRount +=1;
-                            //   });
-                            // }
-                            // /*TODO: add error bottom bar snipped*/
-                            // else print("completa prima tutti i turni");
                           },
                         ),//end RaisedButton
                       ),//end Center
@@ -96,7 +89,7 @@ class _TournamentPairingState extends State{
             alignment: Alignment.bottomRight,
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
-              child: StandardButton(
+              child: BrokenButton(
                 child: Container(
                   width: 135,
                   child: Row(
@@ -116,7 +109,7 @@ class _TournamentPairingState extends State{
             alignment: Alignment.bottomRight,
             child: Padding(
               padding: EdgeInsets.only(right: 8.0, left: 8.0, bottom: 50.0),
-              child: StandardButton(
+              child: BrokenButton(
                 child: Container(
                   width: 135,
                   child: Row(
@@ -246,11 +239,8 @@ class _TournamentPairingState extends State{
    */
   Widget _resultButton(int round, String playerA, String playerB){
     int _tmpindex=-1;
-    // print(_logic.tournamentResult[round]);
-    if (_logic.tournamentResult[round] != null){
-      _tmpindex = _logic.tournamentResult[round].indexWhere((game) => game.playerA == playerA || game.playerB == playerB);
-
-    }
+    if (_logic.tournamentResult[round] != null)
+      _tmpindex = _logic.tournamentResult[round].indexWhere((game) => game.playerA == playerA || game.playerA == playerB);
     if (_tmpindex >= 0 ){
       GameResult _result = _logic.tournamentResult[round][_tmpindex];
       String _winnerString = "${_result.winner} vince per ${_result.playerAWingGame} - ${_result.playerBWingGame}";

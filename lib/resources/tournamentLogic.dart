@@ -1,5 +1,5 @@
 /*TODO: add the possibility that the game's end with even score 0 - 0, 2 - 2, ...]
- *TODO: add the possibility to recalculate the games point bu modifing the games result
+ *TODO: add the possibility to recalculate the games point by modifing the games result
  */
 import 'dart:math';
 
@@ -10,7 +10,7 @@ class GameResult {
 
   GameResult(this.playerA, this.playerB, this.winner, this.playerAWingGame, this.playerBWingGame);
 
-  @override String toString() => "winner: $winner\nplayer 1: $playerA\tplayer 2: $playerB\n";
+  @override String toString() => "winner: $winner\tplayer 1: $playerA\tplayer 2: $playerB\n";
 }
 
 class GameScore{
@@ -82,7 +82,7 @@ class TournamentLogic{
     }
     _updateScores(_oldRes, _tmpres);
     parent.refresh();
-    print(playersPoints);
+    //print(playersPoints);
   }
 
   /** Update the game's score based on the registered games results
@@ -96,7 +96,6 @@ class TournamentLogic{
         playersPoints[_newRes.playerB] -= 1;
       }
     }
-    // print("dioboia ${_newRes.winner}");
     if (_newRes.winner != "draw") playersPoints[_newRes.winner] += 3;
     else{
       playersPoints[_newRes.playerA] += 1;
@@ -118,24 +117,14 @@ class TournamentLogic{
    *  pairing calculated from previous round.
    */
   void nextRound(){
-    // print(_pointList);
     if (checkRoundComplete()){
       List _pointList =  playersPoints.entries.map((e) => {'name': e.key, 'points': e.value}).toList();
       _pointList.sort((a, b){
-        // print("${a['points']} \t ${b['points']}");
         if (a['points'] < b['points']) return 1;
         else return 0;
       });
-      _adjustSeating(_pointList);
-      this.seating = new List();
-      int _length = playersNames.length;
-      if (playersNames.length % 2 == 1) {
-        byeRound = playersNames[playersNames.length -1];
-        _length--;
-      }
-      for (int i = 0; i < _length; i+=2 ){
-        seating.add([_pointList[i]['name'], _pointList[i+1]['name']]);
-      }
+      this.seating = _adjustSeating(_pointList);
+
       this.currentRount++;
     } else print("end all games");
   }
@@ -144,8 +133,37 @@ class TournamentLogic{
    *  if so, the player with the higher ranking is paired with the nearest (points
    *  wise) player available that has not already play against him/her
    */
-  List _adjustSeating(List _sortedList){
+  List _adjustSeating(List _pointList){
     /*TODO: write body*/
-    return _sortedList;
+    List _tmpSeating = new List();
+    int _length = playersNames.length;
+    for (int i = 0; i < _length; i+=2 ){
+      _tmpSeating.add([_pointList[i]['name'], _pointList[i+1]['name']]);
+    }
+    //verify if two player have already play toghether;
+    for (int i  = 0; i < _tmpSeating.length; i++){
+      //verify if i vs j is already appened
+      if (_alreadyPlay(_tmpSeating[i])) print('ok');
+
+      // for (j = 0; j < _tmpSeating.length; j++){
+      // }
+    }
+    print(_tmpSeating);
+    //find a bye player if necessary
+    if (playersNames.length % 2 == 1) {
+      this.byeRound = playersNames[playersNames.length -1];
+      _length--;
+    }
+    return _tmpSeating;
+  }
+
+  bool _alreadyPlay(List _playerList){
+    print(this.tournamentResult);
+    bool _alreadyPlay = false;
+    for (int i = 0; i < round; i++){
+
+    }
+
+    return _alreadyPlay;
   }
 }
