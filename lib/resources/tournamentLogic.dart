@@ -1,5 +1,6 @@
 /*TODO: add the possibility that the game's end with even score 0 - 0, 2 - 2, ...]
  *TODO: add the possibility to recalculate the games point by modifing the games result
+ *TODO: add a byeRound list for history purpuse
  */
 import 'dart:math';
 
@@ -18,8 +19,8 @@ class GameScore{
 }
 
 class TournamentLogic{
+  int currentRound = 1;
   int playersNum=2;
-  int currentRount = 1;
   int round=3;
   String byeRound;
   List playersNames;
@@ -28,6 +29,7 @@ class TournamentLogic{
   List seating;
   List playerPairing;
   List gameResult;
+  List byeHistory;
   var parent;
 
   TournamentLogic(this.parent, this.playersNum, this.round, this.playersNames){
@@ -49,6 +51,8 @@ class TournamentLogic{
 
     gameResult = ['1 - 0', '2 - 0', '2 - 1'];
     tournamentResult = new Map<int,List<GameResult>>();
+    byeHistory = new List<String>();
+    if ( byeRound != null ) byeHistory.add(byeRound);
   }
 
   /** taken from https://stackoverflow.com/questions/13554129/list-shuffle-in-dart
@@ -72,7 +76,6 @@ class TournamentLogic{
    *
    */
   void addGameResult(int round, String playerA, String playerB, String winner, int games1, int games2){
-    print("$playerA\t$playerB\tround: $round"); 
     if (tournamentResult[round] == null) tournamentResult[round] = new List<GameResult>();
     GameResult _oldRes ,_tmpres = new GameResult(playerA, playerB, winner, games1, games2);
     int tmpIndex = tournamentResult[round].indexWhere((game) => game.playerA == playerA && game.playerB == playerB);
@@ -110,7 +113,7 @@ class TournamentLogic{
    */
   bool checkRoundComplete(){
     int _tmpPlayerNo = playersNum%2==0 ? playersNum : playersNum -1;
-    if (tournamentResult[currentRount] != null && tournamentResult[currentRount].length == (_tmpPlayerNo/2)) return true;
+    if (tournamentResult[currentRound] != null && tournamentResult[currentRound].length == (_tmpPlayerNo/2)) return true;
     return false;
   }
 
@@ -119,14 +122,17 @@ class TournamentLogic{
    */
   void nextRound(){
     if (checkRoundComplete()){
+      if (byeRound != null) playersPoints[byeRound] += 3;
       List _pointList =  playersPoints.entries.map((e) => {'name': e.key, 'points': e.value}).toList();
       _pointList.sort((a, b){
         if (a['points'] < b['points']) return 1;
         else return 0;
       });
       this.seating = _adjustSeating(_pointList);
-
-      this.currentRount++;
+      this.currentRound++;
+      print(_pointList[_pointList.length-1]);
+      byeRound=_pointList[_pointList.length-1]['name'];
+      byeHistory.add(byeRound);
     } else print("end all games");
   }
 
@@ -153,13 +159,21 @@ class TournamentLogic{
     return _tmpSeating;
   }
 
+  /** check if player A and player B already played together in this tournament
+   *  by checking all previously games where player A or player B played
+   */
   bool _alreadyPlay(List _playerList){
     bool _alreadyPlay = false;
-    for (int i = 0; i < round; i++){
+    for (int i = 0; (i < currentRound) && ! _alreadyPlay; i++){
       var _oldGames = tournamentResult[i];
-      //print(_oldGames);
+      if (_oldGames != null) {
+        for (int i = 0; i < _oldGames.length; i++){
+          if (_playerList.contains(_oldGames[i].playerA) && _playerList.contains(_oldGames[i].playerB)) _alreadyPlay=true;
+        }
+      }
     }
 
+    print(_alreadyPlay);
     return _alreadyPlay;
   }
 }

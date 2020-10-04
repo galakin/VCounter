@@ -51,13 +51,13 @@ class _TournamentPairingState extends State{
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 8.0),
             child: ListView.builder(
-              itemCount: _logic.currentRount +2,
+              itemCount: _logic.currentRound +2,
               itemBuilder: (BuildContext context, int index){
                 if (index == 0) return Padding(
                   padding: EdgeInsets.only(top: 20.0),
                   child: Text("Abbinamenti: ", style: standardStyle()),
                 );//end Padding
-                else if (index == _logic.currentRount +1){
+                else if (index == _logic.currentRound +1){
                   return Column(
                     children: [
                       Center(
@@ -134,26 +134,18 @@ class _TournamentPairingState extends State{
    *  TODO: add the possibility to manually change the order
    */
   Widget _pairingOrder(int _roundNo){
-    /*BUG name displayer are not correct CHANGE HERE !!! */
-    print(_roundNo);
     List _children = new List<Widget>();
 
     _children.add(standardPadding(Text('Turno $_roundNo')));
     for (int i = 0; i < _logic.seating.length; i++ ){
       List _playersSeating = _logic.seating[i];
-      if (_roundNo < _logic.currentRount) {
-          print(_logic.tournamentResult[_roundNo][i]);
+      if (_roundNo < _logic.currentRound) {
           List _players = [_logic.tournamentResult[_roundNo][i].playerA, _logic.tournamentResult[_roundNo][i].playerB];
           _children.add(standardPadding(_pairingWidget(_players, i, _roundNo), value: 4.0));
       } else _children.add(standardPadding(_pairingWidget(_logic.seating[i], i, _roundNo), value: 4.0));
-      // if (_logic.tournamentResult != null  && _logic.tournamentResult[_roundNo][i] != null){
-      //   if (_logic.tournamentResult[_roundNo][i].playerA != null && _logic.tournamentResult[_roundNo][i].playerB != null)
-      //   print([_logic.tournamentResult]);
-      //   // _playersSeating =
-      // }
     }
 
-    if (_logic.byeRound != null) _children.add(standardPadding(_byeWidget(_logic.byeRound)));
+    if (_logic.byeRound != null) _children.add(standardPadding(_byeWidget(_logic.byeHistory[_roundNo-1])));
     _children.add(standardPadding(Padding(
       padding: EdgeInsets.symmetric(horizontal: 24.0),
       child: Divider(thickness: 1.5),
@@ -251,12 +243,9 @@ class _TournamentPairingState extends State{
    *  playerB: the second player
    */
   Widget _resultButton(int round, String playerA, String playerB){
-    // print('\n\n$playerA\t$playerB\tround: $round\n\n');
     int _tmpindex=-1;
     List _oldGames = _logic.tournamentResult[round];
-    //print("\n$_oldGames\tround: $round\n\n");
     if ( _oldGames != null){
-      // print(_oldGames.length);
       _tmpindex = _logic.tournamentResult[round].indexWhere((game) => game.playerA == playerA || game.playerA == playerB);
 
     }
