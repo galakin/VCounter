@@ -10,7 +10,7 @@ class GameResult {
 
   GameResult(this.playerA, this.playerB, this.winner, this.playerAWingGame, this.playerBWingGame);
 
-  @override String toString() => "winner: $winner\tplayer 1: $playerA\tplayer 2: $playerB\n";
+  @override String toString() => "winner: $winner\tplayer 1: $playerA\tplayer 2: $playerB";
 }
 
 class GameScore{
@@ -72,6 +72,7 @@ class TournamentLogic{
    *
    */
   void addGameResult(int round, String playerA, String playerB, String winner, int games1, int games2){
+    print("$playerA\t$playerB\tround: $round"); 
     if (tournamentResult[round] == null) tournamentResult[round] = new List<GameResult>();
     GameResult _oldRes ,_tmpres = new GameResult(playerA, playerB, winner, games1, games2);
     int tmpIndex = tournamentResult[round].indexWhere((game) => game.playerA == playerA && game.playerB == playerB);
@@ -82,7 +83,7 @@ class TournamentLogic{
     }
     _updateScores(_oldRes, _tmpres);
     parent.refresh();
-    //print(playersPoints);
+
   }
 
   /** Update the game's score based on the registered games results
@@ -134,34 +135,29 @@ class TournamentLogic{
    *  wise) player available that has not already play against him/her
    */
   List _adjustSeating(List _pointList){
-    /*TODO: write body*/
+    /*BUG seating position are not correct*/
     List _tmpSeating = new List();
     int _length = playersNames.length;
+    if (playersNames.length % 2 == 1) {                                         //find a bye player if necessary
+      this.byeRound = playersNames[playersNames.length -1];
+      _length--;
+    }
     for (int i = 0; i < _length; i+=2 ){
       _tmpSeating.add([_pointList[i]['name'], _pointList[i+1]['name']]);
     }
     //verify if two player have already play toghether;
     for (int i  = 0; i < _tmpSeating.length; i++){
       //verify if i vs j is already appened
-      if (_alreadyPlay(_tmpSeating[i])) print('ok');
-
-      // for (j = 0; j < _tmpSeating.length; j++){
-      // }
-    }
-    print(_tmpSeating);
-    //find a bye player if necessary
-    if (playersNames.length % 2 == 1) {
-      this.byeRound = playersNames[playersNames.length -1];
-      _length--;
+      if (_alreadyPlay(_tmpSeating[i])) ;
     }
     return _tmpSeating;
   }
 
   bool _alreadyPlay(List _playerList){
-    print(this.tournamentResult);
     bool _alreadyPlay = false;
     for (int i = 0; i < round; i++){
-
+      var _oldGames = tournamentResult[i];
+      //print(_oldGames);
     }
 
     return _alreadyPlay;
