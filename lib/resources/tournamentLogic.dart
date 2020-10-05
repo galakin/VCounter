@@ -121,6 +121,7 @@ class TournamentLogic{
    *  pairing calculated from previous round.
    */
   void nextRound(){
+    if (tournamentResult[1][0] != null) print(tournamentResult[1][0]);
     if (checkRoundComplete()){
       if (byeRound != null) playersPoints[byeRound] += 3;
       List _pointList =  playersPoints.entries.map((e) => {'name': e.key, 'points': e.value}).toList();
@@ -130,9 +131,10 @@ class TournamentLogic{
       });
       this.seating = _adjustSeating(_pointList);
       this.currentRound++;
-      print(_pointList[_pointList.length-1]);
-      byeRound=_pointList[_pointList.length-1]['name'];
-      byeHistory.add(byeRound);
+      if (playersNames.length % 2 == 1){
+        byeRound=_pointList[_pointList.length-1]['name'];
+        byeHistory.add(byeRound);
+      }
     } else print("end all games");
   }
 
@@ -143,18 +145,28 @@ class TournamentLogic{
   List _adjustSeating(List _pointList){
     /*BUG seating position are not correct*/
     List _tmpSeating = new List();
+    List _alreadyAssigned = new List<String>();
     int _length = playersNames.length;
     if (playersNames.length % 2 == 1) {                                         //find a bye player if necessary
       this.byeRound = playersNames[playersNames.length -1];
       _length--;
     }
-    for (int i = 0; i < _length; i+=2 ){
-      _tmpSeating.add([_pointList[i]['name'], _pointList[i+1]['name']]);
-    }
-    //verify if two player have already play toghether;
-    for (int i  = 0; i < _tmpSeating.length; i++){
-      //verify if i vs j is already appened
-      if (_alreadyPlay(_tmpSeating[i])) ;
+    for (int i = 0; i < _length; i+1 ){
+      bool _alreadyp = true;
+      for (int j = 0; j < _length && _alreadyp; j+1){
+        if (i != j ){
+          if (_alreadyPlay([_pointList[i]['name'], _pointList[j]['name']])){      //verify if two player have already play toghether;
+            print("${_pointList[i]['name']}\t and ${_pointList[j]['name']} already played together!");
+            _alreadyp = false;
+            _tmpSeating.add([_pointList[i]['name'], _pointList[j]['name']]);
+          } else {
+            _alreadyAssigned.add(_pointList[i]['name']); _alreadyAssigned.add(_pointList[j]['name']);
+            _tmpSeating.add([_pointList[i]['name'], _pointList[j]['name']]);
+          }
+        }
+
+        /*TODO Exit loop and remove player*/
+      }
     }
     return _tmpSeating;
   }
@@ -163,17 +175,17 @@ class TournamentLogic{
    *  by checking all previously games where player A or player B played
    */
   bool _alreadyPlay(List _playerList){
-    bool _alreadyPlay = false;
-    for (int i = 0; (i < currentRound) && ! _alreadyPlay; i++){
-      var _oldGames = tournamentResult[i];
-      if (_oldGames != null) {
-        for (int i = 0; i < _oldGames.length; i++){
-          if (_playerList.contains(_oldGames[i].playerA) && _playerList.contains(_oldGames[i].playerB)) _alreadyPlay=true;
+    bool _alreadyP=false;
+    if (playersNum > 2 ){                                                       //if we have only two player this method is useless
+      for (int i = 1; (i <= currentRound) && !_alreadyP; i++){               //round always start at 1
+        var _oldGames = tournamentResult[i];
+        for (int i = 0; _oldGames != null && i < _oldGames.length && !_alreadyP; i++){
+          if (_playerList.contains(_oldGames[i].playerA) && _playerList.contains(_oldGames[i].playerB)) {
+            _alreadyP=true;
+          }
         }
       }
+      return _alreadyP;
     }
-
-    print(_alreadyPlay);
-    return _alreadyPlay;
   }
 }
