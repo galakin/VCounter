@@ -1,6 +1,5 @@
 /*TODO: add the possibility that the game's end with even score 0 - 0, 2 - 2, ...]
  *TODO: add the possibility to recalculate the games point by modifing the games result
- *TODO: add a byeRound list for history purpuse
  */
 import 'dart:math';
 
@@ -21,7 +20,7 @@ class GameScore{
 class TournamentLogic{
   int currentRound = 1;
   int playersNum=2;
-  int round=3;
+  int round=3, maxRound;
   String byeRound;
   List playersNames;
   Map <String, int> playersPoints;
@@ -53,6 +52,8 @@ class TournamentLogic{
     tournamentResult = new Map<int,List<GameResult>>();
     byeHistory = new List<String>();
     if ( byeRound != null ) byeHistory.add(byeRound);
+
+    maxRound=_calculateMaxRound();
   }
 
   /** taken from https://stackoverflow.com/questions/13554129/list-shuffle-in-dart
@@ -121,21 +122,22 @@ class TournamentLogic{
    *  pairing calculated from previous round.
    */
   void nextRound(){
-    if (tournamentResult[1][0] != null) print(tournamentResult[1][0]);
-    if (checkRoundComplete()){
-      if (byeRound != null) playersPoints[byeRound] += 3;
-      List _pointList =  playersPoints.entries.map((e) => {'name': e.key, 'points': e.value}).toList();
-      _pointList.sort((a, b){
-        if (a['points'] < b['points']) return 1;
-        else return 0;
-      });
-      this.seating = _adjustSeating(_pointList);
-      this.currentRound++;
-      if (playersNames.length % 2 == 1){
-        byeRound=_pointList[_pointList.length-1]['name'];
-        byeHistory.add(byeRound);
-      }
-    } else print("end all games");
+    if (currentRound < maxRound){
+      if (checkRoundComplete()){
+        if (byeRound != null) playersPoints[byeRound] += 3;
+        List _pointList =  playersPoints.entries.map((e) => {'name': e.key, 'points': e.value}).toList();
+        _pointList.sort((a, b){
+          if (a['points'] < b['points']) return 1;
+          else return 0;
+        });
+        this.seating = _adjustSeating(_pointList);
+        this.currentRound++;
+        if (playersNames.length % 2 == 1){
+          byeRound=_pointList[_pointList.length-1]['name'];
+          byeHistory.add(byeRound);
+        }
+      } else print("end all games");
+    } else print("max no of round reached!");
   }
 
   /** Adjust seating order by checking if two players have already play together
@@ -147,27 +149,32 @@ class TournamentLogic{
     List _tmpSeating = new List();
     List _alreadyAssigned = new List<String>();
     int _length = playersNames.length;
-    if (playersNames.length % 2 == 1) {                                         //find a bye player if necessary
+    if (playersNames.length % 2 == 1) {                                                                                   //find a bye player if necessary
       this.byeRound = playersNames[playersNames.length -1];
       _length--;
     }
-    for (int i = 0; i < _length; i+1 ){
-      bool _alreadyp = true;
-      for (int j = 0; j < _length && _alreadyp; j+1){
+    print("Start calculating pairing...");
+    print("length: $_length");
+    for (int i = 0; i < _length; i++ ){
+      bool _alreadyp = false;
+      for (int j = 0; j < _length && !_alreadyp; j++){
         if (i != j ){
-          if (_alreadyPlay([_pointList[i]['name'], _pointList[j]['name']])){      //verify if two player have already play toghether;
-            print("${_pointList[i]['name']}\t and ${_pointList[j]['name']} already played together!");
-            _alreadyp = false;
-            _tmpSeating.add([_pointList[i]['name'], _pointList[j]['name']]);
-          } else {
-            _alreadyAssigned.add(_pointList[i]['name']); _alreadyAssigned.add(_pointList[j]['name']);
-            _tmpSeating.add([_pointList[i]['name'], _pointList[j]['name']]);
-          }
+          if (!_alreadyAssigned.contains(_pointList[i]['name']) && !_alreadyAssigned.contains(_pointList[j]['name'])){    //check if i and j are already benn matched with someone
+            if (_alreadyPlay([_pointList[i]['name'], _pointList[j]['name']])){                                            //verify if two player have already play toghether;
+              _alreadyp=true;
+              print("${_pointList[i]['name']}\t and ${_pointList[j]['name']} already played together!");
+            } else {
+              _alreadyAssigned.add(_pointList[i]['name']); _alreadyAssigned.add(_pointList[j]['name']);
+              _tmpSeating.add([_pointList[i]['name'], _pointList[j]['name']]);
+              _alreadyp = true;
+              _alreadyAssigned.add(_pointList[i]['name']); _alreadyAssigned.add(_pointList[j]['name']);
+            }
+            print("$i vs $j");
+          } else print("${_pointList[i]['name']} or ${_pointList[j]['name']} already match with someone");
         }
-
-        /*TODO Exit loop and remove player*/
       }
     }
+    print("... End calculating pairing");
     return _tmpSeating;
   }
 
@@ -176,8 +183,8 @@ class TournamentLogic{
    */
   bool _alreadyPlay(List _playerList){
     bool _alreadyP=false;
-    if (playersNum > 2 ){                                                       //if we have only two player this method is useless
-      for (int i = 1; (i <= currentRound) && !_alreadyP; i++){               //round always start at 1
+    if (playersNum > 2 ){                                                                                                 //if we have only two player this method is useless
+      for (int i = 1; (i <= currentRound) && !_alreadyP; i++){                                                            //round always start at 1
         var _oldGames = tournamentResult[i];
         for (int i = 0; _oldGames != null && i < _oldGames.length && !_alreadyP; i++){
           if (_playerList.contains(_oldGames[i].playerA) && _playerList.contains(_oldGames[i].playerB)) {
@@ -187,5 +194,26 @@ class TournamentLogic{
       }
       return _alreadyP;
     }
+  }
+
+  /** Calculate the max no of round based on the no' of player, the round no
+   *  are taken from the official Channel Fireball website
+   *  https://strategy.channelfireball.com/all-strategy/mtg/channelmagic-articles/understanding-standings-part-i-tournament-structure-the-basics/
+   */
+  int _calculateMaxRound(){
+    if (playersNum < 4) return 1;
+    else if (playersNum > 3 && playersNum < 5) return 2;
+    else if (playersNum >= 5 && playersNum  <= 8) return 3;
+    else if (playersNum >= 9 && playersNum <= 16) return 4;
+    else if (playersNum >= 17 && playersNum <= 32) return 5;
+    else if (playersNum >= 33 && playersNum <= 64) return 6;
+  }
+
+
+  /** Generate the standing list, both partial and final standing based on the
+   *  player points and previous game
+   */
+  List generateStanding(bool _final){
+      return new List();
   }
 }

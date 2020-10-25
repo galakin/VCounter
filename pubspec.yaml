@@ -35,8 +35,7 @@ dependencies:
   redux: ^4.0.0 #basic redux library
   flutter_redux: ^0.6.0 #flutter redux library
   animated_splash_screen: ^1.0.0+1 #animated splash screen because i'm lazy af
-
-
+  trotter: ^1.2.0 #used for simplify mathematica calculus
 
 dev_dependencies:
   flutter_test:

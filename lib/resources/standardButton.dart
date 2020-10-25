@@ -4,8 +4,9 @@ import 'package:vcounter/assets/colors.dart';
 class StandardButton extends StatelessWidget{
   Widget child;
   var action;
+  Color color;
 
-  StandardButton({this.child = null, this.action = null});
+  StandardButton({this.child = null, this.action = null, this.color});
 
   @override Widget build(BuildContext context){
     return RaisedButton(
@@ -16,7 +17,7 @@ class StandardButton extends StatelessWidget{
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16.0),
       ),//end RoundedRectangleBorder
-      color: vpurple,
+      color: color == null ? vpurple : color,
       onPressed: action,
     );//end RaisedButton
   }

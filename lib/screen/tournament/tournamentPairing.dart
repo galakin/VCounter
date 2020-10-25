@@ -69,11 +69,32 @@ class _TournamentPairingState extends State{
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16.0),
                           ),//end RoundedRectangleBorder
-                          color: vpurple,
+                          color: _logic.currentRound < _logic.maxRound ? vpurple : lightVPurple,
                           onPressed: () {
-                            setState(() {
-                              _logic.nextRound();
-                            });
+                            if (_logic.currentRound < _logic.maxRound){
+                              setState(() {
+                                _logic.nextRound();
+                              });
+                            } else return showDialog<void>(
+                              context: context,
+                              barrierDismissible: true, // user must tap button!
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text('Numero Massimo di turno Raggiunto'),
+                                  // content: SingleChildScrollView(
+                                  //   child: Text('This is a demo alert dialog.'),
+                                  // ),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      child: Text('Ah, ho capito!'),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
                           },
                         ),//end RaisedButton
                       ),//end Center
@@ -109,7 +130,8 @@ class _TournamentPairingState extends State{
             alignment: Alignment.bottomRight,
             child: Padding(
               padding: EdgeInsets.only(right: 8.0, left: 8.0, bottom: 50.0),
-              child: BrokenButton(
+              child: StandardButton(
+                color: (_logic.maxRound != _logic.currentRound) ? lightVPurple : vpurple,
                 child: Container(
                   width: 135,
                   child: Row(
@@ -121,7 +143,16 @@ class _TournamentPairingState extends State{
                     ]
                   ),//end Row
                 ),//end Container
-                action: () {}
+                action: (){
+                  print("${_logic.maxRound} \t-\t${_logic.currentRound}");
+                  if (_logic.maxRound == _logic.currentRound){
+                    List _finalStanding=_logic.generateStanding(false);
+                    Navigator.of(context).pushReplacementNamed(
+                      "finalstanding",
+                      arguments: {'store': _store, 'standing': _finalStanding}
+                    );//end Navigator
+                  }
+                }
               ),//end StandardButton
             ),//end Padding
           ),//end Align

@@ -6,7 +6,7 @@ import 'package:vcounter/screen/gameHistory.dart';
 import 'package:vcounter/screen/hallOfFame.dart';
 import 'package:vcounter/screen/tournament/createTournament.dart';
 import 'package:vcounter/screen/tournament/tournamentPairing.dart';
-
+import 'package:vcounter/screen/tournament/finalStanding.dart';
 class RouteGenerator {
 
   static Route<dynamic> generateRoute(RouteSettings settings){
@@ -59,6 +59,14 @@ class RouteGenerator {
       case 'tournamentpairing':
         if (args is Map){
           if (args['store'] != null) return MaterialPageRoute(builder: (_) => TournamentPairing(args['store'], args['tournamentName'], args['playersNames'], args['roundNo']));
+          else return defaultRoute(args);
+        } else return defaultRoute(args);
+      break;
+
+      case 'finalstanding':
+        if (args is Map){
+          if (args['store'] != null && args['standing'] != null)
+            return MaterialPageRoute(builder: (_) => FinalStanding(args['store'], args['standing']));
           else return defaultRoute(args);
         } else return defaultRoute(args);
       break;
