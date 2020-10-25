@@ -49,7 +49,7 @@ class _CreateTournametState extends State{
                   Text('Partecipanti:', style: standardStyle()),
                 ),//end Standard Padding
                 standardPadding(_playersNameInput()),
-                standardPadding(_roundNumbers()),
+                // standardPadding(_roundNumbers()),
               ]
             ),//end ListView
             Align(

@@ -1,4 +1,5 @@
 /** TODO: find a way to keep track of the round number
+ *  TODO: use ExpansionPanel to expand round games
  */
 import 'dart:math';
 import 'package:flutter/material.dart';
@@ -30,6 +31,7 @@ class _TournamentPairingState extends State{
   String _tournamentName, _byeRound;
   List _playersNames, _seating, _winningOrder, _score;
   int _roundNo;
+  int _expandedRound=0;
 
   _TournamentPairingState(store, tournamentName, playersNames, roundNo){
       this._store = store;
@@ -40,7 +42,6 @@ class _TournamentPairingState extends State{
   @override initState(){
     super.initState();
     // _seating = new List();
-
   }
 
   @override Widget build(BuildContext context){
@@ -162,10 +163,13 @@ class _TournamentPairingState extends State{
   }
 
   /** return a column with the pairing order and the possibility of randomly change it
-   *  TODO: add the possibility to manually change the order
+   *
    */
   Widget _pairingOrder(int _roundNo){
+    /*NOTE insert here expanding panel*/
     List _children = new List<Widget>();
+    List _expansionChildren = new List<ExpansionPanel>();
+
 
     _children.add(standardPadding(Text('Turno $_roundNo')));
     for (int i = 0; i < _logic.seating.length; i++ ){
@@ -174,6 +178,14 @@ class _TournamentPairingState extends State{
           List _players = [_logic.tournamentResult[_roundNo][i].playerA, _logic.tournamentResult[_roundNo][i].playerB];
           _children.add(standardPadding(_pairingWidget(_players, i, _roundNo), value: 4.0));
       } else _children.add(standardPadding(_pairingWidget(_logic.seating[i], i, _roundNo), value: 4.0));
+
+      // _expansionChildren.add(
+      //   ExpansionPanel(
+      //     isExpanded: (i==_expandedRound),
+      //     // headerBuilder:  ExpansionPanelHeaderBuilder(this.context, (i==_expandedRound)),
+      //     body: null,
+      //   )//end ExpansionPanel
+      // );
     }
 
     if (_logic.byeRound != null) _children.add(standardPadding(_byeWidget(_logic.byeHistory[_roundNo-1])));
