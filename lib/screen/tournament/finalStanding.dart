@@ -43,7 +43,7 @@ class _FinalStandingState extends State{
               padding: EdgeInsets.only(right: 16.0),
               child: StandardButton(
                 color: vpurple,
-                child: Text("Ritorna al Menù Principale", style: standardWhiteStyle()),
+                child: Text("Home", style: standardWhiteStyle()),
                 action: () => Navigator.of(context).pushReplacementNamed(
                   "homepage",
                   arguments: {'store': _store}

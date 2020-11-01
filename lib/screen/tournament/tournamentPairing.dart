@@ -145,13 +145,13 @@ class _TournamentPairingState extends State{
                   ),//end Row
                 ),//end Container
                 action: (){
-                  print("${_logic.maxRound} \t-\t${_logic.currentRound}");
                   if (_logic.maxRound == _logic.currentRound){
                     List _finalStanding=_logic.generateStanding(false);
-                    Navigator.of(context).pushReplacementNamed(
-                      "finalstanding",
-                      arguments: {'store': _store, 'standing': _finalStanding}
-                    );//end Navigator
+                    print(_finalStanding);
+                    // Navigator.of(context).pushReplacementNamed(
+                    //   "finalstanding",
+                    //   arguments: {'store': _store, 'standing': _finalStanding}
+                    // );//end Navigator
                   }
                 }
               ),//end StandardButton

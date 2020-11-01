@@ -53,7 +53,11 @@ class _CreateTournametState extends State{
                   Text('Partecipanti:', style: standardStyle()),
                 ),//end Standard Padding
                 standardPadding(
-                  greyOvalLayout(_playersNameInput(), oRightPadding: 84.0)
+                  Row(
+                    children:[
+                      greyOvalLayout(_playersNameInput(), oRightPadding: 0.0),
+                    ]
+                  ),
                 ),
 
                 // standardPadding(_roundNumbers()),
@@ -132,13 +136,17 @@ class _CreateTournametState extends State{
       );
     }
 
-    return Form(
-      key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: _children,
-      ),//end Column
-    );//end Form
+    return Container(
+      width: 240,
+      // color: Colors.green,
+      child: Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: _children,
+        ),//end Column
+      ),//end Form
+    );//end Container
   }
 
   /** If the player's text field is the last one of the list a remove icon is

@@ -214,6 +214,65 @@ class TournamentLogic{
    *  player points and previous game
    */
   List generateStanding(bool _final){
-      return new List();
+    List _pointList =  playersPoints.entries.map((e) => {'name': e.key, 'points': e.value}).toList();
+    _pointList.sort((a, b){
+      if (a['points'] < b['points']) return 1;
+      else return 0;
+    });
+    List _alreadyChecked = [];
+    for (int i = 0; i < _pointList.length; i++){
+      if (!_alreadyChecked.contains(_pointList[i]['name'])){                                                              //enter only if the player isn't checked yet
+        _alreadyChecked.add(_pointList[i]['name']);
+        List _samePointPlayer=[_pointList[i]['name']];
+        for (int j = i+1; j < _pointList.length; j++){
+          if (_pointList[j]['points'] == _pointList[i]['points']) {
+            _alreadyChecked.add(_pointList[j]['name']);
+            _samePointPlayer.add(_pointList[j]['name']);
+
+          }
+        }
+        if (_samePointPlayer.length > 1) {
+          List _orderedSublist=[];
+          _orderedSublist=_checkOrder(_orderedSublist);
+          if (_orderedSublist.length != 0){
+            /*TODO write body*/
+          }
+        }
+        print(_samePointPlayer);
+      }
+    }
+    return _pointList;
+  }
+
+  /** check if player in the sublist are ordered, if not order the sublist in the
+   *  correct way,
+   *  _sublist: the sublist that need to be checked
+   *  return the sublist correctly ordered if some player are misplaced, otherwise
+   *    the empty list is returned
+   */
+  List _checkOrder(List _sublist) {
+    for (int i = 0; i < _sublist.length; i++){
+      for (int j = i+1; j < _sublist.length; j++){
+        if (_lee(_sublist[i], _sublist[j])){
+          String tmp=_sublist[i];
+          _sublist[i]=_sublist[j];
+          _sublist[j]=tmp;
+        }
+
+      }
+    }
+    return [];
+  }
+
+  /** least equal enemy, used to found the nearest, round wise, enemy that two
+   *  player have batteled with, used to define the final/partial ranking of a
+   *  tournament
+   *  _playerA:
+   *  _playerB:
+   *  return true if player A have is higher in the ranking than player B, false
+   *  otherwise
+   */
+  bool _lee(String _playerA, String _playerB){
+    return false;
   }
 }
