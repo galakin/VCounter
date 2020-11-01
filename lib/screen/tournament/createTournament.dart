@@ -9,6 +9,7 @@ import 'package:vcounter/resources/drawer.dart';
 import 'package:vcounter/services/wrapper.dart';
 import 'package:vcounter/assets/colors.dart';
 import 'package:vcounter/assets/tournamentStyle.dart';
+import 'package:vcounter/assets/layout.dart';
 
 class CreateTournamet extends StatefulWidget{
   Store _store;
@@ -40,15 +41,21 @@ class _CreateTournametState extends State{
                 Container(
                   height: 20.0
                 ),//end Container
-                TextFormField(
-                  initialValue: _tournamentName,
-                  validator: (value) => value.isEmpty ? 'Inserire un nome ignorante' : null,
-                  onSaved: (value) => _tournamentName = value,
-                ),//end TextField
+                /*TODO add layout*/
+                greyOvalLayout(
+                  TextFormField(
+                    initialValue: _tournamentName,
+                    validator: (value) => value.isEmpty ? 'Inserire un nome ignorante' : null,
+                    onSaved: (value) => _tournamentName = value,
+                  ),//end TextField
+                ),
                 standardPadding(
                   Text('Partecipanti:', style: standardStyle()),
                 ),//end Standard Padding
-                standardPadding(_playersNameInput()),
+                standardPadding(
+                  greyOvalLayout(_playersNameInput(), oRightPadding: 84.0)
+                ),
+
                 // standardPadding(_roundNumbers()),
               ]
             ),//end ListView
