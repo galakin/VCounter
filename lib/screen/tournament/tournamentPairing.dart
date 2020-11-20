@@ -146,7 +146,7 @@ class _TournamentPairingState extends State{
                 ),//end Container
                 action: (){
                   if (_logic.maxRound == _logic.currentRound){
-                    List _finalStanding=_logic.generateStanding(false);
+                    var _finalStanding=_logic.generateStanding(false);
                     print(_finalStanding);
                     // Navigator.of(context).pushReplacementNamed(
                     //   "finalstanding",

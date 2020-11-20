@@ -10,7 +10,12 @@ class GameResult {
 
   GameResult(this.playerA, this.playerB, this.winner, this.playerAWingGame, this.playerBWingGame);
 
+  bool samePlayer(String playerA, String playerB){
+    if ((this.playerA == playerA || this.playerB == playerA) && (this.playerA == playerB || this.playerB == playerB)) return true;
+    return false;
+  }
   @override String toString() => "winner: $winner\tplayer 1: $playerA\tplayer 2: $playerB";
+
 }
 
 class GameScore{
@@ -213,7 +218,7 @@ class TournamentLogic{
   /** Generate the standing list, both partial and final standing based on the
    *  player points and previous game
    */
-  List generateStanding(bool _final){
+  generateStanding(bool _final){
     List _pointList =  playersPoints.entries.map((e) => {'name': e.key, 'points': e.value}).toList();
     _pointList.sort((a, b){
       if (a['points'] < b['points']) return 1;
@@ -224,24 +229,23 @@ class TournamentLogic{
       if (!_alreadyChecked.contains(_pointList[i]['name'])){                                                              //enter only if the player isn't checked yet
         _alreadyChecked.add(_pointList[i]['name']);
         List _samePointPlayer=[_pointList[i]['name']];
+
         for (int j = i+1; j < _pointList.length; j++){
           if (_pointList[j]['points'] == _pointList[i]['points']) {
             _alreadyChecked.add(_pointList[j]['name']);
             _samePointPlayer.add(_pointList[j]['name']);
+          }
+        }
 
-          }
-        }
-        if (_samePointPlayer.length > 1) {
+        if (_samePointPlayer.length > 1) {                                                                                //if list have more than one elem order the sublit
           List _orderedSublist=[];
-          _orderedSublist=_checkOrder(_orderedSublist);
-          if (_orderedSublist.length != 0){
-            /*TODO write body*/
-          }
+          _orderedSublist=_checkOrder(_samePointPlayer);                                                                  //check if the order is correct
+          /*TODO swap sublist with list fragment*/
         }
-        print(_samePointPlayer);
+        print("Some player point: $_samePointPlayer");
       }
     }
-    return _pointList;
+    return playersPoints;
   }
 
   /** check if player in the sublist are ordered, if not order the sublist in the
@@ -258,10 +262,10 @@ class TournamentLogic{
           _sublist[i]=_sublist[j];
           _sublist[j]=tmp;
         }
-
+        /*NOTE check least greater common antagonist*/
       }
     }
-    return [];
+    return _sublist;
   }
 
   /** least equal enemy, used to found the nearest, round wise, enemy that two
@@ -273,6 +277,18 @@ class TournamentLogic{
    *  otherwise
    */
   bool _lee(String _playerA, String _playerB){
+    bool _find=false;
+    int _tmpRound = round;
+    while (_tmpRound > 0 && !_find){
+      for (int i=0; i < tournamentResult[_tmpRound].length; i++){
+        if (tournamentResult[_tmpRound][i].samePlayer(_playerA, _playerB)){
+          _find=true;
+          if (tournamentResult[_tmpRound][i].winner == playerB) return true
+        }
+      }
+      print(tournamentResult[_tmpRound]);
+      _tmpRound--;
+    }
     return false;
   }
 }
