@@ -1,4 +1,0 @@
-#Sun Dec 27 12:48:04 CET 2020
-base.0=/home/jacopopela/Progetti/VCounter/build/app/intermediates/transforms/dexMerger/debug/0
-path.0=classes.dex
-renamed.0=classes.dex
