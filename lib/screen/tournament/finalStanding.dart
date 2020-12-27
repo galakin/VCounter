@@ -32,8 +32,40 @@ class _FinalStandingState extends State{
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                    Center(child: Text("Classifica finale:")),
-                    SizedBox(height: 10.0),
+                  Center(child: Text("Classifica finale:", style: TextStyle(
+                    fontSize: 22.0,
+                    fontWeight: FontWeight.bold,
+                    )),//end Text
+                  ),//end Center
+                  Container(
+                    height: MediaQuery.of(context).size.height*0.6,
+                    child:ListView.builder(
+                      padding: const EdgeInsets.all(0.0),
+                      itemCount: _finalStandingList.length,
+                      itemBuilder: (BuildContext context, int index){
+                        Color _textColor = Colors.black;
+                        if (index == 0) _textColor = Color.fromRGBO(92, 89, 65, 100);
+                        else if (index == 1) _textColor = Color.fromRGBO(122, 130, 128, 100);
+                        else if (index == 2) _textColor = Color.fromRGBO(133, 86, 0, 100);
+                        return Padding(
+                          padding: EdgeInsets.symmetric(vertical:8.0),
+                          child: Row(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 42.0),
+                                child: Text("${index+1}°: ", style: TextStyle(fontSize: 22.0,fontWeight: FontWeight.bold),
+                              )),
+                              Text(_finalStandingList[index], style: TextStyle(
+                                color: _textColor,
+                                fontSize: 22.0,
+                                fontWeight: FontWeight.bold,
+                              )),//end Text
+                            ]
+                          ),//end Row
+                        );//end Padding
+                      }
+                    ),//end ListView
+                  ),//end Container
                 ]
             ),//end Column
           ),//end Padding

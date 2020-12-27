@@ -224,7 +224,10 @@ class TournamentLogic{
       if (a['points'] < b['points']) return 1;
       else return 0;
     });
-    List _alreadyChecked = [];
+    List _resultList= new List();
+    for (int i =0; i < _pointList.length; i++)
+      _resultList.add(_pointList[i]['name']);
+    List _alreadyChecked = [];                                                                                            //List of already checked names
     for (int i = 0; i < _pointList.length; i++){
       if (!_alreadyChecked.contains(_pointList[i]['name'])){                                                              //enter only if the player isn't checked yet
         _alreadyChecked.add(_pointList[i]['name']);
@@ -240,12 +243,14 @@ class TournamentLogic{
         if (_samePointPlayer.length > 1) {                                                                                //if list have more than one elem order the sublit
           List _orderedSublist=[];
           _orderedSublist=_checkOrder(_samePointPlayer);                                                                  //check if the order is correct
-          /*TODO swap sublist with list fragment*/
+          for (int k1=i, k2=0; k1 < i+_orderedSublist.length; k1++){
+            _resultList[i]=_orderedSublist[k2];
+            k2++;
+          }
         }
-        print("Some player point: $_samePointPlayer");
       }
     }
-    return playersPoints;
+    return _resultList;
   }
 
   /** check if player in the sublist are ordered, if not order the sublist in the
@@ -255,40 +260,46 @@ class TournamentLogic{
    *    the empty list is returned
    */
   List _checkOrder(List _sublist) {
-    for (int i = 0; i < _sublist.length; i++){
+    print(_sublist);
+    for (int i = 0; i < _sublist.length; i++){                                                                            //if player j directly beat player i swap them
       for (int j = i+1; j < _sublist.length; j++){
-        if (_lee(_sublist[i], _sublist[j])){
-          String tmp=_sublist[i];
+        if (_haveDirectMatch(_sublist[j], _sublist[i])){
+          var _tmp = _sublist[i];
           _sublist[i]=_sublist[j];
-          _sublist[j]=tmp;
+          _sublist[j]=_tmp;
+        }else if (_haveUndirectMatch(_sublist[j], _sublist[i])){                                                          // if player j undirecly beat player i swap them
+          var _tmp = _sublist[i];
+          _sublist[i]=_sublist[j];
+          _sublist[j]=_tmp;
         }
-        /*NOTE check least greater common antagonist*/
       }
     }
     return _sublist;
   }
 
-  /** least equal enemy, used to found the nearest, round wise, enemy that two
-   *  player have batteled with, used to define the final/partial ranking of a
-   *  tournament
-   *  _playerA:
-   *  _playerB:
-   *  return true if player A have is higher in the ranking than player B, false
-   *  otherwise
+  /** check if player A and player B have had a direct match agains one another
+   *  in the previous round, if so, if player B is came out victorious swap the
+   *  two player in the final standing
    */
-  bool _lee(String _playerA, String _playerB){
-    bool _find=false;
-    int _tmpRound = round;
-    while (_tmpRound > 0 && !_find){
-      for (int i=0; i < tournamentResult[_tmpRound].length; i++){
-        if (tournamentResult[_tmpRound][i].samePlayer(_playerA, _playerB)){
-          _find=true;
-          if (tournamentResult[_tmpRound][i].winner == _playerB) return true;
+  bool _haveDirectMatch(String _playerA, String _playerB){
+    for (int _round = currentRound; _round > 0; _round--){
+      for (int i = 0; i <tournamentResult[_round].length; i++){
+        if (tournamentResult[_round][i].samePlayer(_playerA, _playerB)){
+          if (tournamentResult[_round][i].winner==_playerB) return true;
+          else return false;
         }
       }
-      print(tournamentResult[_tmpRound]);
-      _tmpRound--;
     }
     return false;
   }
+
+  /** check if player A and player B have had match with a common adversary
+   *  in the previous round, if so, if player B beat palyer C swap the
+   *  two player in the final standing
+   */
+  bool _haveUndirectMatch(String _playerA, String _playerB){
+    /*TODO: write method's body*/
+    return false;
+  }
+
 }

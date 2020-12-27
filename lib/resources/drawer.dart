@@ -37,7 +37,7 @@ class VDrawer extends StatelessWidget{
       child: ListTile(
         title: Text(title),
         onTap: (){
-          if(route == 'newgame')parent.cancelTimer();
+          if (route == 'newgame')parent.cancelTimer();
           if (localroute != null) Navigator.of(context).pushReplacementNamed(
             localroute,
             arguments: {'store': _store}

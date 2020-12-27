@@ -108,6 +108,8 @@ class _NewGameState extends State{
 
     }
 
+
+
     return Scaffold(
       drawer: VDrawer(_store, route: 'newgame', parent: this),
       body: Stack(

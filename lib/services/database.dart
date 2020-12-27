@@ -57,4 +57,8 @@ class LocalDatabase {
     if (this.db == null) await open();
     await db.rawDelete('DELETE FROM Games WHERE Games.id = "$_gameID"');
   }
+
+  Future<void> saveTournamentResult(String gold, String silver, String bronze, int date) async{
+    
+  }
 }
