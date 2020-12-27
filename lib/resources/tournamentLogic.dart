@@ -283,7 +283,7 @@ class TournamentLogic{
       for (int i=0; i < tournamentResult[_tmpRound].length; i++){
         if (tournamentResult[_tmpRound][i].samePlayer(_playerA, _playerB)){
           _find=true;
-          if (tournamentResult[_tmpRound][i].winner == playerB) return true
+          if (tournamentResult[_tmpRound][i].winner == _playerB) return true;
         }
       }
       print(tournamentResult[_tmpRound]);

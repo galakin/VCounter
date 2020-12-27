@@ -62,6 +62,7 @@ class _GameHistoryState extends State{
                     onDismissed: (direction) {
                       _wrapper.removeOldGame(_result[i]['id']);
                       _elemNo--;
+                      setState((){});
                     },
                     child: GestureDetector(
                       onTap: () {

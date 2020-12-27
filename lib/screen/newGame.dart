@@ -474,7 +474,7 @@ class _NewGameState extends State{
 
 
   Widget _removeCounter(bool isOrizontal, int _arrayIndex, Counter _counter, double angle){
-    IconData _icons = Icons.chevron_left;
+    IconData _icons = Icons.remove;
     if (!isOrizontal) _icons = Icons.expand_less;
     return Expanded(
       child: GestureDetector(
@@ -506,7 +506,7 @@ class _NewGameState extends State{
   }
 
   Widget _addCounter(bool isOrizontal, int _arrayIndex, Counter _counter, double angle){
-    IconData _icons = Icons.chevron_right;
+    IconData _icons = Icons.add;
     if (!isOrizontal) _icons = Icons.expand_more;
     return Expanded(
       child: GestureDetector(

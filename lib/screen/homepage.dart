@@ -4,16 +4,25 @@ import 'package:redux/redux.dart';
 
 import 'package:vcounter/assets/colors.dart';
 import 'package:vcounter/resources/drawer.dart';
+import 'package:vcounter/resources/scaffold.dart';
 
-class Homepage extends StatelessWidget{
+class Homepage extends StatefulWidget{
+  Store _store;
+  Homepage(this._store);
+
+  State createState() => HomepageState(_store);
+}
+class HomepageState extends State{
   Store _store;
 
-
-  Homepage(this._store);
+  HomepageState(this._store);
   @override Widget build(BuildContext context){
-    return Scaffold(
-      drawer: VDrawer(_store),
-      body: Column(
+    VDrawer _drawer = new VDrawer(_store);
+    GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
+
+    return MainScaffold(
+      _store,
+      Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -23,7 +32,7 @@ class Homepage extends StatelessWidget{
           _homepageButton(null, 'Storico Tornei', context),
         ]
       ),//end Column
-    );//end Scaffold
+    );
   }
 
   Widget _homepageButton(funct, String name, BuildContext context, {String route}){
