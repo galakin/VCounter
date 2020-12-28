@@ -28,14 +28,17 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.3
-  sqflite: ^1.3.1  #Used to create and mantain local db
-  flutter_icons: ^1.1.0 #Import alt icons
-  flutter_launcher_icons: ^0.7.5 #set the lunch icon
-  swipedetector: ^1.2.0 #detect swipe for new game's page
-  redux: ^4.0.0 #basic redux library
-  flutter_redux: ^0.6.0 #flutter redux library
-  animated_splash_screen: ^1.0.0+1 #animated splash screen because i'm lazy af
-  trotter: ^1.2.0 #used for simplify mathematica calculus
+  sqflite: ^1.3.1                   #Used to create and mantain local db
+  flutter_icons: ^1.1.0             #Import alt icons
+  flutter_launcher_icons: ^0.7.5    #Set the lunch icon
+  swipedetector: ^1.2.0             #Detect swipe for new game's page
+  redux: ^4.0.0                     #Basic redux library
+  flutter_redux: ^0.6.0             #Flutter redux library
+  animated_splash_screen: ^1.0.0+1  #Animated splash screen because i'm lazy af
+  trotter: ^1.2.0                   #Used for simplify mathematica calculus
+  firebase_auth: ^0.18.4+1          #Used for firebase autentication
+  cloud_firestore: ^0.14.4          #Grant access to firestore cloud database
+
 
 dev_dependencies:
   flutter_test:

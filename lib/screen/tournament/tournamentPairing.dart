@@ -147,7 +147,7 @@ class _TournamentPairingState extends State{
                 action: (){
                   if (_logic.maxRound == _logic.currentRound){
                     var _finalStanding=_logic.generateStanding(false);
-                    
+
                     Navigator.of(context).pushReplacementNamed(
                       "finalstanding",
                       arguments: {'store': _store, 'standing': _finalStanding}
@@ -221,8 +221,8 @@ class _TournamentPairingState extends State{
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _playerPadding(Text(_player[0])),
-                  Text(_player[1]),
+                  _playerPadding(Text(_player[0], style: TextStyle(fontWeight: FontWeight.w600))),
+                  Text(_player[1], style: TextStyle(fontWeight: FontWeight.w600)),
                 ]
               ),//end Column
             ),//end Expanded
@@ -264,7 +264,8 @@ class _TournamentPairingState extends State{
         padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 10.0),
         child: Row(
           children: [
-            Text("Stronzo con il bye: $_player"),
+            Text("Stronzo con il bye: "),
+            Text("$_player", style: TextStyle(fontWeight: FontWeight.w600)),
           ]
         ),//end Row
       ),//end Padding

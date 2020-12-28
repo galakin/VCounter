@@ -8,20 +8,22 @@ import 'package:vcounter/resources/drawer.dart';
 class MainScaffold extends StatefulWidget{
   Store _store;
   Widget _body;
+  String route;
 
-  MainScaffold(this._store, this._body);
+  MainScaffold(this._store, this._body, {this.route});
 
-  State createState() => MainScaffoldState(_store, _body);
+  State createState() => MainScaffoldState(_store, _body, route);
 }
 
 class MainScaffoldState extends State{
   Store _store;
   Widget _body;
+  String _route;
 
-  MainScaffoldState(this._store, this._body);
+  MainScaffoldState(this._store, this._body, this._route);
 
   @override Widget build(BuildContext context){
-    VDrawer _drawer = new VDrawer(_store);
+    VDrawer _drawer = new VDrawer(_store, route: _route);
     GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
     return Scaffold(
       drawer: _drawer,

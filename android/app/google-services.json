@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "678462120454",
+    "firebase_url": "https://vcounter-497ec.firebaseio.com",
+    "project_id": "vcounter-497ec",
+    "storage_bucket": "vcounter-497ec.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:678462120454:android:b64abbe3843932c6119987",
+        "android_client_info": {
+          "package_name": "com.example.vcounter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "678462120454-rreffd38belcts6951tn297gr3m1chb8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHFqke3b-zAK3FE9iwG1AH6-qeqQr2vDk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "678462120454-rreffd38belcts6951tn297gr3m1chb8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

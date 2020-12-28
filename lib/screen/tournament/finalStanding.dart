@@ -30,42 +30,57 @@ class _FinalStandingState extends State{
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 8.0),
             child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Center(child: Text("Classifica finale:", style: TextStyle(
-                    fontSize: 22.0,
-                    fontWeight: FontWeight.bold,
-                    )),//end Text
-                  ),//end Center
-                  Container(
-                    height: MediaQuery.of(context).size.height*0.6,
-                    child:ListView.builder(
-                      padding: const EdgeInsets.all(0.0),
-                      itemCount: _finalStandingList.length,
-                      itemBuilder: (BuildContext context, int index){
-                        Color _textColor = Colors.black;
-                        if (index == 0) _textColor = Color.fromRGBO(92, 89, 65, 100);
-                        else if (index == 1) _textColor = Color.fromRGBO(122, 130, 128, 100);
-                        else if (index == 2) _textColor = Color.fromRGBO(133, 86, 0, 100);
-                        return Padding(
-                          padding: EdgeInsets.symmetric(vertical:8.0),
-                          child: Row(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 42.0),
-                                child: Text("${index+1}°: ", style: TextStyle(fontSize: 22.0,fontWeight: FontWeight.bold),
-                              )),
-                              Text(_finalStandingList[index], style: TextStyle(
-                                color: _textColor,
-                                fontSize: 22.0,
-                                fontWeight: FontWeight.bold,
-                              )),//end Text
-                            ]
-                          ),//end Row
-                        );//end Padding
-                      }
-                    ),//end ListView
-                  ),//end Container
+                  SizedBox(height:30.0),
+                  _standardPadding(
+                    Center(child: Text("Classifica finale:", style: TextStyle(
+                      fontSize: 22.0,
+                      fontWeight: FontWeight.bold,
+                      )),//end Text
+                    ),//end Center
+                  ),//end standardPadding
+                  _standardPadding(
+                    Container(
+                      height: MediaQuery.of(context).size.height*0.5,
+                      child:ListView.builder(
+                        padding: const EdgeInsets.all(0.0),
+                        itemCount: _finalStandingList.length,
+                        itemBuilder: (BuildContext context, int index){
+                          Color _textColor = Colors.black;
+                          double _fontSize = 22.0;
+                          if (index == 0) {
+                            _fontSize= 34.0;
+                            _textColor = Color.fromRGBO(150, 130, 75, 100);}
+                          else if (index == 1) {
+                          _fontSize= 30.0;
+                          _textColor = Color.fromRGBO(122, 130, 128, 100);}
+                          else if (index == 2) {
+                          _fontSize = 26.0;
+                          _textColor = Color.fromRGBO(133, 86, 0, 100);}
+                          return Padding(
+                            padding: EdgeInsets.symmetric(vertical:8.0),
+                            child: Row(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 42.0),
+                                  child: Text("${index+1}°: ", style: TextStyle(fontSize: 22.0,fontWeight: FontWeight.bold),
+                                )),//end Padding
+                                Text(_finalStandingList[index], style: TextStyle(
+                                  color: _textColor,
+                                  fontSize: 22.0,
+                                  fontWeight: FontWeight.bold,
+                                )),//end Text
+                              ]
+                            ),//end Row
+                          );//end Padding
+                        }
+                      ),//end ListView
+                    ),//end Container
+                  ),//end standardPadding
+                  _standardPadding(Text("La classifica è salvata alla pagina NOME")),
+                  _standardPadding(
+                    Text("è possibile visionare la Hall Of Fame contenente tutti i vincitori degli scorsi tornei alla pagina NOME")),
                 ]
             ),//end Column
           ),//end Padding
@@ -86,6 +101,13 @@ class _FinalStandingState extends State{
         ]
       ),//end Stack
     );//end Scaffold
+  }
+
+  Padding _standardPadding(Widget body){
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 16.0),
+      child: body
+    );//end Padding
   }
 
 }

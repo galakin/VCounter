@@ -14,6 +14,7 @@ class HallOfFame extends StatelessWidget{
     return MainScaffold(
       _store,
       Center(child: Text('Questa pagina è più vuota\n del tuo bicchiere!', textAlign: TextAlign.center, style: TextStyle(fontSize: 28.0, fontWeight: FontWeight.bold))),
+      route: "halloffame"
     );
     // return Scaffold(
     //   drawer: VDrawer(_store),
