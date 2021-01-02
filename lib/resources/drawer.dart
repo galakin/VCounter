@@ -17,7 +17,7 @@ class VDrawer extends StatelessWidget{
           _drawerTile('Nuova Partita', context, localroute: 'newgame'),
           _drawerTile('Storico Partite', context, localroute: 'gamehistory'),
           _drawerTile('Nuova Torneo', context, localroute: 'createtournament'),
-          _drawerTile('Storico Torneo', context),
+          _drawerTile('Storico Tornei', context, localroute: 'tournamenthistory'),
           _drawerTile('Nuovo Vendemmiatore', context),
           _drawerTile('Sala d\'Onore', context, localroute: 'halloffame'),
           _drawerTile('Home', context, localroute: 'homepage')
@@ -31,7 +31,7 @@ class VDrawer extends StatelessWidget{
    * return the tile
    */
   Widget _drawerTile(String title, BuildContext context, {String localroute}){
-    if (title == 'Home' && route == null) return Container();
+    if ((title == 'Home' && route == null) || (route == localroute)) return Container();
     else return Padding(
       padding: EdgeInsets.symmetric(vertical: 4.0),
       child: ListTile(

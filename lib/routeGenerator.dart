@@ -7,6 +7,8 @@ import 'package:vcounter/screen/hallOfFame.dart';
 import 'package:vcounter/screen/tournament/createTournament.dart';
 import 'package:vcounter/screen/tournament/tournamentPairing.dart';
 import 'package:vcounter/screen/tournament/finalStanding.dart';
+import 'package:vcounter/screen/tournamentHistory.dart';
+
 class RouteGenerator {
 
   static Route<dynamic> generateRoute(RouteSettings settings){
@@ -71,8 +73,16 @@ class RouteGenerator {
         } else return defaultRoute(args);
       break;
 
+      case 'tournamenthistory':
+        if (args is Map){
+          if (args['store'] != null)
+            return MaterialPageRoute(builder: (_) => TournamentHistory(args['store']));
+            else return defaultRoute(args);
+        } else return defaultRoute(args);
+      break;
+
       default:
-        return MaterialPageRoute(builder: (_) => defaultRoute(args));
+        return defaultRoute(args);
       break;
     }
   }

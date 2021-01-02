@@ -4,6 +4,23 @@
             "outputFile": "/home/jacopopela/Progetti/VCounter/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-my/values-my.xml",
             "map": [
                 {
+                    "source": "/home/jacopopela/.gradle/caches/transforms-2/files-2.1/2e3d1ce845987d0f6bcc6abb622fd3e0/res/values-my/values.xml",
+                    "from": {
+                        "startLines": "4",
+                        "startColumns": "0",
+                        "startOffsets": "247",
+                        "endColumns": "212",
+                        "endOffsets": "459"
+                    },
+                    "to": {
+                        "startLines": "10",
+                        "startColumns": "4",
+                        "startOffsets": "1291",
+                        "endColumns": "212",
+                        "endOffsets": "1499"
+                    }
+                },
+                {
                     "source": "/home/jacopopela/.gradle/caches/transforms-2/files-2.1/94df1e670bfcbe80e22a3edae4f6b971/res/values-my/values-my.xml",
                     "from": {
                         "startLines": "2",
@@ -18,23 +35,6 @@
                         "startOffsets": "2948",
                         "endColumns": "100",
                         "endOffsets": "3044"
-                    }
-                },
-                {
-                    "source": "/home/jacopopela/.gradle/caches/transforms-2/files-2.1/1c089e90ec7cfd5507cb1e18637fa79e/res/values-my/values.xml",
-                    "from": {
-                        "startLines": "4",
-                        "startColumns": "0",
-                        "startOffsets": "247",
-                        "endColumns": "212",
-                        "endOffsets": "459"
-                    },
-                    "to": {
-                        "startLines": "10",
-                        "startColumns": "4",
-                        "startOffsets": "1291",
-                        "endColumns": "212",
-                        "endOffsets": "1499"
                     }
                 },
                 {
