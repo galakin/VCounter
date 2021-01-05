@@ -41,7 +41,10 @@ class MainScaffoldState extends State{
               )),//end Icon Button
             ),//end Align
           ),//end Padding
-          _body                                                                 //insert the page body under the stack
+          Align(
+            alignment: Alignment.center,
+            child: _body                                                        //insert the page body under the stack
+          ),//end Align
         ]
       ),//end Stack
     );//end Scaffold

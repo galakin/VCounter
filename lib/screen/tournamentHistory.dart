@@ -17,25 +17,33 @@ class TournamentHistory extends StatefulWidget{
 
 class _TournamentHistoryState extends State{
   Store _store;
-  var _tournamentFuture;
+  Future _tournamentFuture;
+
+  _TournamentHistoryState(this._store);
 
   @override initState(){
-    print('init tournament state...');
     super.initState();
     _tournamentFuture=retriveTournamentRanking();
   }
 
-  _TournamentHistoryState(this._store);
-
   @override Widget build(BuildContext context){
-    return MainScaffold(_store,
+    return MainScaffold(
+      _store,
       FutureBuilder(
         future: _tournamentFuture,
         builder: (BuildContext contest, AsyncSnapshot snapshot){
-          if (snapshot.connectionState == ConnectionState.none || snapshot.hasData == null){
+          if (snapshot.hasData == false){
             return CircularIndicator();
           }
-          return Container();
+          else {
+            List _tournamentRanking = snapshot.data;
+            if (_tournamentRanking.length == 0){
+              return Text('Nessun risultato trovato!', style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold));
+            }
+            else{
+              return Text('Trovati ${_tournamentRanking.length} risultati!', style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold));
+            }
+          }
         }
       ),//end FutureBuilder
       route: 'tournamenthistory'
