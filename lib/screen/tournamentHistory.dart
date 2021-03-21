@@ -23,7 +23,7 @@ class _TournamentHistoryState extends State{
 
   @override initState(){
     super.initState();
-    _tournamentFuture=retriveTournamentRanking();
+    _tournamentFuture= null;//retriveTournamentRanking();
   }
 
   @override Widget build(BuildContext context){

@@ -32,12 +32,12 @@ dependencies:
   flutter_icons: ^1.1.0             #Import alt icons
   flutter_launcher_icons: ^0.7.5    #Set the lunch icon
   swipedetector: ^1.2.0             #Detect swipe for new game's page
-  redux: ^4.0.0                     #Basic redux library
-  flutter_redux: ^0.6.0             #Flutter redux library
+  redux: ^5.0.0                     #Basic redux library
+  flutter_redux: ^0.8.2             #Flutter redux library
   animated_splash_screen: ^1.0.0+1  #Animated splash screen because i'm lazy af
   trotter: ^1.2.0                   #Used for simplify mathematica calculus
-  firebase_auth: ^0.18.4+1          #Used for firebase autentication
-  cloud_firestore: ^0.14.4          #Grant access to firestore cloud database
+  # firebase_auth: ^0.18.4+1          #Used for firebase autentication
+  # cloud_firestore: ^0.14.4          #Grant access to firestore cloud database
 
 
 dev_dependencies:
