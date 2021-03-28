@@ -161,8 +161,7 @@ class _NewGameState extends State{
     if (_showOrder) return Expanded(                                            //shows the starting game order
       child: Container(
         color: _backgroundColor,
-        child:
-        Transform.rotate(
+        child: Transform.rotate(
           angle: angle,
           child: GestureDetector(
             child: Center( child: Text("${_playerOrder[_index]}°", style: TextStyle(fontSize: 100.0, color: Colors.white))),
@@ -425,6 +424,7 @@ class _NewGameState extends State{
    */
   Widget _counterStack(int arrayIndex, var removeAction, var  addAction, Counter _counter, double angle, {var color}) {
     if (angle != 0) {
+      /*NOTE find what to change*/
       print('\nCHANGE HERE!\n');
     }
     TextStyle _counterStyle;
@@ -477,7 +477,6 @@ class _NewGameState extends State{
 
   Widget _removeCounter(bool isOrizontal, int _arrayIndex, Counter _counter, double angle){
     IconData _icons = Icons.remove;
-    if (!isOrizontal) _icons = Icons.expand_less;
     return Expanded(
       child: GestureDetector(
         child: Center(
@@ -485,9 +484,9 @@ class _NewGameState extends State{
             width: 200,
             height: 200,
             color: Colors.transparent,
-            child: Center(child: Icon(_icons, color: Colors.white, size: 52.0))
+            child: rotate_button(isOrizontal, Center(child: Icon(_icons, color: Colors.white, size: 52.0))),
           ),//end Container
-        ),
+        ),//end Center
         onTap: () => setState(() {
           if (_counter == Counter.LIFE) lifeTotal[_arrayIndex]--;
           else if (_counter == Counter.POISON) poisonCounter[_arrayIndex]--;
@@ -509,7 +508,7 @@ class _NewGameState extends State{
 
   Widget _addCounter(bool isOrizontal, int _arrayIndex, Counter _counter, double angle){
     IconData _icons = Icons.add;
-    if (!isOrizontal) _icons = Icons.expand_more;
+    if (!isOrizontal) _icons = Icons.add;
     return Expanded(
       child: GestureDetector(
         child: Center(
@@ -670,5 +669,14 @@ class _NewGameState extends State{
       _savegameTimer.cancel();
       print('Timer cancelled!');
     }
+  }
+
+  Widget rotate_button(bool rotate, Widget button){
+    if (!rotate){
+      return Transform.rotate(
+        angle: -1.55,
+        child: button,
+      );
+    } else return button;
   }
 }
