@@ -14,6 +14,7 @@ import 'package:redux/redux.dart';
 import 'package:vcounter/resources/drawer.dart';
 import 'package:vcounter/assets/colors.dart';
 import 'package:vcounter/services/wrapper.dart';
+import 'package:vcounter/firestore/savegame.dart';
 
 enum Counter{LIFE, POISON, COMMANDER} //add Commaner, Anarchy, Energy, Experience
 
@@ -656,6 +657,10 @@ class _NewGameState extends State{
   _savegameCallback(Timer t){
     int _sec = DateTime.now().millisecondsSinceEpoch;
     _wrapper.saveGame(gameID, _sec, startPlayer, "", "", "", "",
+    lifeTotal[0], lifeTotal[1], lifeTotal[2], lifeTotal[3],
+    poisonCounter[0], poisonCounter[1], poisonCounter[2], poisonCounter[3],
+    commanderDamage[0], commanderDamage[1], commanderDamage[2], commanderDamage[3]);
+    firestoreSaveGame(gameID, _sec, startPlayer, "", "", "", "",
     lifeTotal[0], lifeTotal[1], lifeTotal[2], lifeTotal[3],
     poisonCounter[0], poisonCounter[1], poisonCounter[2], poisonCounter[3],
     commanderDamage[0], commanderDamage[1], commanderDamage[2], commanderDamage[3]);
