@@ -4,13 +4,19 @@ import 'package:vcounter/routeGenerator.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 import 'package:vcounter/state/state.dart';
 import 'package:vcounter/reducers/reducer.dart';
 import 'package:vcounter/actions/action.dart';
 import 'package:vcounter/middlewares/middleware.dart';
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
   final _initialState = new AppState();
   final Store _store = new Store<AppState>(
     reducer,
@@ -23,6 +29,7 @@ void main() {
 
 class MyApp extends StatelessWidget {
   Store _store;
+  //final Future<FirebaseApp> _initialization = Firebase.initializeApp();
 
   MyApp(this._store);
 

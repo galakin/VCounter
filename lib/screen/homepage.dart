@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 import 'package:vcounter/assets/colors.dart';
 import 'package:vcounter/resources/drawer.dart';
@@ -14,6 +17,10 @@ class Homepage extends StatefulWidget{
 }
 class HomepageState extends State{
   Store _store;
+
+  initState(){
+    super.initState();
+  }
 
   HomepageState(this._store);
   @override Widget build(BuildContext context){
@@ -74,4 +81,11 @@ class HomepageState extends State{
     );
   }
 
+  /*
+  void retrive_firebase_info(){
+    //FirebaseFirestore firestore = FirebaseFirestore.instance;
+    var collection = FirebaseFirestore.instance.collection('tournament-ranking');
+    print(collection.doc().snapshots());
+  }
+  */
 }
