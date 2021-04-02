@@ -337,7 +337,6 @@ class _NewGameState extends State{
                          setState(() {
                            for (int i = 0; i < 2; i++) lifeTotal[i] = _startLife;
                            _openMenu = false;
-                           gameID = Random().nextInt(1000000);
                          });
                        }
                      ), //end Gesture Detector
