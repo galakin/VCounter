@@ -134,7 +134,11 @@ class _NewGameState extends State{
           Align(
             alignment: Alignment.center,
             child: _showPlayerNoPopup(),
-          )
+          ),
+          Align( //show the top left menu's icon opener
+            alignment: Alignment.topLeft,
+            child: _menuIcon(),
+          )//end Align
         ]
       ) ,//end Stack
     );//end Scaffold
@@ -648,6 +652,22 @@ class _NewGameState extends State{
         for (int i = 0; i< _maxPlayer; i++) lifeTotal[i] = _life;
       })
     );//end ListTile
+  }
+
+  Widget _menuIcon(){
+    return Padding(
+      padding: EdgeInsets.only(top: 30.0),
+      child: Align(
+        alignment: Alignment.topLeft,
+        child:  Builder(builder: (context) => IconButton(
+          icon: Icon(Icons.menu, color: Colors.white),
+          onPressed: (){
+            print("apertura del menù laterale");
+            Scaffold.of(context).openDrawer();
+          }
+        )),//end Icon Button
+      ),//end Align
+    );//end Padding;
   }
 
   /** callback used to locally save the game score n counter to the device.

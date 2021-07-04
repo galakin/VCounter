@@ -13,12 +13,13 @@ void firestoreSaveGame(int _id, int _date, int _noplayer, String _player1, Strin
   Map <String, dynamic>_data = snapshot.data();
   print(snapshot.data());
 
-  /*
+
   CollectionReference _ref = FirebaseFirestore.instance.collection('saved-games');
   print(_id);
   print(_date);
-  TODO find if another item with same id exist
-
+  /*TODO find if another item with same id exist*/
+  print("----\ndata length: ${snapshot.data().length}\n----");
+  /*
   _ref.
   Map <String, dynamic> _gameMap={                                                                //generate base map with player 1 and player 2 info
     "id": _id,
