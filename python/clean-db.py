@@ -19,8 +19,9 @@ if __name__ == "__main__":
         elem_dict = elem.to_dict()
         if elem_dict['date'] == 'Null':
             #print(elem_dict)
-            del_elem.append(elem_dict)
-    
+            counter += 1
+        elem.reference.delete()
+
         #print(f'{elem.id} => {elem.to_dict()}')
         counter += 1
-    print("you have "+str(len(del_elem))+" elem to delete!")
+    print("you have "+str(counter)+" elem to delete!")
