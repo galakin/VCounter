@@ -18,12 +18,10 @@ if __name__ == "__main__":
     for elem in docs:
         elem_dict = elem.to_dict()
         if elem_dict['date'] == 'Null':
-            #print(elem_dict)
             counter += 1
             elem.reference.delete()
+        
         else:
-            #print(elem_dict)
-            print(elem_dict['date'])            
             var_date = elem_dict['date']
             microseconds = datetimeh.to_microseconds(var_date) 
             epoch = datetime(1601, 1, 1, tzinfo=timezone.utc)
@@ -37,17 +35,31 @@ if __name__ == "__main__":
                 print("Skip delete")
                 skip_file += 1
 
-    print("You have deleted "+str(counter)+" element/s!\nSkipped "+str(skip_file)+" files")
-    
     print("Scanning tournamente rankings...")
     db_ref = db.collection(u'tournament-ranking')
     docs = db_ref.stream()
     del_elem = []   
 
-    counter, skip_file = 0, 0
     for elem in docs:
         elem_dict = elem.to_dict()
-        if elem_dict['date'] == 'Null':
-            #print(elem_dict)
+        if 'date' in elem_dict.keys():
+            var_date = elem_dict['date']
+            microseconds = datetimeh.to_microseconds(var_date) 
+            epoch = datetime(1601, 1, 1, tzinfo=timezone.utc)
+            start_date = datetime.fromtimestamp(int(microseconds/1000000))
+            today = datetime.today()
+            delta = (today - start_date).days
+            print('delta days: '+str(delta))
+            if delta > 365:
+                elem.reference.delete()
+                counter += 1
+            else: 
+                print('Skip delete')
+                skip_file += 1
+        else:
             counter += 1
             elem.reference.delete()
+            None 
+
+
+    print("You have deleted "+str(counter)+" element/s!\nSkipped "+str(skip_file)+" files")
