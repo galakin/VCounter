@@ -9,44 +9,72 @@ void firestoreSaveGame(int _id, int _date, int _noplayer, String _player1, Strin
   int _commander1, int _commander2, int _commander3, int _commander4) async{
   print("save game to firestore...");
 
-  final snapshot = await FirebaseFirestore.instance.collection('saved-games').doc().get();
-  Map <String, dynamic>_data = snapshot.data();
-  print(snapshot.data());
-
+  Map <String, dynamic>_data = {
+    "id": _id,
+    "date": _date,
+    "playerNo": _noplayer
+  };
 
   CollectionReference _ref = FirebaseFirestore.instance.collection('saved-games');
-  print(_id);
-  print(_date);
   /*TODO find if another item with same id exist*/
-  print("----\ndata length: ${snapshot.data().length}\n----");
-  /*
-  _ref.
-  Map <String, dynamic> _gameMap={                                                                //generate base map with player 1 and player 2 info
-    "id": _id,
-    "date": 'Null',
-    "no_player": _noplayer,
-    "player_1": _player1,
-    "player_2": _player2,
-    "player_1_life": _life1,
-    "player_2_life": _life2,
-    "player_1_poison": _poison1,
-    "player_2_poison": _poison2,
-    "player_1_commander": _commander1,
-    "player_2_commander": _commander2,
-    TODO: add date
-  };
-  if (_noplayer > 2) {                                                          //if player 3 exist add this info to map
-    _gameMap["player_3"] = _player3;
-    _gameMap["player_3_life"] = _life3;
-    _gameMap["player_3_poison"] = _poison3;
-    _gameMap["player_3_commander"] = _commander3;
+  try {
+    if (!(await _gameAlreadyExist(_id))){
+      Map <String, dynamic> _gameMap={                                                                //generate base map with player 1 and player 2 info
+        "id": _id,
+        "date": _date,
+        "no_player": _noplayer,
+        "player_1": _player1,
+        "player_2": _player2,
+        "player_1_life": _life1,
+        "player_2_life": _life2,
+        "player_1_poison": _poison1,
+        "player_2_poison": _poison2,
+        "player_1_commander": _commander1,
+        "player_2_commander": _commander2,
+        /*TODO: add date*/
+      };
+      if (_noplayer > 2) {                                                          //if player 3 exist add this info to map
+        _gameMap["player_3"] = _player3;
+        _gameMap["player_3_life"] = _life3;
+        _gameMap["player_3_poison"] = _poison3;
+        _gameMap["player_3_commander"] = _commander3;
+      }
+      if (_noplayer > 3) {                                                          //if player 4 exist add this info to map
+        _gameMap["player_4"] = _player4;
+        _gameMap["player_4_life"] = _life4;
+        _gameMap["player_4_poison"] = _poison4;
+        _gameMap["player_4_commander"] = _commander4;
+      }
+
+      var _result = _ref.add(_gameMap);
+      print("----\nsave result: ${_result}\n----");
+    }
+    else {
+      print("A game with ID: ${_id} already exist!");
+      var _tmpref = FirebaseFirestore.instance.collection('saved-games').where('id', isEqualTo: _id);
+    }
   }
-  if (_noplayer > 3) {                                                          //if player 4 exist add this info to map
-    _gameMap["player_4"] = _player4;
-    _gameMap["player_4_life"] = _life4;
-    _gameMap["player_4_poison"] = _poison4;
-    _gameMap["player_4_commander"] = _commander4;
+  catch (e) {
+    print("----\nERROR: unable to save entry to firebase database\n----");
   }
-  _ref.add(_gameMap);
-  */
+}
+/**check if a saved game with this ID aleready exist in the firebase database to
+ * avoid replicating the same game more than once
+ * _id: the unversal game ID
+ */
+ Future<bool> _gameAlreadyExist(int _id) async{
+  bool _sameId = false;
+
+  print("Check if some entry in firebase with the same ID exist...");
+  CollectionReference _ref = FirebaseFirestore.instance.collection('saved-games');
+
+  QuerySnapshot _docs = await _ref.get();
+  var snapshot = await _ref.get();
+  List<Map<dynamic, dynamic>> _list = [];
+  _list = snapshot.docs.map((doc) => doc.data() ).toList();                          //generate the list of document saved on firebase
+
+  for (int _i = 0; _i < _list.length; _i++){
+    if (_list[_i]['id'] != null && _list[_i]['id'] == _id) _sameId = true;
+  }
+  return _sameId;
 }
