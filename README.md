@@ -12,9 +12,10 @@ Now the only impemented features are:
 - local db with latest played games
 
 The working progress features are:
-- personaloized middle screen menu
-- chronological ordered old games
-- experience and energy counter
+- Personalized middle screen menu
+- Chronological ordered old games
+- Experience and energy counter
+- Local games saved on firebase's firestore db
 
 A logical scheme af the app's route can be found at https://whimsical.com/L1jCkcVQNrxUP5zSeyNvw9, bear in mind that this is just a scheme that i use to visualize the logical app's navigation route, significant change can occur between it and the app's code
 
