@@ -3,11 +3,12 @@ import 'package:vcounter/state/state.dart';
 
 AppState reducer(AppState prevStore, dynamic action){
   AppState newState = AppState.fromAnother(prevStore);
-  switch (action){
-    case CounterAction.INCREMENT:
-      newState.incrementCounter();
+  String _actionName = action.toString();
+  switch (_actionName){
+    case "BaseAction":
+      print("Base Action recived");
     break;
-    case CounterAction.DECREMENT:
+    case "SaveGameID":
       newState.decrementCounter();
     break;
   }

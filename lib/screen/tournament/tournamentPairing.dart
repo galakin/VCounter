@@ -28,7 +28,7 @@ class TournamentPairing extends StatefulWidget{
 class _TournamentPairingState extends State{
   TournamentLogic _logic;
   Store _store;
-  String _tournamentName, _byeRound;
+  String _tournamentName, _byeRound, _tournamentID;
   List _playersNames, _seating, _winningOrder, _score;
   int _roundNo;
   int _expandedRound=0;
@@ -40,6 +40,7 @@ class _TournamentPairingState extends State{
   }
 
   @override initState(){
+    _tournamentID = _generateTournamentID();
     super.initState();
     // _seating = new List();
   }
@@ -146,7 +147,7 @@ class _TournamentPairingState extends State{
                 ),//end Container
                 action: (){
                   if (_logic.maxRound == _logic.currentRound){
-                    var _finalStanding=_logic.generateStanding(false);
+                    List _finalStanding=_logic.generateStanding(false, _tournamentID, _tournamentName);
 
                     Navigator.of(context).pushReplacementNamed(
                       "finalstanding",
@@ -305,5 +306,20 @@ class _TournamentPairingState extends State{
    */
   void refresh() {
     setState(() {});
+  }
+
+  /** Generate the pseudo ramndom tournamen ID for univocally identifyb
+   *
+   */
+  String _generateTournamentID(){
+    Random rnd = new Random();
+    int _intCode = rnd.nextInt(50000);
+    String _alphabet = "abcdefghijklmnopqwxyz";
+    String _code = "";
+    for (int i = 0; i < 8; i++){
+      _code = _code+_alphabet[rnd.nextInt(_alphabet.length)];
+    }
+
+    return _code+"-$_intCode";
   }
 }

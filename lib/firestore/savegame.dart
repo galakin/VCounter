@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 
+/** Main method for saving a game in firebase database
+ */
 void firestoreSaveGame(int _id, int _date, int _noplayer, String _player1, String _player2, String _player3, String _player4,
   int _life1, int _life2, int _life3, int _life4,
   int _poison1, int _poison2, int _poison3, int _poison4,
@@ -17,45 +19,50 @@ void firestoreSaveGame(int _id, int _date, int _noplayer, String _player1, Strin
 
   CollectionReference _ref = FirebaseFirestore.instance.collection('saved-games');
   /*TODO find if another item with same id exist*/
-  try {
-    if (!(await _gameAlreadyExist(_id))){
-      Map <String, dynamic> _gameMap={                                                                //generate base map with player 1 and player 2 info
-        "id": _id,
-        "date": _date,
-        "no_player": _noplayer,
-        "player_1": _player1,
-        "player_2": _player2,
-        "player_1_life": _life1,
-        "player_2_life": _life2,
-        "player_1_poison": _poison1,
-        "player_2_poison": _poison2,
-        "player_1_commander": _commander1,
-        "player_2_commander": _commander2,
-        /*TODO: add date*/
-      };
-      if (_noplayer > 2) {                                                          //if player 3 exist add this info to map
-        _gameMap["player_3"] = _player3;
-        _gameMap["player_3_life"] = _life3;
-        _gameMap["player_3_poison"] = _poison3;
-        _gameMap["player_3_commander"] = _commander3;
-      }
-      if (_noplayer > 3) {                                                          //if player 4 exist add this info to map
-        _gameMap["player_4"] = _player4;
-        _gameMap["player_4_life"] = _life4;
-        _gameMap["player_4_poison"] = _poison4;
-        _gameMap["player_4_commander"] = _commander4;
-      }
-
-      var _result = _ref.add(_gameMap);
-      print("----\nsave result: ${_result}\n----");
-    }
-    else {
-      print("A game with ID: ${_id} already exist!");
-      var _tmpref = FirebaseFirestore.instance.collection('saved-games').where('id', isEqualTo: _id);
-    }
+  Map <String, dynamic> _gameMap={                                                                //generate base map with player 1 and player 2 info
+    "id": _id,
+    "date": _date,
+    "no_player": _noplayer,
+    "player_1": _player1,
+    "player_2": _player2,
+    "player_1_life": _life1,
+    "player_2_life": _life2,
+    "player_1_poison": _poison1,
+    "player_2_poison": _poison2,
+    "player_1_commander": _commander1,
+    "player_2_commander": _commander2,
+    /*TODO: add date*/
+  };
+  if (_noplayer > 2) {                                                          //if player 3 exist add this info to map
+    _gameMap["player_3"] = _player3;
+    _gameMap["player_3_life"] = _life3;
+    _gameMap["player_3_poison"] = _poison3;
+    _gameMap["player_3_commander"] = _commander3;
   }
-  catch (e) {
-    print("----\nERROR: unable to save entry to firebase database\n----");
+  if (_noplayer > 3) {                                                          //if player 4 exist add this info to map
+    _gameMap["player_4"] = _player4;
+    _gameMap["player_4_life"] = _life4;
+    _gameMap["player_4_poison"] = _poison4;
+    _gameMap["player_4_commander"] = _commander4;
+  }
+
+  if (!(await _gameAlreadyExist(_id))){
+    var _result = _ref.add(_gameMap);
+    print("----\nsave result: ${_result}\n----");
+  }
+
+  else {
+    print("A game with ID: ${_id} already exist!");
+    Query _tmpref = FirebaseFirestore.instance.collection('saved-games').where('id', isEqualTo: _id);
+    QuerySnapshot _docs = await _tmpref.get();
+    List<Map<dynamic, dynamic>> _list = [];
+    _list = _docs.docs.map((doc) => doc.data() ).toList();                     //generate the list of document saved on firebase
+    // print(_list);
+    List<QueryDocumentSnapshot> _qsnap = (await _tmpref.get()).docs;
+    if (_qsnap.length == 1){
+      Future _fut = _qsnap[0].reference.update(_gameMap);
+      print("Game updated succesfully!");
+    }
   }
 }
 /**check if a saved game with this ID aleready exist in the firebase database to

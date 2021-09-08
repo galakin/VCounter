@@ -2,6 +2,7 @@
  *TODO: add the possibility to recalculate the games point by modifing the games result
  */
 import 'dart:math';
+import 'package:vcounter/firestore/saveTournament.dart';
 
 class GameResult {
   String playerA, playerB;
@@ -218,7 +219,7 @@ class TournamentLogic{
   /** Generate the standing list, both partial and final standing based on the
    *  player points and previous game
    */
-  generateStanding(bool _final){
+  generateStanding(bool _final, String _tournamentID, String _tournamentName){
     List _pointList =  playersPoints.entries.map((e) => {'name': e.key, 'points': e.value}).toList();
     _pointList.sort((a, b){
       if (a['points'] < b['points']) return 1;
@@ -250,6 +251,8 @@ class TournamentLogic{
         }
       }
     }
+
+    saveTournament(_tournamentName, _resultList, _tournamentID);
     return _resultList;
   }
 

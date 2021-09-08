@@ -2,6 +2,7 @@ import 'package:vcounter/services/database.dart';
 
 class AppState{
   String username;
+  String userID;
   int counterValue = 0;
   LocalDatabase database;
 
@@ -11,6 +12,7 @@ class AppState{
     counterValue = state.counterValue;
     database = state.database;
     username = state.username;
+    userID = state.userID;
   }
 
   void addUsername(String username){this.username = username;}
@@ -26,4 +28,8 @@ class AppState{
     if(database == null) print('Error during the database open operation!');
   }
 
+  void registerUsername(username, userID){
+    this.username = username;
+    this.userID = userID;
+  }
 }

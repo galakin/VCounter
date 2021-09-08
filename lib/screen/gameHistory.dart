@@ -41,7 +41,6 @@ class _GameHistoryState extends State{
           else {
             List _result = new List.from(snapshot.data);
             _listLength = _result.length;
-            print(_result.length);
             /*BUG: error here find why!*/
             _result.sort((a,b) {
               int dateA, dateB;
@@ -62,7 +61,7 @@ class _GameHistoryState extends State{
                     onDismissed: (direction) {
                       _wrapper.removeOldGame(_result[i]['id']);
                       _elemNo--;
-                      setState((){});
+                      // setState((){});
                     },
                     child: GestureDetector(
                       onTap: () {
@@ -78,9 +77,7 @@ class _GameHistoryState extends State{
                           poisonCounter[j] = _result[i]['poison${j+1}'];
                           commanderDamage[j] = _result[i]['commander${j+1}'];
                         }
-
                         print(lifeTotal);
-
 
                         Navigator.of(context).pushReplacementNamed(
                           'newgame',
