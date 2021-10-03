@@ -67,7 +67,9 @@ class RouteGenerator {
 
       case 'finalstanding':
         if (args is Map){
-          if (args['store'] != null && args['standing'] != null)
+          if (args['store'] != null && args['standing'] != null && args['tournamentName'] != null)
+            return MaterialPageRoute(builder: (_) => FinalStanding(args['store'], args['standing'], tournamentName: args['tournamentName']));
+          else if (args['store'] != null && args['standing'] != null && args['tournamentName'] == null)
             return MaterialPageRoute(builder: (_) => FinalStanding(args['store'], args['standing']));
           else return defaultRoute(args);
         } else return defaultRoute(args);

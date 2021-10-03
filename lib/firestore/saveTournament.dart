@@ -21,9 +21,9 @@ void saveTournament(String _tournamentName, List _tournamentStanding, String _to
     CollectionReference _ref = FirebaseFirestore.instance.collection('terminated-tournament');
     var _result = _ref.add(_data);
     print("----\nsave result: ${_result}\n----");
-
+    var result = _ref.add(_data);
+    print(result);
   }
-
 }
 
 Future<bool> _tournamentAlreadyExist(String _tournamentID) async{
@@ -36,4 +36,5 @@ Future<bool> _tournamentAlreadyExist(String _tournamentID) async{
   if (_list.length == 0) return false;
   else return true;
 }
+
 void safetySaveTournament(){}

@@ -9,20 +9,27 @@ import 'package:vcounter/assets/tournamentStyle.dart';
 
 class FinalStanding extends StatefulWidget{
   Store _store;
+  String tournamentName;
   List _finalStandingList;
 
-  FinalStanding(this._store, this._finalStandingList);
+  FinalStanding(this._store, this._finalStandingList, {this.tournamentName});
 
-  @override State createState() => _FinalStandingState(_store, _finalStandingList);
+  @override State createState(){
+    print("tournament name: $tournamentName");
+    if (tournamentName == null) return _FinalStandingState(_store, _finalStandingList, null);
+    else return _FinalStandingState(_store, _finalStandingList, tournamentName);
+  }
 }
 
 class _FinalStandingState extends State{
   Store _store;
   List _finalStandingList;
+  String _tournamentName;
 
-  _FinalStandingState(this._store, this._finalStandingList);
+  _FinalStandingState(this._store, this._finalStandingList, this._tournamentName);
 
   @override Widget build(BuildContext context){
+    print("tournament name: $_tournamentName");
     return Scaffold(
       drawer: VDrawer(_store),
       body: Stack(
@@ -33,6 +40,9 @@ class _FinalStandingState extends State{
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   SizedBox(height:30.0),
+                  _writeTournamentName(
+                    _tournamentName,
+                  ), //end _writeTournamentName
                   _standardPadding(
                     Center(child: Text("Classifica finale:", style: TextStyle(
                       fontSize: 22.0,
@@ -78,9 +88,31 @@ class _FinalStandingState extends State{
                       ),//end ListView
                     ),//end Container
                   ),//end standardPadding
-                  _standardPadding(Text("La classifica è salvata alla pagina NOME")),
-                  _standardPadding(
-                    Text("è possibile visionare la Hall Of Fame contenente tutti i vincitori degli scorsi tornei alla pagina NOME")),
+                  Row(
+                    mainAxisAlignment:MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _standardPadding(Text("La classifica è salvata alla pagina ")),
+                      TextButton(
+                        child: Text("Storico Tornei"),
+                        onPressed:() => Navigator.of(context).pushReplacementNamed(
+                          "tournamenthistory",
+                          arguments: {'store': _store}
+                        ),//end Navigator,
+                      ),//end TextButton
+                    ]
+                  ),//end Row
+                  SizedBox(height: 20),
+                  Text("è possibile visionare la Hall Of Fame contenente i"),
+                  Row(
+                    mainAxisAlignment:MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Text("vincitori degli scorsi tornei alla pagina"),
+                      TextButton(
+                        child: Text("Hall of Fame"),
+                        onPressed: null
+                      ),//end TextButton
+                    ]
+                  ),//end Row
                 ]
             ),//end Column
           ),//end Padding
@@ -103,11 +135,28 @@ class _FinalStandingState extends State{
     );//end Scaffold
   }
 
+  /**Render standard padding for page widget
+   * body: the padding body
+   */
   Padding _standardPadding(Widget body){
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 16.0),
       child: body
     );//end Padding
+  }
+
+  Widget _writeTournamentName(_tournamentName){
+    if (_tournamentName == null) return Container();
+    else {
+      print("tournament name: $_tournamentName");
+      return _standardPadding(
+        Center(child: Text(_tournamentName, style: TextStyle(
+          fontSize: 22.0,
+          fontWeight: FontWeight.bold,
+          )),//end Text
+        ),//end Center
+      );//end standardPadding;
+    }
   }
 
 }
