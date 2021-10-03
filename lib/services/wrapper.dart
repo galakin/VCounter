@@ -27,4 +27,8 @@ class Wrapper{
   Future<void>removeOldGame(int _gameID) async{
     database.removeOldGame(_gameID);
   }
+
+  Future<List> getOldGameFromMemory() async {
+    return [];
+  }
 }

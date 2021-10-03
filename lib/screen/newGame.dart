@@ -15,6 +15,7 @@ import 'package:vcounter/resources/drawer.dart';
 import 'package:vcounter/assets/colors.dart';
 import 'package:vcounter/services/wrapper.dart';
 import 'package:vcounter/firestore/savegame.dart';
+import 'package:vcounter/assets/logGenerator.dart';
 
 enum Counter{LIFE, POISON, COMMANDER} //add Commaner, Anarchy, Energy, Experience
 
@@ -680,10 +681,11 @@ class _NewGameState extends State{
     poisonCounter[0], poisonCounter[1], poisonCounter[2], poisonCounter[3],
     commanderDamage[0], commanderDamage[1], commanderDamage[2], commanderDamage[3]);
     firestoreSaveGame(gameID, _sec, startPlayer, "", "", "", "",
-    lifeTotal[0], lifeTotal[1], lifeTotal[2], lifeTotal[3],
-    poisonCounter[0], poisonCounter[1], poisonCounter[2], poisonCounter[3],
-    commanderDamage[0], commanderDamage[1], commanderDamage[2], commanderDamage[3]);
-    print('timer fired');
+      lifeTotal[0], lifeTotal[1], lifeTotal[2], lifeTotal[3],
+      poisonCounter[0], poisonCounter[1], poisonCounter[2], poisonCounter[3],
+      commanderDamage[0], commanderDamage[1], commanderDamage[2], commanderDamage[3]);
+    
+    print(logGenerator('timer fired', 'info'));
   }
 
   /** callback used to cancel the saving timer once a new page is opened

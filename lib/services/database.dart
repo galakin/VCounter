@@ -26,8 +26,8 @@ class LocalDatabase {
     );
   }
 
-  /** Save locally the current game
-   *
+  /** Save the current game in the local database
+   *  id: the game id
    */
   Future<void> saveGame(int id, int date, int noplayer, String player1, String player2, String player3, String player4,
     int life1, int life2, int life3, int life4,
@@ -56,9 +56,5 @@ class LocalDatabase {
   Future<void> removeOldGame(int _gameID) async{
     if (this.db == null) await open();
     await db.rawDelete('DELETE FROM Games WHERE Games.id = "$_gameID"');
-  }
-
-  Future<void> saveTournamentResult(String gold, String silver, String bronze, int date) async{
-    
   }
 }

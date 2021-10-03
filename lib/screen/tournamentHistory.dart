@@ -1,8 +1,7 @@
+/*TODO: add possibility to delete the tournament*/
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
-// import 'package:flutter_emoji/flutter_emoji.dart';
-// import 'package:emojis/emojis.dart'; // to use Emoji collection
 import 'package:emojis/emoji.dart'; // to use Emoji utilities
 
 import 'package:vcounter/resources/drawer.dart';
@@ -11,6 +10,7 @@ import 'package:vcounter/futures/tournamentFuture.dart';
 import 'package:vcounter/resources/circularIndicator.dart';
 import 'package:vcounter/resources/parseDate.dart';
 import 'package:vcounter/assets/logGenerator.dart';
+import 'package:vcounter/assets/colors.dart';
 
 class TournamentHistory extends StatefulWidget{
   Store _store;
@@ -92,12 +92,18 @@ class _TournamentHistoryState extends State{
         },
         child: Container(
           decoration: new BoxDecoration(
-            color: Colors.white,
+            color: manaColor[5],
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: Colors.black,
-              width: 2,
+              width: 0,
             ),//end Border
+            boxShadow: [BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 2,
+              blurRadius: 7,
+              offset: Offset(0, 9), // changes position of shadow
+            )],
           ),//end Box Decoration
           height: 60.0,
           child: Row(
