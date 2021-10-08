@@ -16,6 +16,7 @@ import 'package:vcounter/assets/colors.dart';
 import 'package:vcounter/services/wrapper.dart';
 import 'package:vcounter/firestore/savegame.dart';
 import 'package:vcounter/assets/logGenerator.dart';
+import 'package:vcounter/futures/newGameFuture.dart';
 
 enum Counter{LIFE, POISON, COMMANDER} //add Commaner, Anarchy, Energy, Experience
 
@@ -37,22 +38,23 @@ class NewGame extends StatefulWidget{
 class _NewGameState extends State{
   Store _store;
   int _maxPlayer = 4;
-  int _startLife = 20;  //no of starting player
-  int startPlayer;      // no of starting player
-  List playerName=[];   //List with the player's name
-  List _showCounter;    //List of visualized counter
-  List lifeTotal;       //List with the player's life total
-  List _isChanged;  //List with boolean value if player's life is changed recently
-  List _changedval; //List with the recent change in player's life
-  List _timerList;  //List withe remove changed player's life timer
-  List _playerOrder; //List withe the player's turn order, the order i peseudo-randomy generatedw
-  List poisonCounter; //List of player's poison counter
-  List _counterState; //List of player's visualized counter type
+  int _startLife = 20;        //no of starting player
+  int startPlayer;            // no of starting player
+  List playerName=[];         //List with the player's name
+  List _showCounter;          //List of visualized counter
+  List lifeTotal;             //List with the player's life total
+  List _isChanged;            //List with boolean value if player's life is changed recently
+  List _changedval;           //List with the recent change in player's life
+  List _timerList;            //List withe remove changed player's life timer
+  List _playerOrder;          //List withe the player's turn order, the order i peseudo-randomy generatedw
+  List poisonCounter;         //List of player's poison counter
+  List _counterState;         //List of player's visualized counter type
   List _counterList = [Counter.LIFE, Counter.POISON, Counter.COMMANDER];
-  List commanderDamage; //List of Commander damage
-  List _startColor; // List the randomly choose starting background color
-  Timer _savegameTimer; // timer used to save locally the game
+  List commanderDamage;       //List of Commander damage
+  List _startColor;           // List the randomly choose starting background color
+  Timer _savegameTimer;       // timer used to save locally the game
   Wrapper _wrapper;
+  Future<Map> _getTaintedGame; //new game main future
   int gameID; //game ID used to identify games on history page
   bool _openMenu = false, _showPopup = false, _showOrder=false, _playerPopup = false;
 
@@ -77,10 +79,12 @@ class _NewGameState extends State{
     _changedval = new List<int>(_maxPlayer);
     _timerList = new List<Timer>(_maxPlayer);
     _playerOrder = new List<int>(_maxPlayer);
-    _savegameTimer = new Timer.periodic(Duration(seconds: 20), _savegameCallback);
     _wrapper = new Wrapper();
     _showCounter = new List(_maxPlayer);
     _counterState = new List<int>(_maxPlayer);
+
+    //check if tainted game exist
+    _getTaintedGame = getTaintedGame();
 
     for (int i = 0; i < 4; i++) {
       if (lifeTotal[i] == null) lifeTotal[i] = _startLife;
@@ -95,53 +99,64 @@ class _NewGameState extends State{
   }
 
   @override Widget build(BuildContext context){
-    Widget _upperFrame = _innerFrame(manaColor[0], 0);
-    Widget _lowerFrame = _innerFrame(manaColor[1], 1);
-    if (startPlayer == 3){
-      print('State length: ${_counterState.length}');
-      print(startPlayer);
-      print(lifeTotal.length);
-      _upperFrame = _doubleFrame(manaColor[0], 0, 1);
-      _lowerFrame = _innerFrame(manaColor[2], 2);
-
-    } else if (startPlayer == 4){
-      _upperFrame = _doubleFrame(manaColor[0], 0, 1);
-      _lowerFrame = _doubleFrame(manaColor[1], 2, 3);
-
-    }
-
-
-
     return Scaffold(
       drawer: VDrawer(_store, route: 'newgame', parent: this),
-      body: Stack(
-        children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _upperFrame,
-              // _middleMenuBar(),
-              _lowerFrame,
-            ]
-          ),//end Column
-          Align(
-            alignment: Alignment.center,
-            child: _middleMenuBar(),
-          ),//end Align
-          Align(
-            alignment: Alignment.center,
-            child: _showLifeSelector()
-          ),
-          Align(
-            alignment: Alignment.center,
-            child: _showPlayerNoPopup(),
-          ),
-          Align( //show the top left menu's icon opener
-            alignment: Alignment.topLeft,
-            child: _menuIcon(),
-          )//end Align
-        ]
-      ) ,//end Stack
+      body: FutureBuilder(
+        future: _getTaintedGame,                                                //check if exist tainted game on local db
+        builder: (BuildContext contex, AsyncSnapshot snaphot){
+          print(logGenerator("recived new game future result","info"));
+          Widget _upperFrame = _innerFrame(manaColor[0], 0);
+          Widget _lowerFrame = _innerFrame(manaColor[1], 1);
+          if (startPlayer == 3){
+            print('State length: ${_counterState.length}');
+            print(startPlayer);
+            print(lifeTotal.length);
+            _upperFrame = _doubleFrame(manaColor[0], 0, 1);
+            _lowerFrame = _innerFrame(manaColor[2], 2);
+
+          } else if (startPlayer == 4){
+            _upperFrame = _doubleFrame(manaColor[0], 0, 1);
+            _lowerFrame = _doubleFrame(manaColor[1], 2, 3);
+
+          }
+          if (!snaphot.hasData) return Container();
+          else{
+            Map _gameMap = snaphot.data;
+            if (_gameMap.isEmpy){
+              _savegameTimer = new Timer.periodic(Duration(seconds: 20), _savegameCallback);
+              return Stack(
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _upperFrame,
+                      // _middleMenuBar(),
+                      _lowerFrame,
+                    ]
+                  ),//end Column
+                  Align(
+                    alignment: Alignment.center,
+                    child: _middleMenuBar(),
+                  ),//end Align
+                  Align(
+                    alignment: Alignment.center,
+                    child: _showLifeSelector()
+                  ),
+                  Align(
+                    alignment: Alignment.center,
+                    child: _showPlayerNoPopup(),
+                  ),
+                  Align( //show the top left menu's icon opener
+                  alignment: Alignment.topLeft,
+                  child: _menuIcon(),
+                )//end Align
+              ]
+              );//end Stack
+            }
+            else return Container();
+          }
+        }
+      ),//end Future Builder
     );//end Scaffold
   }
 
@@ -684,7 +699,7 @@ class _NewGameState extends State{
       lifeTotal[0], lifeTotal[1], lifeTotal[2], lifeTotal[3],
       poisonCounter[0], poisonCounter[1], poisonCounter[2], poisonCounter[3],
       commanderDamage[0], commanderDamage[1], commanderDamage[2], commanderDamage[3]);
-    
+
     print(logGenerator('timer fired', 'info'));
   }
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:vcounter/screen/newGame.dart';
+import 'package:vcounter/screen/newGame/newGame.dart';
 import 'package:vcounter/screen/homepage.dart';
 import 'package:vcounter/screen/gameHistory.dart';
 import 'package:vcounter/screen/hallOfFame.dart';

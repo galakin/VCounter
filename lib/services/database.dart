@@ -1,4 +1,5 @@
 import 'package:sqflite/sqflite.dart';
+import 'package:vcounter/assets/logGenerator.dart';
 
 class LocalDatabase {
   Database db;
@@ -14,7 +15,7 @@ class LocalDatabase {
           date INT, noplayer INT, player1 TEXT, player2 TEXT, player3 TEXT, player4 TEXT,
           life1 INTEGER, life2 INTEGER, life3 INTEGER, life4 INTEGER,
           poison1 INTEGER, poison2 INTEGER, poison3 INTEGER, poison4 INTEGER,
-          commander1 INTEGER, commander2 INTEGER, commander3 INTEGER, commander4 INTEGER)''');
+          commander1 INTEGER, commander2 INTEGER, commander3 INTEGER, commander4 INTEGER, tainted INTEGER)''');
         return db;
       },
       onUpgrade: (db, oldVersion, newVersion) async{
@@ -56,5 +57,10 @@ class LocalDatabase {
   Future<void> removeOldGame(int _gameID) async{
     if (this.db == null) await open();
     await db.rawDelete('DELETE FROM Games WHERE Games.id = "$_gameID"');
+  }
+
+  Future<void> untaintSavedGame(int _gameID) async {
+    logGenerator("find ${(await retriveOldGame()).length} locally saved games", "info");
+    db.insert('Games', {'id': _gameID, 'tainted': 0}, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 }

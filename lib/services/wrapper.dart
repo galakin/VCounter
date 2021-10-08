@@ -1,4 +1,5 @@
 import 'package:vcounter/services/database.dart';
+import 'package:vcounter/assets/logGenerator.dart';
 
 class Wrapper{
   LocalDatabase database;
@@ -30,5 +31,13 @@ class Wrapper{
 
   Future<List> getOldGameFromMemory() async {
     return [];
+  }
+
+  /**untain saved game on local database
+   * _gameID: the local game id
+   */
+  Future<void> untaintSavedGame(int _gameID) async{
+    logGenerator("untaint saved game","info");
+    database.untaintSavedGame(_gameID);
   }
 }
