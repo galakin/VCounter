@@ -122,7 +122,7 @@ class _NewGameState extends State{
           if (!snaphot.hasData) return Container();
           else{
             Map _gameMap = snaphot.data;
-            if (_gameMap.isEmpy){
+            if (_gameMap.isEmpty){
               _savegameTimer = new Timer.periodic(Duration(seconds: 20), _savegameCallback);
               return Stack(
                 children: [

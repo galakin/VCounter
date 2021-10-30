@@ -20,10 +20,20 @@ Future<Map> getTaintedGame() async{
 
   print(logGenerator("check if exist tainted game", "info"));
   List _tmpList = await _wrapper.retriveOldGame();
-  if (_tmpList.length > 0){
+  Map _lastTaintGame;
+  int _date = 0;
+  if (_tmpList.length == 0) return {};
+  else{
     for (int i = 0; i < _tmpList.length; i++){
-      print(_tmpList[i].date);
+      if (_tmpList[i]['tainted'] != 0){
+        if (_tmpList[i]['date'] > _date){
+          _date = _tmpList[i]['date'];
+          _lastTaintGame = _tmpList[i];
+        }
+      }
     }
+
+    print("----\n$_lastTaintGame\n----");
+    return _lastTaintGame;
   }
-  return {};
 }

@@ -44,6 +44,7 @@ class LocalDatabase {
       'poison1': poison1, 'poison2': poison2, 'poison3': poison3, 'poison4': poison4,
       'commander1': commander1, 'commander2': commander2, 'commander3': commander3, 'commander4': commander4,
       'date': date,
+      'tainted': 1
     };
     db.insert('Games', _gameMap, conflictAlgorithm: ConflictAlgorithm.replace);
   }

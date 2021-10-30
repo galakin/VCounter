@@ -8,6 +8,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:vcounter/assets/colors.dart';
 import 'package:vcounter/resources/drawer.dart';
 import 'package:vcounter/resources/scaffold.dart';
+import 'package:vcounter/futures/newGameFuture.dart';
+import 'package:vcounter/resources/circularIndicator.dart';
+
 
 class Homepage extends StatefulWidget{
   Store _store;
@@ -17,9 +20,11 @@ class Homepage extends StatefulWidget{
 }
 class HomepageState extends State{
   Store _store;
+  Future _taintedGame;
 
   initState(){
     super.initState();
+    _taintedGame = getTaintedGame();
   }
 
   HomepageState(this._store);
@@ -27,19 +32,26 @@ class HomepageState extends State{
     VDrawer _drawer = new VDrawer(_store);
     GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
 
-    return MainScaffold(
-      _store,
-      Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          _homepageButton(null, 'Nuova Partita', context, route: 'newgame'),
-          _homepageButton(null, 'Storico Partite', context, route: 'gamehistory'),
-          _homepageButton(null, 'Nuovo Torneo', context, route: 'createtournament'),
-          _homepageButton(null, 'Storico Tornei', context, route: 'tournamenthistory'),
-        ]
-      ),//end Column
-    );
+    return FutureBuilder(
+      future: _taintedGame,
+      builder: (BuildContext context, AsyncSnapshot snapshot){
+        if (!snapshot.hasData) return BackgroundCircularIndicator();
+
+        else return MainScaffold(
+          _store,
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              _homepageButton(null, 'Nuova Partita', context, route: 'newgame'),
+              _homepageButton(null, 'Storico Partite', context, route: 'gamehistory'),
+              _homepageButton(null, 'Nuovo Torneo', context, route: 'createtournament'),
+              _homepageButton(null, 'Storico Tornei', context, route: 'tournamenthistory'),
+            ]
+          ),//end Column
+        );//end MainScaffold
+      }
+    );//end FutureBuilder
   }
 
   Widget _homepageButton(funct, String name, BuildContext context, {String route}){
@@ -79,6 +91,10 @@ class HomepageState extends State{
         return _dialog;
       }
     );
+  }
+
+  bool _checkTaintedGame(){
+    return false;
   }
 
   /*
