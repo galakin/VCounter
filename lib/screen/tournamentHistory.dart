@@ -9,7 +9,7 @@ import 'package:vcounter/resources/scaffold.dart';
 import 'package:vcounter/futures/tournamentFuture.dart';
 import 'package:vcounter/resources/circularIndicator.dart';
 import 'package:vcounter/resources/parseDate.dart';
-import 'package:vcounter/assets/logGenerator.dart';
+import 'package:vcounter/resources/logGenerator.dart';
 import 'package:vcounter/assets/colors.dart';
 
 class TournamentHistory extends StatefulWidget{
