@@ -55,7 +55,6 @@ class _NewGameState extends State{
   List _startColor;           // List the randomly choose starting background color
   Timer _savegameTimer;       // timer used to save locally the game
   Wrapper _wrapper;
-  Future<Map> _getTaintedGame; //new game main future
   int gameID; //game ID used to identify games on history page
   bool _openMenu = false, _showPopup = false, _showOrder=false, _playerPopup = false;
 
@@ -83,9 +82,7 @@ class _NewGameState extends State{
     _wrapper = new Wrapper();
     _showCounter = new List(_maxPlayer);
     _counterState = new List<int>(_maxPlayer);
-
-    //check if tainted game exist
-    _getTaintedGame = getTaintedGame();
+    _savegameTimer = new Timer.periodic(Duration(seconds: 20), _savegameCallback);
 
     for (int i = 0; i < 4; i++) {
       if (lifeTotal[i] == null) lifeTotal[i] = _startLife;
@@ -103,7 +100,6 @@ class _NewGameState extends State{
    *
    */
   @override Widget build(BuildContext context){
-    print(logGenerator("recived new game future result","info"));
     Widget _upperFrame = _innerFrame(manaColor[0], 0);
     Widget _lowerFrame = _innerFrame(manaColor[1], 1);
     if (startPlayer == 3){
@@ -116,8 +112,8 @@ class _NewGameState extends State{
     } else if (startPlayer == 4){
       _upperFrame = _doubleFrame(manaColor[0], 0, 1);
       _lowerFrame = _doubleFrame(manaColor[1], 2, 3);
+
     }
-    _savegameTimer = new Timer.periodic(Duration(seconds: 20), _savegameCallback);
     return Scaffold(
       drawer: VDrawer(_store, route: 'newgame', parent: this),
       body: Stack(

@@ -14,13 +14,17 @@ class Wrapper{
     int commander1, int commander2, int commander3, int commander4) async{
     if (database != null){
       /*TODO check if a saved game with same id already exist*/
-      List _oldGamesWithSameID =  await database.retriveOldGame(gameID: id);
+      List _oldGamesWithSameID = await database.retriveOldGame(gameID: id);
       if (_oldGamesWithSameID.length == 0)
         database.saveGame(id, date, noplayer, player1, player2, player3, player4, life1, life2, life3, life4, poison1, poison2, poison3, poison4, commander1, commander2, commander3, commander4);
       else{
         if (_oldGamesWithSameID.length > 1) logGenerator("more than one game with same id found on local database", "error");
         else {
-          database.updateGame(id, "");
+          String _argsString = "";
+          _argsString += " date = $life2";
+          if (life1 != null)_argsString += ",life1 = $life1";
+          if (life2 != null)_argsString += ", life2 = $life2";
+          database.updateGame(id, _argsString);
         }
       }
       print('game saved!');

@@ -45,23 +45,20 @@ class LocalDatabase {
       'poison1': poison1, 'poison2': poison2, 'poison3': poison3, 'poison4': poison4,
       'commander1': commander1, 'commander2': commander2, 'commander3': commander3, 'commander4': commander4,
       'date': date,
+      'tainted': 1,
     };
     db.insert('Games', _gameMap, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   Future<List> retriveOldGame({int gameID}) async{
     if (this.db == null) await open();
-    List _result;
-    if (gameID != null && gameID >= 0){
-      _result = await db.rawQuery('SELECT * FROM Gamed WHERE Games.id = \"$gameID\"');
-    }
-    else _result = await db.rawQuery('SELECT * FROM Games');
+    List _result = await db.rawQuery('SELECT * FROM Games');
     return _result;
   }
 
   Future<void> removeOldGame(int _gameID) async{
     if (this.db == null) await open();
-    await db.rawDelete('DELETE FROM Games WHERE Games.id = "$_gameID"');
+    await db.rawDelete('DELETE FROM Games WHERE Games.id = $_gameID');
   }
 
   /**Untaunt a saved game inside the local db and mark it as saved
