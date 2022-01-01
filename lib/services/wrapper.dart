@@ -33,12 +33,15 @@ class Wrapper{
     } /*TODO throw error*/
   }
 
-  Future<List> retriveOldGame() async{
+  /**return list of old games saved on local memory
+   *
+   */
+  Future<List> retriveOldGame({int gameID}) async{
     List _result = await database.retriveOldGame();
     return _result;
   }
 
-  Future<void>removeOldGame(int _gameID) async{
+  Future<List>removeOldGame(int _gameID) async{
     database.removeOldGame(_gameID);
   }
 

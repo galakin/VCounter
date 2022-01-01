@@ -11,3 +11,7 @@ Future<List> retriveTournamentRanking() async{
   print('Snapshot retrived');
   return _list;
 }
+
+Future<List> retriveTaintedGames() async{
+  List _result = [];
+}
