@@ -83,11 +83,7 @@ class HomepageState extends State{
       }
     );
   }
-
-  bool _checkTaintedGame(){
-    return false;
-  }
-
+  
   /*
   void retrive_firebase_info(){
     //FirebaseFirestore firestore = FirebaseFirestore.instance;
