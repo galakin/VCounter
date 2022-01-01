@@ -50,12 +50,22 @@ class LocalDatabase {
     db.insert('Games', _gameMap, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
+  /**Retrive list of old games saved on local db
+   * gameID: game ID of one specific game
+   * return the list of saved game, with possibile match between game id of an emply list
+   */
   Future<List> retriveOldGame({int gameID}) async{
+    List _result = [];
     if (this.db == null) await open();
-    List _result = await db.rawQuery('SELECT * FROM Games');
+    print(gameID);
+    if (gameID != null)  _result = await db.rawQuery('SELECT * FROM Games WHERE id = ${gameID}');
+    _result = await db.rawQuery('SELECT * FROM Games');
     return _result;
   }
 
+  /**Rempove game from the local db
+   * _gameID: id of saved game that need to be removed
+   */
   Future<void> removeOldGame(int _gameID) async{
     if (this.db == null) await open();
     await db.rawDelete('DELETE FROM Games WHERE Games.id = $_gameID');

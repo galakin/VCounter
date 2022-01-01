@@ -678,7 +678,7 @@ class _NewGameState extends State{
    */
   _savegameCallback(Timer t){
     int _sec = DateTime.now().millisecondsSinceEpoch;
-    _wrapper.saveGame(gameID, _sec, startPlayer, "", "", "", "",
+    _wrapper.saveGame(0, _sec, startPlayer, "", "", "", "",
     lifeTotal[0], lifeTotal[1], lifeTotal[2], lifeTotal[3],
     poisonCounter[0], poisonCounter[1], poisonCounter[2], poisonCounter[3],
     commanderDamage[0], commanderDamage[1], commanderDamage[2], commanderDamage[3]);
