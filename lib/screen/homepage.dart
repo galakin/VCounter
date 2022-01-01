@@ -8,6 +8,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:vcounter/assets/colors.dart';
 import 'package:vcounter/resources/drawer.dart';
 import 'package:vcounter/resources/scaffold.dart';
+import 'package:vcounter/futures/newGameFuture.dart';
+import 'package:vcounter/resources/circularIndicator.dart';
+import 'package:vcounter/futures/tournamentFuture.dart';
 
 class Homepage extends StatefulWidget{
   Store _store;
@@ -39,7 +42,7 @@ class HomepageState extends State{
           _homepageButton(null, 'Storico Tornei', context, route: 'tournamenthistory'),
         ]
       ),//end Column
-    );
+    );//end MainScaffold
   }
 
   Widget _homepageButton(funct, String name, BuildContext context, {String route}){
@@ -79,6 +82,10 @@ class HomepageState extends State{
         return _dialog;
       }
     );
+  }
+
+  bool _checkTaintedGame(){
+    return false;
   }
 
   /*

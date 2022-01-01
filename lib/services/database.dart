@@ -1,5 +1,5 @@
 import 'package:sqflite/sqflite.dart';
-import 'package:vcounter/assets/logGenerator.dart';
+import 'package:vcounter/resources/logGenerator.dart';
 
 class LocalDatabase {
   Database db;
@@ -9,7 +9,7 @@ class LocalDatabase {
     String path = databasesPath+'localdb.db';
     this.db = await openDatabase(
       path,
-      version: 4,
+      version: 5,
       onCreate: (Database db, int version) async {
         await db.execute('''CREATE TABLE Games (id INTEGER PRIMARY KEY,
           date INT, noplayer INT, player1 TEXT, player2 TEXT, player3 TEXT, player4 TEXT,
@@ -22,6 +22,7 @@ class LocalDatabase {
         if ( oldVersion <= 1)  await db.execute('UPDATE Games SET noplayer INT, poison1 INTEGER, poison2 INTEGER, commander1 INTEGER, commander2 INTEGER');
         if (newVersion >= 3 && oldVersion == 2) await db.execute('UPDATE Games SET date INT');
         if (newVersion >= 4 && oldVersion == 3) await db.execute('UPDATE Games SET player3 TEXT, player4 TEXT, life3 INTEGER, life4 INTEGER, poison3 INTEGER, poison4 INTEGER, commander3 INTEGER, commander4 INTEGER');
+        if (newVersion >= 5 && oldVersion <= 4) await db.execute('UPDATE Games SET tainted INTEGER');
         return db;
       }
     );
@@ -44,23 +45,55 @@ class LocalDatabase {
       'poison1': poison1, 'poison2': poison2, 'poison3': poison3, 'poison4': poison4,
       'commander1': commander1, 'commander2': commander2, 'commander3': commander3, 'commander4': commander4,
       'date': date,
+      'tainted': 1,
     };
     db.insert('Games', _gameMap, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
-  Future<List> retriveOldGame() async{
+  /**Retrive list of old games saved on local db
+   * gameID: game ID of one specific game
+   * return the list of saved game, with possibile match between game id of an emply list
+   */
+  Future<List> retriveOldGame({int gameID}) async{
+    List _result = [];
     if (this.db == null) await open();
-    List _result = await db.rawQuery('SELECT * FROM Games');
+    print(gameID);
+    if (gameID != null)  _result = await db.rawQuery('SELECT * FROM Games WHERE id = ${gameID}');
+    _result = await db.rawQuery('SELECT * FROM Games');
     return _result;
   }
 
+  /**Remove game from the local db
+   * _gameID: id of saved game that need to be removed
+   */
   Future<void> removeOldGame(int _gameID) async{
     if (this.db == null) await open();
-    await db.rawDelete('DELETE FROM Games WHERE Games.id = "$_gameID"');
+    await db.rawDelete('DELETE FROM Games WHERE Games.id = $_gameID');
   }
 
+  /**Untaunt a saved game inside the local db and mark it as saved
+   * _gameID: the game's id that need to be untainted
+   */
   Future<void> untaintSavedGame(int _gameID) async {
     logGenerator("find ${(await retriveOldGame()).length} locally saved games", "info");
-    db.insert('Games', {'id': _gameID, 'tainted': 0}, conflictAlgorithm: ConflictAlgorithm.replace);
+    db.rawUpdate("UPDATE Games SET tainted =  WHEW Games.id = 0");
+  }
+
+  /**Update localy saved game on db based on his game id
+   * _gameID: game id of the one that need to be updated
+   * _updateString: string containg all of the update that need to be applied to the game
+   */
+  Future<void> updateGame(int _gameID, String _updateString) async{
+    logGenerator("update game with id: $_gameID", "info");
+    db.rawUpdate("UPDATE Games SET $_updateString WHERE Games.id = $_gameID");
+  }
+
+  /**Return the list of tainted games on local db
+   */
+  Future<List<Map>> untaintedGamesList() async{
+    if (this.db == null) await open();
+    List result = await db.rawQuery("SELECT * FROM Games WHERE Games.tainted = 1");
+    //List result = await db.rawQuery("SELECT * FROM Games");
+    return result;
   }
 }

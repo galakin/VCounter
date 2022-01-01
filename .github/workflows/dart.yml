@@ -2,9 +2,11 @@ name: Dart CI
 
 on:
   push:
-    branches: [ master ]
+    branches: 
+    - '*'
   pull_request:
-    branches: [ master ]
+    branches: 
+    - '*'
 
 jobs:
   build:
@@ -16,7 +18,5 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Install dependencies
-      run: flutter pub get
-    - name: Run tests
-      run: pub run test
+    - name: test ci/cd pipeline
+      run: echo "test" 

@@ -2,14 +2,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
-import 'package:emojis/emoji.dart'; // to use Emoji utilities
+//import 'package:emojis/emoji.dart'; // to use Emoji utilities
 
 import 'package:vcounter/resources/drawer.dart';
 import 'package:vcounter/resources/scaffold.dart';
 import 'package:vcounter/futures/tournamentFuture.dart';
 import 'package:vcounter/resources/circularIndicator.dart';
 import 'package:vcounter/resources/parseDate.dart';
-import 'package:vcounter/assets/logGenerator.dart';
+import 'package:vcounter/resources/logGenerator.dart';
 import 'package:vcounter/assets/colors.dart';
 
 class TournamentHistory extends StatefulWidget{
@@ -154,9 +154,9 @@ class _TournamentHistoryState extends State{
    * winner based on the tournament ranking found on cloud
    */
   Widget _parseWinner(List _tournamentRanking){
-    Emoji smile = Emoji.byName('Trophy'); // get a emoji by its name
+    //Emoji smile = Emoji.byName('Trophy'); // get a emoji by its name
     return Container(
-      child: Text("${smile.char} ${_tournamentRanking[0]}", style: TextStyle(fontWeight: FontWeight.bold))
+      child: Text(/*"${smile.char} */"${_tournamentRanking[0]}", style: TextStyle(fontWeight: FontWeight.bold))
     );//end Container
   }
 

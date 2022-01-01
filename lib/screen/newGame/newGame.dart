@@ -1,5 +1,6 @@
 /**NB rotation angle: `1.55`
  * TODO: change the lists length to max player and use index insted of changing the lists length
+ * TODO: add the firestore new game db save
  */
 import 'dart:async';
 import 'dart:math';
@@ -15,7 +16,7 @@ import 'package:vcounter/resources/drawer.dart';
 import 'package:vcounter/assets/colors.dart';
 import 'package:vcounter/services/wrapper.dart';
 import 'package:vcounter/firestore/savegame.dart';
-import 'package:vcounter/assets/logGenerator.dart';
+import 'package:vcounter/resources/logGenerator.dart';
 import 'package:vcounter/futures/newGameFuture.dart';
 
 enum Counter{LIFE, POISON, COMMANDER} //add Commaner, Anarchy, Energy, Experience
@@ -54,7 +55,6 @@ class _NewGameState extends State{
   List _startColor;           // List the randomly choose starting background color
   Timer _savegameTimer;       // timer used to save locally the game
   Wrapper _wrapper;
-  Future<Map> _getTaintedGame; //new game main future
   int gameID; //game ID used to identify games on history page
   bool _openMenu = false, _showPopup = false, _showOrder=false, _playerPopup = false;
 
@@ -82,9 +82,7 @@ class _NewGameState extends State{
     _wrapper = new Wrapper();
     _showCounter = new List(_maxPlayer);
     _counterState = new List<int>(_maxPlayer);
-
-    //check if tainted game exist
-    _getTaintedGame = getTaintedGame();
+    _savegameTimer = new Timer.periodic(Duration(seconds: 20), _savegameCallback);
 
     for (int i = 0; i < 4; i++) {
       if (lifeTotal[i] == null) lifeTotal[i] = _startLife;
@@ -98,65 +96,54 @@ class _NewGameState extends State{
     }
   }
 
+  /**Main page widget that show the new game UI
+   *
+   */
   @override Widget build(BuildContext context){
+    Widget _upperFrame = _innerFrame(manaColor[0], 0);
+    Widget _lowerFrame = _innerFrame(manaColor[1], 1);
+    if (startPlayer == 3){
+      print('State length: ${_counterState.length}');
+      print(startPlayer);
+      print(lifeTotal.length);
+      _upperFrame = _doubleFrame(manaColor[0], 0, 1);
+      _lowerFrame = _innerFrame(manaColor[2], 2);
+
+    } else if (startPlayer == 4){
+      _upperFrame = _doubleFrame(manaColor[0], 0, 1);
+      _lowerFrame = _doubleFrame(manaColor[1], 2, 3);
+
+    }
     return Scaffold(
       drawer: VDrawer(_store, route: 'newgame', parent: this),
-      body: FutureBuilder(
-        future: _getTaintedGame,                                                //check if exist tainted game on local db
-        builder: (BuildContext contex, AsyncSnapshot snaphot){
-          print(logGenerator("recived new game future result","info"));
-          Widget _upperFrame = _innerFrame(manaColor[0], 0);
-          Widget _lowerFrame = _innerFrame(manaColor[1], 1);
-          if (startPlayer == 3){
-            print('State length: ${_counterState.length}');
-            print(startPlayer);
-            print(lifeTotal.length);
-            _upperFrame = _doubleFrame(manaColor[0], 0, 1);
-            _lowerFrame = _innerFrame(manaColor[2], 2);
-
-          } else if (startPlayer == 4){
-            _upperFrame = _doubleFrame(manaColor[0], 0, 1);
-            _lowerFrame = _doubleFrame(manaColor[1], 2, 3);
-
-          }
-          if (!snaphot.hasData) return Container();
-          else{
-            Map _gameMap = snaphot.data;
-            if (_gameMap.isEmpy){
-              _savegameTimer = new Timer.periodic(Duration(seconds: 20), _savegameCallback);
-              return Stack(
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      _upperFrame,
-                      // _middleMenuBar(),
-                      _lowerFrame,
-                    ]
-                  ),//end Column
-                  Align(
-                    alignment: Alignment.center,
-                    child: _middleMenuBar(),
-                  ),//end Align
-                  Align(
-                    alignment: Alignment.center,
-                    child: _showLifeSelector()
-                  ),
-                  Align(
-                    alignment: Alignment.center,
-                    child: _showPlayerNoPopup(),
-                  ),
-                  Align( //show the top left menu's icon opener
-                  alignment: Alignment.topLeft,
-                  child: _menuIcon(),
-                )//end Align
-              ]
-              );//end Stack
-            }
-            else return Container();
-          }
-        }
-      ),//end Future Builder
+      body: Stack(
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _upperFrame,
+              // _middleMenuBar(),
+              _lowerFrame,
+            ]
+          ),//end Column
+          Align(
+            alignment: Alignment.center,
+            child: _middleMenuBar(),
+          ),//end Align
+          Align(
+            alignment: Alignment.center,
+            child: _showLifeSelector()
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: _showPlayerNoPopup(),
+          ),
+          Align( //show the top left menu's icon opener
+          alignment: Alignment.topLeft,
+          child: _menuIcon(),
+        )//end Align
+      ]
+      )//end Stack
     );//end Scaffold
   }
 
@@ -691,14 +678,14 @@ class _NewGameState extends State{
    */
   _savegameCallback(Timer t){
     int _sec = DateTime.now().millisecondsSinceEpoch;
-    _wrapper.saveGame(gameID, _sec, startPlayer, "", "", "", "",
+    _wrapper.saveGame(0, _sec, startPlayer, "", "", "", "",
     lifeTotal[0], lifeTotal[1], lifeTotal[2], lifeTotal[3],
     poisonCounter[0], poisonCounter[1], poisonCounter[2], poisonCounter[3],
     commanderDamage[0], commanderDamage[1], commanderDamage[2], commanderDamage[3]);
-    firestoreSaveGame(gameID, _sec, startPlayer, "", "", "", "",
-      lifeTotal[0], lifeTotal[1], lifeTotal[2], lifeTotal[3],
-      poisonCounter[0], poisonCounter[1], poisonCounter[2], poisonCounter[3],
-      commanderDamage[0], commanderDamage[1], commanderDamage[2], commanderDamage[3]);
+    // firestoreSaveGame(gameID, _sec, startPlayer, "", "", "", "",
+    //   lifeTotal[0], lifeTotal[1], lifeTotal[2], lifeTotal[3],
+    //   poisonCounter[0], poisonCounter[1], poisonCounter[2], poisonCounter[3],
+    //   commanderDamage[0], commanderDamage[1], commanderDamage[2], commanderDamage[3]);
 
     print(logGenerator('timer fired', 'info'));
   }
@@ -708,6 +695,7 @@ class _NewGameState extends State{
   cancelTimer(){
     if (_savegameTimer != null) {
       _savegameTimer.cancel();
+      _wrapper.untaintSavedGame(0);
       print('Timer cancelled!');
     }
   }
