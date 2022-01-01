@@ -16,8 +16,10 @@ class Wrapper{
       /*TODO check if a saved game with same id already exist*/
       List _oldGamesWithSameID = await database.retriveOldGame(gameID: id);
       if (_oldGamesWithSameID.length == 0)
+        logGenerator("no local tinted game found", "info");
+        else{
         database.saveGame(id, date, noplayer, player1, player2, player3, player4, life1, life2, life3, life4, poison1, poison2, poison3, poison4, commander1, commander2, commander3, commander4);
-      else{
+        logGenerator("found a taint game on local db", "info");
         if (_oldGamesWithSameID.length > 1) logGenerator("more than one game with same id found on local database", "error");
         else {
           String _argsString = "";
@@ -53,7 +55,7 @@ class Wrapper{
     database.untaintSavedGame(_gameID);
   }
 
-  Future<List> untaintedGamesList() async{
+  Future<List<Map>> untaintedGamesList() async{
     List _result = await database.untaintedGamesList();
     return _result;
   }

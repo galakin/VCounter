@@ -695,6 +695,7 @@ class _NewGameState extends State{
   cancelTimer(){
     if (_savegameTimer != null) {
       _savegameTimer.cancel();
+      _wrapper.untaintSavedGame(0);
       print('Timer cancelled!');
     }
   }

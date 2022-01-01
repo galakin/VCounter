@@ -16,9 +16,8 @@ Future<List> retriveTournamentRanking() async{
 /**return the list of tainted games from local databse
  *
  */
-Future<List> retriveTaintedGames() async{
+Future<List<Map>> retriveTaintedGames() async{
   Wrapper _wrapper = new Wrapper();
   List _result = await _wrapper.untaintedGamesList(); //.untaintedGamesList();
-  print("tainted games: $_result");
   return _result;
 }

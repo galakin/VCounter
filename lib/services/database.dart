@@ -63,7 +63,7 @@ class LocalDatabase {
     return _result;
   }
 
-  /**Rempove game from the local db
+  /**Remove game from the local db
    * _gameID: id of saved game that need to be removed
    */
   Future<void> removeOldGame(int _gameID) async{
@@ -72,11 +72,11 @@ class LocalDatabase {
   }
 
   /**Untaunt a saved game inside the local db and mark it as saved
-   *
+   * _gameID: the game's id that need to be untainted
    */
   Future<void> untaintSavedGame(int _gameID) async {
     logGenerator("find ${(await retriveOldGame()).length} locally saved games", "info");
-    db.insert('Games', {'id': _gameID, 'tainted': 0}, conflictAlgorithm: ConflictAlgorithm.replace);
+    db.rawUpdate("UPDATE Games SET tainted =  WHEW Games.id = 0");
   }
 
   /**Update localy saved game on db based on his game id
@@ -88,8 +88,12 @@ class LocalDatabase {
     db.rawUpdate("UPDATE Games SET $_updateString WHERE Games.id = $_gameID");
   }
 
-  Future<List> untaintedGamesList() async{
-    db.rawQuery("SELECT * FROM Games WHERE tainted = 1");
-    return [];
+  /**Return the list of tainted games on local db
+   */
+  Future<List<Map>> untaintedGamesList() async{
+    if (this.db == null) await open();
+    List result = await db.rawQuery("SELECT * FROM Games WHERE Games.tainted = 1");
+    //List result = await db.rawQuery("SELECT * FROM Games");
+    return result;
   }
 }
