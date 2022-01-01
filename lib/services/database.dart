@@ -87,4 +87,9 @@ class LocalDatabase {
     logGenerator("update game with id: $_gameID", "info");
     db.rawUpdate("UPDATE Games SET $_updateString WHERE Games.id = $_gameID");
   }
+
+  Future<List> untaintedGamesList() async{
+    db.rawQuery("SELECT * FROM Games WHERE tainted = 1");
+    return [];
+  }
 }

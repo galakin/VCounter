@@ -10,7 +10,7 @@ import 'package:vcounter/resources/drawer.dart';
 import 'package:vcounter/resources/scaffold.dart';
 import 'package:vcounter/futures/newGameFuture.dart';
 import 'package:vcounter/resources/circularIndicator.dart';
-
+import 'package:vcounter/futures/tournamentFuture.dart';
 
 class Homepage extends StatefulWidget{
   Store _store;
@@ -25,6 +25,7 @@ class HomepageState extends State{
   initState(){
     super.initState();
     _taintedGame = getTaintedGame();
+    retriveTaintedGames();
   }
 
   HomepageState(this._store);

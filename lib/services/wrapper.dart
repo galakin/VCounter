@@ -45,15 +45,16 @@ class Wrapper{
     database.removeOldGame(_gameID);
   }
 
-  Future<List> getOldGameFromMemory() async {
-    return [];
-  }
-
   /**untain saved game on local database
    * _gameID: the local game id
    */
   Future<void> untaintSavedGame(int _gameID) async{
     logGenerator("untaint saved game","info");
     database.untaintSavedGame(_gameID);
+  }
+
+  Future<List> untaintedGamesList() async{
+    List _result = await database.untaintedGamesList();
+    return _result;
   }
 }

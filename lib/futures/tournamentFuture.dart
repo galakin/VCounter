@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:vcounter/services/wrapper.dart';
 
 Future<List> retriveTournamentRanking() async{
   List _result = new List();
@@ -12,6 +13,12 @@ Future<List> retriveTournamentRanking() async{
   return _list;
 }
 
+/**return the list of tainted games from local databse
+ *
+ */
 Future<List> retriveTaintedGames() async{
-  List _result = [];
+  Wrapper _wrapper = new Wrapper();
+  List _result = await _wrapper.untaintedGamesList(); //.untaintedGamesList();
+  print("tainted games: $_result");
+  return _result;
 }
