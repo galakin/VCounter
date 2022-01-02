@@ -5,6 +5,7 @@ class AppState{
   String userID;
   int counterValue = 0;
   LocalDatabase database;
+  String _version = "0.1.0";
 
   AppState();
 
@@ -32,4 +33,6 @@ class AppState{
     this.username = username;
     this.userID = userID;
   }
+
+  void getVersion() => _version;
 }

@@ -8,6 +8,7 @@ import 'package:vcounter/screen/tournament/createTournament.dart';
 import 'package:vcounter/screen/tournament/tournamentPairing.dart';
 import 'package:vcounter/screen/tournament/finalStanding.dart';
 import 'package:vcounter/screen/tournamentHistory.dart';
+import 'package:vcounter/screen/settings.dart';
 
 class RouteGenerator {
 
@@ -79,6 +80,14 @@ class RouteGenerator {
         if (args is Map){
           if (args['store'] != null)
             return MaterialPageRoute(builder: (_) => TournamentHistory(args['store']));
+            else return defaultRoute(args);
+        } else return defaultRoute(args);
+      break;
+
+      case 'settings':
+        if (args is Map){
+          if (args['store'] != null)
+            return MaterialPageRoute(builder: (_) => Settings(args['store']));
             else return defaultRoute(args);
         } else return defaultRoute(args);
       break;
