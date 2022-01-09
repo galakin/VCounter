@@ -9,19 +9,21 @@ class LocalDatabase {
     String path = databasesPath+'localdb.db';
     this.db = await openDatabase(
       path,
-      version: 4,
+      version: 5,
       onCreate: (Database db, int version) async {
         await db.execute('''CREATE TABLE Games (id INTEGER PRIMARY KEY,
           date INT, noplayer INT, player1 TEXT, player2 TEXT, player3 TEXT, player4 TEXT,
           life1 INTEGER, life2 INTEGER, life3 INTEGER, life4 INTEGER,
           poison1 INTEGER, poison2 INTEGER, poison3 INTEGER, poison4 INTEGER,
           commander1 INTEGER, commander2 INTEGER, commander3 INTEGER, commander4 INTEGER, tainted INTEGER)''');
+          await db.execute('''CREATE TABLE Settings (id INTEGER PRIMARY KEY, night INTEGER)''');
         return db;
       },
       onUpgrade: (db, oldVersion, newVersion) async{
         if ( oldVersion <= 1)  await db.execute('UPDATE Games SET noplayer INT, poison1 INTEGER, poison2 INTEGER, commander1 INTEGER, commander2 INTEGER');
         if (newVersion >= 3 && oldVersion == 2) await db.execute('UPDATE Games SET date INT');
         if (newVersion >= 4 && oldVersion == 3) await db.execute('UPDATE Games SET player3 TEXT, player4 TEXT, life3 INTEGER, life4 INTEGER, poison3 INTEGER, poison4 INTEGER, commander3 INTEGER, commander4 INTEGER');
+        if (newVersion >= 5 && oldVersion == 4) await db.execute('CREATE TABLE Settings (id INTEGER PRIMARY KEY, night INTEGER)');
         return db;
       }
     );
@@ -59,8 +61,28 @@ class LocalDatabase {
     await db.rawDelete('DELETE FROM Games WHERE Games.id = "$_gameID"');
   }
 
+  /**untaint previously saved game on local db
+   * _gameID: game's id of the tainted game
+   */
   Future<void> untaintSavedGame(int _gameID) async {
-    logGenerator("find ${(await retriveOldGame()).length} locally saved games", "info");
+    if (this.db == null) await open();
     db.insert('Games', {'id': _gameID, 'tainted': 0}, conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  /**retrive the current value of the night vision mode
+   */
+  Future<bool> retriveNightMode() async{
+    if (this.db == null) await open();
+    List _result = await db.rawQuery('SELECT night FROM Settings WHERE id = 0');
+    print(_result);
+    return false;
+  }
+
+  /**switch between night and day mod inside the app
+   */
+  void setNightMode() async{
+    if (this.db == null) await open();
+    List _result = await db.rawQuery('SELECT night FROM Settings WHERE id = 0');
+    print(_result);
   }
 }

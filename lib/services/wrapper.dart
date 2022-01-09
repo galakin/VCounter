@@ -40,4 +40,11 @@ class Wrapper{
     logGenerator("untaint saved game","info");
     database.untaintSavedGame(_gameID);
   }
+
+  /**switch night mode between daymode and nightmode and save result on local
+   * database
+   */
+  Future <void> changeNightMode() async {
+    logGenerator("change night mode","info");
+  }
 }

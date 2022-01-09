@@ -6,14 +6,17 @@ class AppState{
   int counterValue = 0;
   LocalDatabase database;
   String _version = "0.1.0";
+  bool _nightMode = false;
 
   AppState();
 
   AppState.fromAnother(AppState state){
-    counterValue = state.counterValue;
-    database = state.database;
-    username = state.username;
-    userID = state.userID;
+    this.counterValue = state.counterValue;
+    this.database = state.database;
+    this.username = state.username;
+    this.userID = state.userID;
+    this._version = state.getVersion();
+    this._nightMode = state.getNightMode();
   }
 
   void addUsername(String username){this.username = username;}
@@ -34,5 +37,11 @@ class AppState{
     this.userID = userID;
   }
 
-  void getVersion() => _version;
+  void changeNightMode(){
+    this._nightMode!=_nightMode;
+    print("nightMode value: $_nightMode");
+  }
+
+  String getVersion() => _version;
+  bool getNightMode() => _nightMode;
 }

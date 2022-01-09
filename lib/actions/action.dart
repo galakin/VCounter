@@ -11,5 +11,8 @@ class SaveGameID extends BaseAction{
   }
 
   String toString() => "SaveGameID";
+}
 
+class ChangeNightMode extends BaseAction{
+  String toString() => "ChangeNightMode";
 }

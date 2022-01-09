@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 
 class VDrawer extends StatelessWidget{
   String route;
@@ -15,12 +16,12 @@ class VDrawer extends StatelessWidget{
       child: ListView(
         children: [
           _drawerTile('Home', context, Icons.home, localroute: 'homepage'),
-          _drawerTile('Nuova Partita', context, Icons.home, localroute: 'newgame'),
-          _drawerTile('Storico Partite', context, Icons.home, localroute: 'gamehistory'),
-          _drawerTile('Nuova Torneo', context, Icons.home, localroute: 'createtournament'),
-          _drawerTile('Storico Tornei', context, Icons.home, localroute: 'tournamenthistory'),
-          _drawerTile('Nuovo Vendemmiatore', context, Icons.home),
-          _drawerTile('Sala d\'Onore', context, Icons.home, localroute: 'halloffame'),
+          _drawerTile('Nuova Partita', context, Entypo.new_message, localroute: 'newgame'),
+          _drawerTile('Storico Partite', context, MaterialIcons.history, localroute: 'gamehistory'),
+          _drawerTile('Nuova Torneo', context, MaterialCommunityIcons.tournament, localroute: 'createtournament'),
+          _drawerTile('Storico Tornei', context, MaterialIcons.history, localroute: 'tournamenthistory'),
+          _drawerTile('Nuovo Vendemmiatore', context, FontAwesome.user_plus),
+          _drawerTile('Sala d\'Onore', context, FontAwesome.trophy, localroute: 'halloffame'),
           _drawerTile('Impostazioni', context, Icons.settings, localroute: 'settings'),
         ]
       ),//end ListView
