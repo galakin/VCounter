@@ -42,9 +42,9 @@ class _SettingsState extends State{
               value: _nightMode,
               onChanged: (value){
                 setState((){
-                  _nightMode=value;
+                  _nightMode = !_nightMode;
                 });
-                print(value);
+                print("nightmode value: $value");
                 _store.dispatch(ChangeNightMode());
               }
             ),

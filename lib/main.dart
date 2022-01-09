@@ -29,8 +29,7 @@ void main() async{
 
 class MyApp extends StatelessWidget {
   Store _store;
-  //final Future<FirebaseApp> _initialization = Firebase.initializeApp();
-
+  
   MyApp(this._store);
 
   // This widget is the root of your application.
