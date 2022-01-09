@@ -11,6 +11,9 @@ AppState reducer(AppState prevStore, dynamic action){
     case "SaveGameID":
       newState.decrementCounter();
     break;
+    case "ChangeNightMode":
+      newState.changeNightMode();
+    break;
   }
   return newState;
 }

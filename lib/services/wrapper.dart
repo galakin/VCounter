@@ -59,4 +59,8 @@ class Wrapper{
     List _result = await database.untaintedGamesList();
     return _result;
   }
+
+  Future <void> changeNightMode() async {
+    logGenerator("change night mode","info");
+  }
 }
