@@ -18,13 +18,11 @@ standardMiddleware(Store<AppState> store, dynamic action, NextDispatcher next){
     // break;
     case "ChangeNightMode":
       Wrapper _wrapper = new Wrapper();
-      //_wrapper.changeNightMode();//TODO: check db side action
+      _wrapper.changeNightMode();//TODO: check db side action
     break;
 
     default:
       _actionName = 'Operazione non riconosciuta!';
   }
-  print('${DateTime.now()}: $_actionName');
-
   next(action);
 }

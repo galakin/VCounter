@@ -39,7 +39,10 @@ class AppState{
 
   void changeNightMode(){
     this._nightMode!=_nightMode;
-    print("nightMode value: $_nightMode");
+  }
+
+  void setNightMode(bool _nightMode){
+    this._nightMode = _nightMode;
   }
 
   String getVersion() => _version;

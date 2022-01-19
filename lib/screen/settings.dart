@@ -45,7 +45,7 @@ class _SettingsState extends State{
                   _nightMode = !_nightMode;
                 });
                 print("nightmode value: $value");
-                //_store.dispatch(ChangeNightMode());
+                _store.dispatch(ChangeNightMode());
               }
             ),
           ]),//end settings row

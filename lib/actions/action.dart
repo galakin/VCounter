@@ -16,3 +16,12 @@ class SaveGameID extends BaseAction{
 class ChangeNightMode extends BaseAction{
   String toString() => "ChangeNightMode";
 }
+
+class SetNightMode extends BaseAction{
+  bool _baseValue;
+  String toString() => "SetNightMode";
+
+  SetNightMode(this._baseValue);
+
+  bool getBaseValue() => _baseValue;
+}

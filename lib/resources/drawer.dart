@@ -16,12 +16,14 @@ class VDrawer extends StatelessWidget{
     return Drawer(
       child: ListView(
         children: [
+          _drawerTile('Homepage', context, Entypo.new_message, localroute: 'homepage'),
           _drawerTile('Nuova Partita', context, Entypo.new_message, localroute: 'newgame'),
           _drawerTile('Storico Partite', context, MaterialIcons.history, localroute: 'gamehistory'),
           _drawerTile('Nuova Torneo', context, MaterialCommunityIcons.tournament, localroute: 'createtournament'),
           _drawerTile('Storico Tornei', context, MaterialIcons.history, localroute: 'tournamenthistory'),
           _drawerTile('Nuovo Vendemmiatore', context, FontAwesome.user_plus),
           _drawerTile('Sala d\'Onore', context, FontAwesome.trophy, localroute: 'halloffame'),
+          _drawerTile('Impostazioni', context, FontAwesome.trophy, localroute: 'settings'),
         ]
       ),//end ListView
     );//end Draweer

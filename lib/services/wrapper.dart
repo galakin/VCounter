@@ -60,7 +60,17 @@ class Wrapper{
     return _result;
   }
 
+  /**change the local database night mode value
+   */
   Future <void> changeNightMode() async {
     logGenerator("change night mode","info");
+    database.setNightMode();
+  }
+
+  /**change the local database night mode value
+   */
+  Future <bool> retriveNightMode() async {
+    /*TODO define method body*/
+    return true;
   }
 }
