@@ -21,7 +21,7 @@ class CreateTournamet extends StatefulWidget{
 
 class _CreateTournametState extends State{
   Store _store;
-  int _playerNo = 2, _roundNo = 3;
+  int _playerNo = 2;
   List player = ['Mimmo', 'Amarella'];
   String _tournamentName = "Torneo Ignorante";
   final _formKey = GlobalKey<FormState>();
@@ -60,7 +60,7 @@ class _CreateTournametState extends State{
                   ),
                 ),
 
-                // standardPadding(_roundNumbers()),
+                // standardPadding(_roundNoNumbers()),
               ]
             ),//end ListView
             Align(
@@ -167,28 +167,6 @@ class _CreateTournametState extends State{
     else return Container();
   }
 
-  /** Show a row with a text imput for the round numbers, this value is not set
-   *  in store and it's still modifiable after the turnament start but give a
-   *  gross idea of how large the tournament shoud take
-   */
-  Widget _roundNumbers(){
-    return Row(
-      children: [
-        Text("Numero di Turni: ", style: standardStyle()),
-        Container(
-          width: 80,
-          /*TODO: add a max length to insert text*/
-          child: TextFormField(
-            keyboardType: TextInputType.number,
-            initialValue: "$_roundNo",
-            validator: (value) => int.parse(value) <= 0 ? 'Inserire un numero valido' : null,
-            onSaved: (value) => _roundNo = int.parse(value),
-          )
-        ),//end Container
-      ]
-    ); //end Row
-  }
-
   /** Check if all the fieald are correctly initialized and if so change route
    *  with the tournament's pairing one, otherwise error on the respective fieald
    *  are shown
@@ -196,8 +174,19 @@ class _CreateTournametState extends State{
    */
   void _validateAndSubmit(BuildContext context ) {
     if (_validateAndSave()){
+      int _roundNo = 1;
       print("Nome torneo: $_tournamentName");
       print("Giocatori: $player");
+
+      if (player.length >=4 && player.length <= 8) _roundNo = 3;
+      else if (player.length >= 9 && player.length <= 16) _roundNo = 4;
+      else if (player.length >= 17 && player.length <= 32) _roundNo = 5;
+      else if (player.length >= 33 && player.length <= 64) _roundNo = 6;
+      else if (player.length >= 65 && player.length <= 128) _roundNo = 7;
+      else if (player.length >= 129 && player.length <= 226) _roundNo = 8;
+      else if (player.length >= 227 && player.length <= 409) _roundNo = 9;
+      else if (player.length >= 410) _roundNo = 10;
+
       Navigator.of(context).pushReplacementNamed(
         "tournamentpairing",
         arguments: {'store': _store, 'playersNames': player, 'tournamentName': _tournamentName, 'roundNo': _roundNo}

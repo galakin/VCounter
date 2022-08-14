@@ -16,11 +16,11 @@ import 'package:vcounter/futures/tournamentFuture.dart';
 import 'package:vcounter/resources/circularIndicator.dart';
 import 'package:vcounter/screen/testPage.dart';
 import 'package:vcounter/screen/newGame/newGame.dart';
-
-
+import 'package:vcounter/futures/startingFuture.dart';
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   final _initialState = new AppState();
   final Store _store = new Store<AppState>(
@@ -48,7 +48,7 @@ class MyAppState extends State{
 
   initState(){
     super.initState();
-    _taintedGame = retriveTaintedGames();
+    _taintedGame = sartFuture(_store);
   }
 
   // This widget is the root of your application.
