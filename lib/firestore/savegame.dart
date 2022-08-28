@@ -55,7 +55,7 @@ void firestoreSaveGame(int _id, int _date, int _noplayer, String _player1, Strin
     print("A game with ID: ${_id} already exist!");
     Query _tmpref = FirebaseFirestore.instance.collection('saved-games').where('id', isEqualTo: _id);
     QuerySnapshot _docs = await _tmpref.get();
-    List<Map<dynamic, dynamic>> _list = [];
+    List<Object?> _list = [];
     _list = _docs.docs.map((doc) => doc.data() ).toList();                     //generate the list of document saved on firebase
     // print(_list);
     List<QueryDocumentSnapshot> _qsnap = (await _tmpref.get()).docs;
@@ -69,7 +69,7 @@ void firestoreSaveGame(int _id, int _date, int _noplayer, String _player1, Strin
  * avoid replicating the same game more than once
  * _id: the unversal game ID
  */
- Future<bool> _gameAlreadyExist(int _id) async{
+Future<bool> _gameAlreadyExist(int _id) async{
   bool _sameId = false;
 
   print("Check if some entry in firebase with the same ID exist...");
@@ -77,11 +77,11 @@ void firestoreSaveGame(int _id, int _date, int _noplayer, String _player1, Strin
 
   QuerySnapshot _docs = await _ref.get();
   var snapshot = await _ref.get();
-  List<Map<dynamic, dynamic>> _list = [];
+  List<Object?> _list = [];
   _list = snapshot.docs.map((doc) => doc.data() ).toList();                          //generate the list of document saved on firebase
 
-  for (int _i = 0; _i < _list.length; _i++){
-    if (_list[_i]['id'] != null && _list[_i]['id'] == _id) _sameId = true;
-  }
+  // for (int _i = 0; _i < _list.length; _i++){
+  //   if (_list[_i]['id'] != null && _list[_i]['id'] == _id) _sameId = true;
+  // }
   return _sameId;
 }

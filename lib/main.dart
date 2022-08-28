@@ -15,12 +15,12 @@ import 'package:vcounter/middlewares/middleware.dart';
 import 'package:vcounter/futures/tournamentFuture.dart';
 import 'package:vcounter/resources/circularIndicator.dart';
 import 'package:vcounter/screen/testPage.dart';
-import 'package:vcounter/screen/newGame/newGame.dart';
-
-
+// import 'package:vcounter/screen/newGame/newGame.dart';
+import 'package:vcounter/futures/startingFuture.dart';
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   final _initialState = new AppState();
   final Store _store = new Store<AppState>(
@@ -41,14 +41,14 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State{
-  Future _taintedGame;
+  var _taintedGame;
   Store _store;
 
   MyAppState(this._store);
 
   initState(){
     super.initState();
-    _taintedGame = retriveTaintedGames();
+    _taintedGame = sartFuture(_store);
   }
 
   // This widget is the root of your application.
@@ -66,17 +66,17 @@ class MyAppState extends State{
         else  {
           print("");
           StatefulWidget _homepage = Homepage(_store);
-          if (snapshot.data.length == 1) {
-            var _taintGame = {};
-            snapshot.data[0].forEach((key, value) => _taintGame[key] = value);
-            _homepage = NewGame(
-              _store,
-              0,
-              2,
-              [],
-              [_taintGame["life1"], _taintGame["life2"], _taintGame["life3"], _taintGame["life4"]],
-              [_taintGame["poison1"], _taintGame["poison2"], _taintGame["poison3"], _taintGame["poison4"]],
-              [_taintGame["commander1"], _taintGame["commander2"], _taintGame["commander3"], _taintGame["commander4"]]);
+          if (false && snapshot.data.length == 1) { /*TODO: change to truthfoul check*/
+            // var _taintGame = {};
+            // snapshot.data[0].forEach((key, value) => _taintGame[key] = value);
+            // _homepage = NewGame(
+            //   _store,
+            //   0,
+            //   2,
+            //   [],
+            //   [_taintGame["life1"], _taintGame["life2"], _taintGame["life3"], _taintGame["life4"]],
+            //   [_taintGame["poison1"], _taintGame["poison2"], _taintGame["poison3"], _taintGame["poison4"]],
+            //   [_taintGame["commander1"], _taintGame["commander2"], _taintGame["commander3"], _taintGame["commander4"]]);
           }
           else if (snapshot.data.length > 1)throw Exception("Tainted game list have an unusual length of ${snapshot.data.length} elements");
           return MaterialApp(

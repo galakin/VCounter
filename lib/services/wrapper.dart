@@ -2,9 +2,9 @@ import 'package:vcounter/services/database.dart';
 import 'package:vcounter/resources/logGenerator.dart';
 
 class Wrapper{
-  LocalDatabase database;
+  var database;
 
-  Wrapper({this.database}){
+  Wrapper({database}){
     if (database == null) database = new LocalDatabase();
   }
 
@@ -38,13 +38,14 @@ class Wrapper{
   /**return list of old games saved on local memory
    *
    */
-  Future<List> retriveOldGame({int gameID}) async{
+  Future retriveOldGame({int gameID=-1}) async{
     List _result = await database.retriveOldGame();
     return _result;
   }
 
-  Future<List>removeOldGame(int _gameID) async{
+  Future<String> removeOldGame(int _gameID) async{
     database.removeOldGame(_gameID);
+    return "OK!";
   }
 
   /**untain saved game on local database
@@ -55,8 +56,22 @@ class Wrapper{
     database.untaintSavedGame(_gameID);
   }
 
-  Future<List<Map>> untaintedGamesList() async{
+  Future<List<dynamic>> untaintedGamesList() async{
     List _result = await database.untaintedGamesList();
     return _result;
+  }
+
+  /**change the local database night mode value
+   */
+  Future <void> changeNightMode() async {
+    logGenerator("change night mode","info");
+    database.setNightMode();
+  }
+
+  /**change the local database night mode value
+   */
+  Future <bool> retriveNightMode() async {
+    /*TODO define method body*/
+    return true;
   }
 }

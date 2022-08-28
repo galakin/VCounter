@@ -32,20 +32,33 @@ class HomepageState extends State{
 
     return MainScaffold(
       _store,
-      Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.center,
+      Stack(
         children: [
-          _homepageButton(null, 'Nuova Partita', context, route: 'newgame'),
-          _homepageButton(null, 'Storico Partite', context, route: 'gamehistory'),
-          _homepageButton(null, 'Nuovo Torneo', context, route: 'createtournament'),
-          _homepageButton(null, 'Storico Tornei', context, route: 'tournamenthistory'),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 6.0, vertical: 2.0),
+              child: Text("v${_store.state.getVersion()}",
+                style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold)
+              ),//end TextStyle
+            ),//end Padding
+          ),//end Align
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              _homepageButton(null, 'Nuova Partita', context, route: 'newgame'),
+              _homepageButton(null, 'Storico Partite', context, route: 'gamehistory'),
+              _homepageButton(null, 'Nuovo Torneo', context, route: 'createtournament'),
+              _homepageButton(null, 'Storico Tornei', context, route: 'tournamenthistory'),
+            ]
+          ),//end Column
         ]
-      ),//end Column
+      ),//end Stack
     );//end MainScaffold
   }
 
-  Widget _homepageButton(funct, String name, BuildContext context, {String route}){
+  Widget _homepageButton(funct, String name, BuildContext context, {String route=""}){
     return Center(
       child: RaisedButton(
         child: Padding(
@@ -83,7 +96,7 @@ class HomepageState extends State{
       }
     );
   }
-  
+
   /*
   void retrive_firebase_info(){
     //FirebaseFirestore firestore = FirebaseFirestore.instance;

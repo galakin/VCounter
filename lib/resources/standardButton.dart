@@ -6,7 +6,7 @@ class StandardButton extends StatelessWidget{
   var action;
   Color color;
 
-  StandardButton({this.child = null, this.action = null, this.color});
+  StandardButton({this.child, this.action = null, this.color});
 
   @override Widget build(BuildContext context){
     return RaisedButton(
@@ -27,7 +27,7 @@ class BrokenButton extends StatelessWidget{
   Widget child;
   var action;
 
-  BrokenButton({this.child = null, this.action = null});
+  BrokenButton({this.child, this.action = null});
 
   @override Widget build(BuildContext context){
     return RaisedButton(

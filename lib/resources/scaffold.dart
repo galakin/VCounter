@@ -10,7 +10,7 @@ class MainScaffold extends StatefulWidget{
   Widget _body;
   String route;
 
-  MainScaffold(this._store, this._body, {this.route});
+  MainScaffold(this._store, this._body, {this.route=""});
 
   State createState() => MainScaffoldState(_store, _body, route);
 }

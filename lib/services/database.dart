@@ -2,9 +2,9 @@ import 'package:sqflite/sqflite.dart';
 import 'package:vcounter/resources/logGenerator.dart';
 
 class LocalDatabase {
-  Database db;
+  var db;
 
-  Future open() async{
+  Future<Database> open() async{
     var databasesPath = await getDatabasesPath();
     String path = databasesPath+'localdb.db';
     this.db = await openDatabase(
@@ -16,16 +16,17 @@ class LocalDatabase {
           life1 INTEGER, life2 INTEGER, life3 INTEGER, life4 INTEGER,
           poison1 INTEGER, poison2 INTEGER, poison3 INTEGER, poison4 INTEGER,
           commander1 INTEGER, commander2 INTEGER, commander3 INTEGER, commander4 INTEGER, tainted INTEGER)''');
-        return db;
+        await db.execute('''CREATE TABLE Settings (id INTEGER PRIMARY KEY, night INTEGER)''');
+
       },
       onUpgrade: (db, oldVersion, newVersion) async{
         if ( oldVersion <= 1)  await db.execute('UPDATE Games SET noplayer INT, poison1 INTEGER, poison2 INTEGER, commander1 INTEGER, commander2 INTEGER');
         if (newVersion >= 3 && oldVersion == 2) await db.execute('UPDATE Games SET date INT');
         if (newVersion >= 4 && oldVersion == 3) await db.execute('UPDATE Games SET player3 TEXT, player4 TEXT, life3 INTEGER, life4 INTEGER, poison3 INTEGER, poison4 INTEGER, commander3 INTEGER, commander4 INTEGER');
-        if (newVersion >= 5 && oldVersion <= 4) await db.execute('UPDATE Games SET tainted INTEGER');
-        return db;
+        if (newVersion >= 5 && oldVersion == 4) await db.execute('CREATE TABLE Settings (id INTEGER PRIMARY KEY, night INTEGER)');
       }
     );
+    return db;
   }
 
   /** Save the current game in the local database
@@ -54,7 +55,7 @@ class LocalDatabase {
    * gameID: game ID of one specific game
    * return the list of saved game, with possibile match between game id of an emply list
    */
-  Future<List> retriveOldGame({int gameID}) async{
+  Future<List> retriveOldGame({int gameID=-1}) async{
     List _result = [];
     if (this.db == null) await open();
     print(gameID);
@@ -75,7 +76,7 @@ class LocalDatabase {
    * _gameID: the game's id that need to be untainted
    */
   Future<void> untaintSavedGame(int _gameID) async {
-    logGenerator("find ${(await retriveOldGame()).length} locally saved games", "info");
+    if (this.db == null) await open();
     db.rawUpdate("UPDATE Games SET tainted =  WHEW Games.id = 0");
   }
 
@@ -90,10 +91,26 @@ class LocalDatabase {
 
   /**Return the list of tainted games on local db
    */
-  Future<List<Map>> untaintedGamesList() async{
+  Future<List<dynamic>> untaintedGamesList() async{
     if (this.db == null) await open();
     List result = await db.rawQuery("SELECT * FROM Games WHERE Games.tainted = 1");
     //List result = await db.rawQuery("SELECT * FROM Games");
     return result;
+  }
+  /**retrive the current value of the night vision mode
+   */
+  Future<bool> retriveNightMode() async{
+    if (this.db == null) await open();
+    List _result = await db.rawQuery('SELECT night FROM Settings WHERE id = 0');
+    print(_result);
+    return false;
+  }
+
+  /**switch between night and day mod inside the app
+   */
+  void setNightMode() async{
+    if (this.db == null) await open();
+    List _result = await db.rawQuery('SELECT night FROM Settings WHERE id = 0');
+    print(_result);
   }
 }

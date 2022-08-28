@@ -2,7 +2,7 @@ name: vcounter
 description: A new Flutter project.
 
 # The following line prevents the package from being accidentally published to
-# pub.dev using `pub publish`. This is preferred for private packages.
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
@@ -18,8 +18,14 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.17.6 <3.0.0"
 
+# Dependencies specify other packages that your package needs in order to work.
+# To automatically upgrade your package dependencies to the latest versions
+# consider running `flutter pub upgrade --major-versions`. Alternatively,
+# dependencies can be manually updated by changing the version numbers below to
+# the latest version available on pub.dev. To see which dependencies have newer
+# versions available, run `flutter pub outdated`.
 dependencies:
   flutter:
     sdk: flutter
@@ -27,33 +33,34 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^0.1.3
-  sqflite: ^2.0.0+3                   #Used to create and mantain local db
+  cupertino_icons: ^1.0.2
+  sqflite: ^2.0.0+3                 #Used to create and mantain local db
   flutter_icons: ^1.1.0             #Import alt icons
   flutter_launcher_icons: ^0.7.5    #Set the lunch icon
   swipedetector: ^1.2.0             #Detect swipe for new game's page
   redux: ^5.0.0                     #Basic redux library
-  flutter_redux: ^0.8.2             #Flutter redux library
+  flutter_redux: ^0.10.0            #Flutter redux library
   animated_splash_screen: ^1.0.0+1  #Animated splash screen because i'm lazy af
   trotter: ^1.2.0                   #Used for simplify mathematica calculus
-  firebase_auth: ^1.0.1          #Used for firebase autentication
-  cloud_firestore: ^1.0.3          #Grant access to firestore cloud database
-  firebase_core: "1.0.2"
+  firebase_auth: ^3.6.4             #Used for firebase autentication
+  cloud_firestore: ^3.4.6           #Grant access to firestore cloud database
+  firebase_core: ^1.21.1          #Main firebase interalib
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-flutter_icons:
-  android: true
-  ios: true
-  image_path: "assets/icons/Logo-512.png"
-  adaptive_icon_background: "#ffffff"
+  # The "flutter_lints" package below contains a set of recommended lints to
+  # encourage good coding practices. The lint set provided by the package is
+  # activated in the `analysis_options.yaml` file located at the root of your
+  # package. See that file for information about deactivating specific lint
+  # rules and activating additional ones.
+  flutter_lints: ^2.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
-# The following section is specific to Flutter.
+# The following section is specific to Flutter packages.
 flutter:
 
   # The following line ensures that the Material Icons font is
@@ -62,13 +69,12 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  assets:
-    # - assets/vlogo.png
-    - assets/
+  # assets:
+  #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
-  # https://flutter.dev/assets-and-images/#resolution-aware.
+  # https://flutter.dev/assets-and-images/#resolution-aware
 
   # For details regarding adding assets from package dependencies, see
   # https://flutter.dev/assets-and-images/#from-packages

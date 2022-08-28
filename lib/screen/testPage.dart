@@ -13,8 +13,8 @@ import 'package:vcounter/assets/colors.dart';
 import 'package:vcounter/services/wrapper.dart';
 import 'package:vcounter/firestore/savegame.dart';
 import 'package:vcounter/resources/logGenerator.dart';
-import 'package:vcounter/futures/newGameFuture.dart';
-import 'package:vcounter/screen/newGame/newGame.dart'; 
+// import 'package:vcounter/futures/newGameFuture.dart';
+// import 'package:vcounter/screen/newGame/newGame.dart'; 
 
 class TestPage extends StatefulWidget{
   State createState() => _TestPageState();

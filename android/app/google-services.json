@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "985725808562",
+    "project_id": "vcounter-6d83c",
+    "storage_bucket": "vcounter-6d83c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:985725808562:android:c491997808ee234ccf7eab",
+        "android_client_info": {
+          "package_name": "com.example.vcounter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "985725808562-uc1gl40oc0do9j20d9ubiliehul6vbb4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0pwc8tpZxBO--sRv07m6BD9WPF9Hn41g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "985725808562-uc1gl40oc0do9j20d9ubiliehul6vbb4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

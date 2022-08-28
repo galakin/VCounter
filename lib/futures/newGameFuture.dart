@@ -23,7 +23,7 @@ Future<Map> getTaintedGame() async{
   List _tmpList = await _wrapper.retriveOldGame();
   List _oldOnlineGame = await retriveOnlineGames(); //retrive the old games saved on Firebase
   print(logGenerator("old game found online: ${_oldOnlineGame.length}","info"));
-  Map _lastTaintGame;
+  Map _lastTaintGame = new Map();
   int _date = 0;
   if (_tmpList.length == 0) return {};
   else{

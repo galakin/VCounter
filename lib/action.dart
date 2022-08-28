@@ -4,7 +4,7 @@ class BaseAction{
   String toString() => "BaseAction";
 }
 class SaveGameID extends BaseAction{
-  String id = "";
+  String id = null;
 
   SaveGameID(String id){
     this.id = id;
