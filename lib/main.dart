@@ -19,9 +19,9 @@ import 'package:vcounter/screen/testPage.dart';
 import 'package:vcounter/futures/startingFuture.dart';
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-
-  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  // await Firebase.initializeApp();
+  //
+  // FirebaseFirestore firestore = FirebaseFirestore.instance;
   final _initialState = new AppState();
   final Store _store = new Store<AppState>(
     reducer,
@@ -48,7 +48,7 @@ class MyAppState extends State{
 
   initState(){
     super.initState();
-    _taintedGame = sartFuture(_store);
+    // _taintedGame = sartFuture(_store);
   }
 
   // This widget is the root of your application.
@@ -59,39 +59,50 @@ class MyAppState extends State{
       DeviceOrientation.portraitDown,
     ]);
 
-    return FutureBuilder(
-      future: _taintedGame,
-      builder: (BuildContext context, AsyncSnapshot snapshot){
-        if (!snapshot.hasData) return BackgroundCircularIndicator();
-        else  {
-          print("");
-          StatefulWidget _homepage = Homepage(_store);
-          if (false && snapshot.data.length == 1) { /*TODO: change to truthfoul check*/
-            // var _taintGame = {};
-            // snapshot.data[0].forEach((key, value) => _taintGame[key] = value);
-            // _homepage = NewGame(
-            //   _store,
-            //   0,
-            //   2,
-            //   [],
-            //   [_taintGame["life1"], _taintGame["life2"], _taintGame["life3"], _taintGame["life4"]],
-            //   [_taintGame["poison1"], _taintGame["poison2"], _taintGame["poison3"], _taintGame["poison4"]],
-            //   [_taintGame["commander1"], _taintGame["commander2"], _taintGame["commander3"], _taintGame["commander4"]]);
-          }
-          else if (snapshot.data.length > 1)throw Exception("Tainted game list have an unusual length of ${snapshot.data.length} elements");
-          return MaterialApp(
-            title: 'Flutter Demo',
-            theme: ThemeData(
-              primarySwatch: Colors.blue,
-              visualDensity: VisualDensity.adaptivePlatformDensity,
-            ),
-            /*TODO: insert iniatial splash page*/
-            home: _homepage,
-            onGenerateRoute: RouteGenerator.generateRoute
-          );
 
-        }
-      }
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      /*TODO: insert iniatial splash page*/
+      home: Homepage(_store),
+      onGenerateRoute: RouteGenerator.generateRoute
     );
+
+    // return FutureBuilder(
+    //   future: _taintedGame,
+    //   builder: (BuildContext context, AsyncSnapshot snapshot){
+    //     if (!snapshot.hasData) return BackgroundCircularIndicator();
+    //     else  {
+    //       print("");
+    //       // if (false && snapshot.data.length == 1) { /*TODO: change to truthfoul check*/
+    //         // var _taintGame = {};
+    //         // snapshot.data[0].forEach((key, value) => _taintGame[key] = value);
+    //         // _homepage = NewGame(
+    //         //   _store,
+    //         //   0,
+    //         //   2,
+    //         //   [],
+    //         //   [_taintGame["life1"], _taintGame["life2"], _taintGame["life3"], _taintGame["life4"]],
+    //         //   [_taintGame["poison1"], _taintGame["poison2"], _taintGame["poison3"], _taintGame["poison4"]],
+    //         //   [_taintGame["commander1"], _taintGame["commander2"], _taintGame["commander3"], _taintGame["commander4"]]);
+    //       // }
+    //       // else if (snapshot.data.length > 1)throw Exception("Tainted game list have an unusual length of ${snapshot.data.length} elements");
+    //       return MaterialApp(
+    //         title: 'Flutter Demo',
+    //         theme: ThemeData(
+    //           primarySwatch: Colors.blue,
+    //           visualDensity: VisualDensity.adaptivePlatformDensity,
+    //         ),
+    //         /*TODO: insert iniatial splash page*/
+    //         home: _homepage,
+    //         onGenerateRoute: RouteGenerator.generateRoute
+    //       );
+    //
+    //     }
+    //   }
+    // );
   }
 }

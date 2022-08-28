@@ -18,6 +18,26 @@ class Homepage extends StatefulWidget{
 
   State createState() => HomepageState(_store);
 }
+
+// class TestHomepageState extends State{
+//   Store _store;
+//
+//   initState(){
+//     super.initState();
+//   }
+//
+//   HomepageState(this._store);
+//
+//   @override Widget build(BuildContext context){
+//     VDrawer _drawer = new VDrawer(_store);
+//     GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
+//
+//     return MainScaffold(
+//       _store,
+//       Container()
+//     )
+//
+// }
 class HomepageState extends State{
   Store _store;
 
@@ -26,6 +46,7 @@ class HomepageState extends State{
   }
 
   HomepageState(this._store);
+
   @override Widget build(BuildContext context){
     VDrawer _drawer = new VDrawer(_store);
     GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
